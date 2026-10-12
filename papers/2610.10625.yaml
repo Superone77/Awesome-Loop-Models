@@ -1,0 +1,32 @@
+title: 'Safe at One Loop, Risky at Another: Aligning Safety Across Recurrent Depths in Looped
+  Language Models'
+authors:
+- Yi Wang
+- Xiuyuan Qi
+- Dongqi Han
+- Dongsheng Li
+- Wenjie Wang
+year: 2026
+published_date: '2026-10-07'
+added_date: '2026-10-12'
+venue: arXiv
+survey_section:
+- training/post-training
+- architecture/sharing
+- applications/language-speech-multimodal
+- open-problems/monitorability-safety
+loop_topology: whole-stack
+sharing: partial-adapter
+depth_control: fixed
+claims:
+- failure-mode
+comparison: []
+survey_core: false
+desc: Shows that jailbreak success on Ouro looped language models can rise with recurrent
+  depth and that attacks transfer across depths, then proposes SafeBridge (depth-specific
+  modulation of the shared layers, a gated bridge to a safer earlier depth, and cross-depth
+  safety objectives), cutting Ouro-2.6B attack success from 44.93 percent under DPO to 9.85
+  percent.
+links:
+  arxiv: https://arxiv.org/abs/2610.10625
+  alphaxiv: https://www.alphaxiv.org/abs/2610.10625

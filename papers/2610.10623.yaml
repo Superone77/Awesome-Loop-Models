@@ -1,0 +1,29 @@
+title: 'Recurrent Self-Improvement: Dynamic Cross-Loop On-Policy Distillation for Looped Language
+  Models'
+authors:
+- Yi Wang
+- Rui Qian
+- Yu Li
+- Haoyang Yao
+- Wenjie Wang
+year: 2026
+published_date: '2026-10-07'
+added_date: '2026-10-12'
+venue: arXiv
+survey_section:
+- training/post-training
+- training/supervision-optimization
+loop_topology: whole-stack
+sharing: full
+depth_control: fixed
+claims:
+- test-time-scaling
+comparison: []
+survey_core: false
+desc: LoopOPD post-trains looped language models by using a frozen terminal-loop policy of
+  the same weight-tied model as an on-policy teacher for an intermediate loop, and D-LoopOPD
+  refreshes that shared-parameter teacher every step; on Ouro-2.6B-Thinking it lifts the AIME
+  2024-2026 Avg@16 average from 55.49 to 62.36.
+links:
+  arxiv: https://arxiv.org/abs/2610.10623
+  alphaxiv: https://www.alphaxiv.org/abs/2610.10623

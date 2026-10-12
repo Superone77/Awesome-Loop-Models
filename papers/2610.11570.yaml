@@ -1,0 +1,33 @@
+title: Scaling to Tens of Thousands of Test-Time Iterations with Loop-Native Attention Residuals
+authors:
+- Pengxiang Li
+- Dilxat Muhtar
+- Di He
+- Guinan Su
+- Lu Yin
+- Shiwei Liu
+year: 2026
+published_date: '2026-10-08'
+added_date: '2026-10-12'
+venue: arXiv
+survey_section:
+- architecture/residual-init
+- architecture/state-memory
+- scaling/test-time
+- training/supervision-optimization
+loop_topology: hierarchical
+sharing: full
+depth_control: fixed
+claims:
+- test-time-scaling
+- stability
+comparison: []
+survey_core: false
+desc: InfiLoop replaces carry-last state passing in TRM-style looped reasoners with a learned,
+  decaying attention residual over all past iterates that runs as an exact O(d) streaming
+  recurrence, reaching 97.9 percent on Sudoku-Extreme and 13.6 percent pass@2 on ARC-AGI-2
+  with 7M parameters and still improving past 20,000 layer evaluations.
+links:
+  arxiv: https://arxiv.org/abs/2610.11570
+  alphaxiv: https://www.alphaxiv.org/abs/2610.11570
+  github: https://github.com/pixeli99/InfiLoop

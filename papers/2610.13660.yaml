@@ -1,0 +1,27 @@
+title: 'Pretraining and Test-Time Training Budgets Matter for ARC: A Controlled Study of VARC
+  and TRM'
+authors:
+- Adrien Deliege
+- Marc Van Droogenbroeck
+year: 2026
+published_date: '2026-10-09'
+added_date: '2026-10-12'
+venue: BNAIC/BeNeLearn 2026
+survey_section:
+- training/post-training
+- understanding/failure-modes
+loop_topology: hierarchical
+sharing: full
+depth_control: unspecified
+claims:
+- data-efficiency
+comparison: []
+survey_core: false
+desc: Controlled ARC-AGI-1 study that crosses pretraining and per-task test-time-training
+  budgets for the recursive TRM and the ViT-based VARC; more test-time sample presentations
+  always help, more test-time task variants mainly help TRM, and pretraining lifts TRM's best
+  pass@2 from 19.63 to 37.50 percent.
+links:
+  arxiv: https://arxiv.org/abs/2610.13660
+  alphaxiv: https://www.alphaxiv.org/abs/2610.13660
+  github: https://github.com/AdrienDeliege/arc-training-budgets

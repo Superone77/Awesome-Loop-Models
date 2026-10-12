@@ -1,0 +1,34 @@
+title: 'One Model to Loop Them All: Elastic Latent Recurrence for Language Models'
+authors:
+- Faisal Ladhak
+- Shantanu Acharya
+- Santiago Akle Serano
+- Simeng Sun
+- Boris Ginsburg
+- Krishna C Puvvada
+year: 2026
+published_date: '2026-10-08'
+added_date: '2026-10-12'
+venue: arXiv
+survey_section:
+- training/retrofitting
+- architecture/depth-control
+- scaling/test-time
+- systems/kv-memory
+loop_topology: prelude-core-coda
+sharing: partial-adapter
+depth_control: sampled-train
+claims:
+- test-time-scaling
+- compute-efficiency
+- memory-efficiency
+comparison:
+- iso-param
+survey_core: false
+desc: Elastic Latent Recurrence trains looped language models without a one-loop tax, using
+  a gated state update with a learned step size, mixed loop counts within each update, and
+  loop-index and budget conditioning; on 4B and 30B-A3B hybrid models one loop matches the
+  non-recurrent baseline and four loops add 4.75 to 7.25 points.
+links:
+  arxiv: https://arxiv.org/abs/2610.12582
+  alphaxiv: https://www.alphaxiv.org/abs/2610.12582

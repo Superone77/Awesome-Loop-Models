@@ -1,0 +1,29 @@
+title: 'One Block, Multiple Depths: Recurrent Vision Transformers with Depth-Programmed Experts'
+authors:
+- Adrian Bulat
+- Yassine Ouali
+- Georgios Tzimiropoulos
+year: 2026
+published_date: '2026-10-08'
+added_date: '2026-10-12'
+venue: arXiv
+survey_section:
+- architecture/sharing
+- applications/vision
+- architecture/depth-control
+- capabilities/efficiency
+loop_topology: whole-stack
+sharing: expert-routed
+depth_control: sampled-train
+claims:
+- param-efficiency
+comparison:
+- iso-flop
+survey_core: false
+desc: reViT applies one Transformer block at every depth of a vision encoder and gives each
+  depth its own FFN by merging a small shared expert bank in weight space with a router conditioned
+  only on normalized depth; reViT-B/16 matches DeiT III on ImageNet-1k with about 70 percent
+  fewer stored parameters at similar FLOPs.
+links:
+  arxiv: https://arxiv.org/abs/2610.12448
+  alphaxiv: https://www.alphaxiv.org/abs/2610.12448
