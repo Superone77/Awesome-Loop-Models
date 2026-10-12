@@ -12,21 +12,19 @@ scope:
   evidence: "Looped Latent Attention operates on the states produced by repeated reuse of a weight-tied Transformer block within one forward process."
   locator: "Abstract; Section 1"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces a reusable cross-loop KV-compression method for looped Transformers."
-  mechanism_tags:
-    values: [flat-loop]
-    rationale: "The target model repeatedly applies one shared Transformer block along recurrent depth."
-  focus_tags:
-    values: [inference-algorithm]
-    rationale: "The contribution is an inference-time KV-cache compression algorithm."
-  domain_tags:
-    values: [language-modeling, efficiency, memory-efficiency]
-    rationale: "The method targets language-model inference, with exact KV-cache reduction and measured memory-capacity gains."
-  tags:
-    values: [LLA]
-    rationale: "LLA is the method abbreviation used by the paper."
+  survey_section:
+    values:
+      - systems/kv-memory
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The target model repeatedly applies one shared Transformer block along recurrent depth."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The target model repeatedly applies one shared Transformer block along recurrent depth."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

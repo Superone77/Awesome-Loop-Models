@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import sys as _sys
 import unicodedata
 from dataclasses import asdict, dataclass
 from datetime import date
@@ -15,10 +16,19 @@ from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 import yaml
 
+_sys.path.insert(0, str(Path(__file__).resolve().parent))
+from taxonomy import (  # noqa: E402
+    REQUIRED_PAPER_SURVEY_FIELDS,
+    RETIRED_FIELDS,
+    SURVEY_LIST_FIELDS,
+    SURVEY_SCALAR_FIELDS,
+    VALID_CATALOG_FITS,
+)
+
 try:
-    from scripts.build import CATEGORIES, VALID_FOCUS_TAGS, VALID_MECHANISM_TAGS, validate_publication_metadata
+    from scripts.build import validate_publication_metadata
 except ModuleNotFoundError:  # Support ``python scripts/audit_catalog.py``.
-    from build import CATEGORIES, VALID_FOCUS_TAGS, VALID_MECHANISM_TAGS, validate_publication_metadata
+    from build import validate_publication_metadata
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -29,10 +39,7 @@ REQUIRED_FIELDS = (
     "year",
     "published_date",
     "venue",
-    "category",
-    "mechanism_tags",
-    "domain_tags",
-    "focus_tags",
+    *REQUIRED_PAPER_SURVEY_FIELDS,
     "desc",
     "links",
 )
@@ -44,7 +51,6 @@ ALLOWED_FIELDS = frozenset(
         "citation_sources",
         "citations",
         "catalog_fit",
-        "foundation",
         "github_stars",
         "metrics_updated",
         "must_read",
@@ -52,18 +58,11 @@ ALLOWED_FIELDS = frozenset(
         "venue_source",
         "star_source_best",
         "star_sources",
-        "tags",
-        "survey_section",
-        "loop_topology",
-        "sharing",
-        "depth_control",
-        "claims",
-        "comparison",
         "survey_core",
     )
 )
-TAG_FIELDS = ("mechanism_tags", "domain_tags", "focus_tags", "tags")
-REQUIRED_TAG_FIELDS = frozenset(("mechanism_tags", "domain_tags", "focus_tags"))
+# ``family_tags`` predates the 2026-10 retirement list but build.py rejects it too.
+RETIRED_TOP_LEVEL_FIELDS = (*RETIRED_FIELDS, "family_tags")
 PRIMARY_LINK_FIELDS = ("arxiv", "paper", "openreview")
 ARXIV_FILENAME_RE = re.compile(r"^(\d{4}\.\d{4,5})$")
 ARXIV_URL_RE = re.compile(
@@ -154,12 +153,6 @@ def _add(
     findings.append(Finding(severity, code, source, field, message))
 
 
-def _normalize_tag(value: str) -> str:
-    """Normalize a raw tag for duplicate and cross-axis comparison only."""
-    normalized = value.strip().lower().replace("_", "-").replace(" ", "-")
-    return re.sub(r"-+", "-", normalized).strip("-")
-
-
 def _normalize_title(value: str) -> str:
     """Normalize case, Unicode, punctuation, and whitespace in a paper title."""
     normalized = unicodedata.normalize("NFKC", value).casefold()
@@ -172,7 +165,7 @@ def _validate_scalar_fields(data: dict, source: str, findings: list[Finding]) ->
         if field not in data:
             _add(findings, "error", "missing-field", source, field, "Required field is missing.")
 
-    for field in ("title", "venue", "category", "desc"):
+    for field in ("title", "venue", "desc"):
         if field not in data:
             continue
         value = data[field]
@@ -223,18 +216,6 @@ def _validate_scalar_fields(data: dict, source: str, findings: list[Finding]) ->
                         "Expected a non-empty string.",
                     )
 
-    category = data.get("category")
-    if isinstance(category, str) and category.strip() and category not in CATEGORIES:
-        expected = ", ".join(sorted(CATEGORIES))
-        _add(
-            findings,
-            "error",
-            "invalid-category",
-            source,
-            "category",
-            f"Expected one of {expected}; got {category!r}.",
-        )
-
 
 def _is_non_negative_int(value: object) -> bool:
     """Return whether ``value`` is a non-boolean, non-negative integer."""
@@ -247,7 +228,7 @@ def _validate_optional_fields(data: dict, source: str, findings: list[Finding]) 
         validate_publication_metadata(data, source)
     except ValueError as error:
         _add(findings, "error", "invalid-publication", source, "peer_reviewed", str(error))
-    for field in ("foundation", "must_read"):
+    for field in ("must_read", "survey_core"):
         if field in data and not isinstance(data[field], bool):
             _add(
                 findings,
@@ -260,7 +241,7 @@ def _validate_optional_fields(data: dict, source: str, findings: list[Finding]) 
 
     if "catalog_fit" in data:
         catalog_fit = data["catalog_fit"]
-        if not isinstance(catalog_fit, str) or catalog_fit not in {"strict", "adjacent"}:
+        if not isinstance(catalog_fit, str) or catalog_fit not in VALID_CATALOG_FITS:
             _add(
                 findings,
                 "error",
@@ -492,10 +473,32 @@ def _validate_arxiv_identity(path: Path, links: dict | None, source: str, findin
     _add(findings, "error", "arxiv-id-mismatch", source, "links.arxiv", message)
 
 
-def _validate_tags(data: dict, source: str, findings: list[Finding]) -> None:
-    """Validate tag list shape, duplicates, controlled values, and axis collisions."""
-    normalized_by_field: dict[str, list[tuple[int, str]]] = {}
-    for field in TAG_FIELDS:
+def _validate_survey_fields(data: dict, source: str, findings: list[Finding]) -> None:
+    """Validate the closed survey vocabulary: single-valued axes and value lists."""
+    for field, allowed in SURVEY_SCALAR_FIELDS:
+        if field not in data:
+            continue
+        value = data[field]
+        if not isinstance(value, str) or not value.strip():
+            _add(
+                findings,
+                "error",
+                "invalid-field-type",
+                source,
+                field,
+                f"Expected one non-empty string; got {type(value).__name__}.",
+            )
+        elif value not in allowed:
+            _add(
+                findings,
+                "error",
+                "invalid-survey-value",
+                source,
+                field,
+                f"Expected one of {', '.join(allowed)}; got {value!r}.",
+            )
+
+    for field, allowed in SURVEY_LIST_FIELDS:
         if field not in data:
             continue
         value = data[field]
@@ -503,81 +506,32 @@ def _validate_tags(data: dict, source: str, findings: list[Finding]) -> None:
             _add(
                 findings,
                 "error",
-                "invalid-tag-list",
+                "invalid-field-type",
                 source,
                 field,
-                f"Expected a list of non-empty strings; got {type(value).__name__}.",
+                f"Expected a list of strings; got {type(value).__name__}.",
             )
             continue
-        allows_empty_mechanism = (
-            field == "mechanism_tags" and data.get("catalog_fit") == "adjacent"
-        )
-        if field in REQUIRED_TAG_FIELDS and not value and not allows_empty_mechanism:
-            _add(
-                findings,
-                "error",
-                "empty-field",
-                source,
-                field,
-                "Expected at least one tag.",
-            )
-        if field == "mechanism_tags" and value and data.get("catalog_fit") == "adjacent":
-            _add(
-                findings,
-                "error",
-                "adjacent-mechanism-tag",
-                source,
-                field,
-                "Adjacent work must not claim a strict loop-mechanism tag.",
-            )
+        if field == "survey_section" and not value:
+            _add(findings, "error", "empty-field", source, field, "Expected at least one survey section.")
         seen: set[str] = set()
-        normalized_items: list[tuple[int, str]] = []
         for index, item in enumerate(value):
             item_field = f"{field}[{index}]"
-            if not isinstance(item, str):
-                _add(findings, "error", "invalid-tag", source, item_field, "Expected a non-empty string.")
+            if not isinstance(item, str) or not item.strip():
+                _add(findings, "error", "invalid-list-item", source, item_field, "Expected a non-empty string.")
                 continue
-            tag = _normalize_tag(item)
-            if not tag:
-                _add(findings, "error", "empty-tag", source, item_field, "Expected a non-empty string.")
-                continue
-            if tag in seen:
-                _add(findings, "error", "duplicate-tag", source, item_field, f"Duplicate tag {item!r} within {field}.")
-            else:
-                seen.add(tag)
-            normalized_items.append((index, tag))
-            if field == "mechanism_tags" and item not in VALID_MECHANISM_TAGS:
-                _add(findings, "error", "invalid-mechanism-tag", source, item_field, f"Unknown controlled mechanism tag {item!r}.")
-            if field == "focus_tags" and item not in VALID_FOCUS_TAGS:
-                _add(findings, "error", "invalid-focus-tag", source, item_field, f"Unknown controlled focus tag {item!r}.")
-        normalized_by_field[field] = normalized_items
-
-    controlled = set(VALID_MECHANISM_TAGS) | set(VALID_FOCUS_TAGS)
-    for index, tag in normalized_by_field.get("domain_tags", []):
-        if tag in controlled:
-            _add(
-                findings,
-                "warning",
-                "cross-axis-tag-collision",
-                source,
-                f"domain_tags[{index}]",
-                f"Domain tag {tag!r} belongs to a controlled mechanism/focus axis.",
-            )
-    selected_browser_tags = {
-        tag
-        for field in ("mechanism_tags", "domain_tags", "focus_tags")
-        for _, tag in normalized_by_field.get(field, [])
-    }
-    for index, tag in normalized_by_field.get("tags", []):
-        if tag in controlled or tag in selected_browser_tags:
-            _add(
-                findings,
-                "warning",
-                "cross-axis-tag-collision",
-                source,
-                f"tags[{index}]",
-                f"Alias tag {tag!r} duplicates a browser-facing tag axis.",
-            )
+            if item in seen:
+                _add(findings, "error", "duplicate-value", source, item_field, f"Duplicate value {item!r} within {field}.")
+            seen.add(item)
+            if item not in allowed:
+                _add(
+                    findings,
+                    "error",
+                    "invalid-survey-value",
+                    source,
+                    item_field,
+                    f"Unknown {field} value {item!r}.",
+                )
 
 
 def _validate_description(data: dict, source: str, findings: list[Finding]) -> None:
@@ -721,14 +675,23 @@ def audit_catalog(root: Path = REPO_ROOT) -> list[Finding]:
             continue
 
         for field in sorted(data, key=str):
-            if field not in ALLOWED_FIELDS:
+            if field in RETIRED_TOP_LEVEL_FIELDS:
+                _add(
+                    findings,
+                    "error",
+                    "retired-field",
+                    source,
+                    str(field),
+                    "Field was retired by the survey taxonomy; use survey_section and the survey design axes.",
+                )
+            elif field not in ALLOWED_FIELDS:
                 _add(findings, "error", "unknown-field", source, str(field), "Unknown top-level field.")
         _validate_scalar_fields(data, source, findings)
         _validate_optional_fields(data, source, findings)
         _validate_dates(data, source, findings)
         links = _validate_links(data, source, findings)
         _validate_arxiv_identity(path, links, source, findings)
-        _validate_tags(data, source, findings)
+        _validate_survey_fields(data, source, findings)
         _validate_description(data, source, findings)
         _record_duplicates(data, links, source, title_sources, primary_sources, findings)
 

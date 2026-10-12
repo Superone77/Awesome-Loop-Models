@@ -14,30 +14,21 @@ scope:
     while the Universal Transformer comparison repeatedly applies one shared block.
   locator: "Section 3.1, page 4; Section 5.8, page 11"
 taxonomy:
-  category:
-    value: analysis
-    rationale: "The contribution is an empirical comparison of hierarchical, flat, and untied iteration."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-      - hierarchical-loop
-    rationale: "The paper directly compares flat shared-weight iteration with a two-speed nested recurrence."
-  focus_tags:
-    values:
-      - architecture
-    rationale: "The comparison varies recurrent architectural structure under parameter matching."
-  domain_tags:
-    values:
-      - language-modeling
-    rationale: >-
-      The evidence is an OpenWebText language-modeling study; the paper explicitly
-      leaves cross-scale generalization unresolved, so no scaling tag is used.
-  tags:
-    values:
-      - shared-weight-recurrence
-      - hierarchical-recurrence
-      - universal-transformer
-    rationale: "These aliases name the recurrent structures explicitly compared in the paper."
+      - architecture/topology
+      - understanding/failure-modes
+      - understanding/why
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: hierarchical
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop, hierarchical-loop): The paper directly compares flat shared-weight iteration with a two-speed nested recurrence."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop, hierarchical-loop): The paper directly compares flat shared-weight iteration with a two-speed nested recurrence."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

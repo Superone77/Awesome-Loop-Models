@@ -6,23 +6,8 @@ year: 2026
 published_date: '2026-05-27'
 added_date: '2026-06-04'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- hierarchical-loop
-domain_tags:
-- language-modeling
-- reasoning
-- efficiency
-- adaptive-compute
-tags:
-- HRM
-- halting
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
-- design/depth-control
+- architecture/depth-control
 - applications/language-speech-multimodal
 loop_topology: hierarchical
 sharing: full

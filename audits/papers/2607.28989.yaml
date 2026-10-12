@@ -12,21 +12,20 @@ scope:
   evidence: "SILVA runs a K-step damped Picard solver that repeatedly applies the same learned update map within one forward process."
   locator: "Section 2.1, Equation 1 and Algorithm 1; discussion"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces a reusable structured implicit-layer architecture."
-  mechanism_tags:
-    values: [flat-loop, implicit-layer]
-    rationale: "The model defines a fixed point and trains through a finite unrolling of the same update map."
-  focus_tags:
-    values: [architecture]
-    rationale: "The principal contribution is the structured interaction-field architecture."
-  domain_tags:
-    values: [graph-data, vision, scientific-ml]
-    rationale: "Experiments cover graph benchmarks, image tasks, and molecular scientific-ML regression."
-  tags:
-    values: []
-    rationale: "No optional alias is needed."
+  survey_section:
+    values:
+      - applications/graphs-science
+      - architecture/residual-init
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: implicit-fixed-point
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop, implicit-layer): The model defines a fixed point and trains through a finite unrolling of the same update map."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop, implicit-layer): The model defines a fixed point and trains through a finite unrolling of the same update map."
+  depth_control:
+    value: convergence
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

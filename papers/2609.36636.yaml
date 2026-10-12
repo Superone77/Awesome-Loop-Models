@@ -8,21 +8,11 @@ year: 2026
 published_date: '2026-09-29'
 added_date: '2026-09-30'
 venue: arXiv
-category: analysis
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-tags:
-- LoopLM
-focus_tags:
-- architecture
 survey_section:
-- design/topology
-- design/residual-injection
-- benefits/limits
+- architecture/topology
+- architecture/residual-init
+- understanding/failure-modes
+- understanding/why
 loop_topology: prelude-core-coda
 sharing: full
 depth_control: unspecified

@@ -14,35 +14,20 @@ scope:
     reuses that same group for multiple depth steps in one model forward pass.
   locator: "Section 2.3 and Figure 1, pages 3-4"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces a mixture-of-experts Universal Transformer design."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: >-
-      One shared layer group is repeated in a flat ABAB pattern; the method
-      does not define nested or coarse-to-fine recurrent loops.
-  focus_tags:
-    values:
-      - architecture
-      - training-algorithm
-    rationale: >-
-      The paper changes the shared-depth architecture and introduces routing,
-      entropy regularization, and normalization choices used for training.
-  domain_tags:
-    values:
-      - language-modeling
-      - efficiency
-    rationale: >-
-      The primary experiments are language-modeling and code tasks, with
-      parameter, MAC, and memory comparisons for the MoE recurrent design.
-  tags:
-    values:
-      - MoEUT
-      - UT
-      - MoE
-    rationale: "MoEUT is the proposed model, UT is its Universal Transformer family, and MoE identifies the sparse-expert architecture."
+      - architecture/hybrid
+      - architecture/sharing
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One shared layer group is repeated in a flat ABAB pattern; the method does not define nested or coarse-to-fine recurrent loops."
+  sharing:
+    value: expert-routed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One shared layer group is repeated in a flat ABAB pattern; the method does not define nested or coarse-to-fine recurrent loops."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

@@ -13,21 +13,8 @@ year: 2026
 published_date: '2026-03-02'
 added_date: '2026-04-24'
 venue: arXiv
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-- efficiency
-tags:
-- AdaPonderLM
-focus_tags:
-- architecture
-- training-algorithm
-- inference-algorithm
 survey_section:
-- design/depth-control
+- architecture/depth-control
 - systems/kv-memory
 loop_topology: whole-stack
 sharing: full

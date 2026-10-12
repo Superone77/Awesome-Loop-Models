@@ -9,15 +9,6 @@ year: 2026
 published_date: '2026-04-30'
 added_date: '2026-05-03'
 venue: arXiv
-category: applications
-mechanism_tags:
-- flat-loop
-domain_tags:
-- sequence-modeling
-- efficiency
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
 - applications/embodied-other
 loop_topology: partial

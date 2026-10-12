@@ -39,13 +39,35 @@ def valid_briefing(date: str = "2026-07-10") -> dict:
     }
 
 
+def valid_survey_taxonomy() -> dict:
+    """Return the smallest complete survey taxonomy the browser and submission pickers read."""
+    return {
+        "parts": [{"id": "building", "title": "Part III. Building, Training and Deploying"}],
+        "chapters": [{"number": "4", "part": "building", "title": "Architecture and Design"}],
+        "sections": [
+            {"id": "architecture/depth-control", "number": "4.5", "chapter": "4", "title": "Controlling recurrence depth"}
+        ],
+        "axes": {
+            axis: {"label": axis.replace("_", " ").title(), "values": ["unspecified"]}
+            for axis in check_asset_budgets.SURVEY_AXES
+        },
+    }
+
+
+def valid_submission_payload(existing_paths: list | None = None) -> dict:
+    """Return the minimal complete submission metadata schema."""
+    return {
+        "existing_paths": existing_paths or [],
+        "survey_taxonomy": valid_survey_taxonomy(),
+        "inventories": {name: [] for name in check_asset_budgets.SUBMISSION_INVENTORIES},
+    }
+
+
 def valid_papers_payload() -> dict:
     """Return the minimal complete browser catalog schema."""
     return {
         "meta": {},
-        "categories": {},
-        "mechanism_tags": [],
-        "focus_tags": [],
+        "survey_taxonomy": valid_survey_taxonomy(),
         "paper_chunks": [],
         "blogs": [],
         "briefings": [valid_briefing()],
@@ -69,17 +91,7 @@ def write_chunk(root: Path, index: int, papers: list, count: int | None = None) 
 def write_valid_fixture(root: Path) -> None:
     """Create the smallest valid repository fixture for the budget checker."""
     write_json(root / "papers.json", valid_papers_payload())
-    write_json(
-        root / "submission-meta.json",
-        {
-            "existing_paths": [],
-            "tag_inventories": {
-                "mechanism": [],
-                "focus": [],
-                "domain": [],
-            },
-        },
-    )
+    write_json(root / "submission-meta.json", valid_submission_payload())
     favicon_path = root / "assets" / "favicon.png"
     favicon_path.parent.mkdir(parents=True, exist_ok=True)
     favicon_path.write_bytes(b"fixture favicon")
@@ -222,14 +234,7 @@ class AssetBudgetContractTests(unittest.TestCase):
             write_valid_fixture(root)
             write_json(
                 root / "submission-meta.json",
-                {
-                    "existing_paths": [f"papers/{index:05d}.yaml" for index in range(1_500)],
-                    "tag_inventories": {
-                        "mechanism": [],
-                        "focus": [],
-                        "domain": [],
-                    },
-                },
+                valid_submission_payload([f"papers/{index:05d}.yaml" for index in range(1_500)]),
             )
 
             report = check_asset_budgets.check_asset_budgets(root)
@@ -310,7 +315,7 @@ class AssetBudgetContractTests(unittest.TestCase):
             report = check_asset_budgets.check_asset_budgets(root)
 
         violations = "\n".join(report.violations)
-        for field in ("meta", "categories", "mechanism_tags", "focus_tags", "paper_chunks", "blogs"):
+        for field in ("meta", "survey_taxonomy", "paper_chunks", "blogs"):
             with self.subTest(field=field):
                 self.assertIn(f"papers.json.{field}", violations)
 
@@ -323,9 +328,7 @@ class AssetBudgetContractTests(unittest.TestCase):
             payload.update(
                 {
                     "meta": [],
-                    "categories": [],
-                    "mechanism_tags": {},
-                    "focus_tags": {},
+                    "survey_taxonomy": [],
                     "paper_chunks": {},
                     "blogs": {},
                     "briefings": {},
@@ -337,10 +340,35 @@ class AssetBudgetContractTests(unittest.TestCase):
 
         violations = "\n".join(report.violations)
         self.assertIn("papers.json.meta must be an object", violations)
-        self.assertIn("papers.json.categories must be an object", violations)
-        for field in ("mechanism_tags", "focus_tags", "paper_chunks", "blogs", "briefings"):
+        self.assertIn("papers.json.survey_taxonomy must be an object", violations)
+        for field in ("paper_chunks", "blogs", "briefings"):
             with self.subTest(field=field):
                 self.assertIn(f"papers.json.{field} must be an array", violations)
+
+    def test_rejects_malformed_survey_taxonomy_and_inventories(self):
+        """Pickers need complete survey rows, every design axis and every value inventory."""
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            write_valid_fixture(root)
+            payload = valid_papers_payload()
+            payload["survey_taxonomy"]["sections"] = [{"id": "architecture/depth-control", "number": 4.5}]
+            del payload["survey_taxonomy"]["axes"]["claims"]
+            payload["survey_taxonomy"]["axes"]["sharing"]["values"] = []
+            write_json(root / "papers.json", payload)
+            submission = valid_submission_payload()
+            del submission["inventories"]["comparison"]
+            submission["inventories"]["survey_section"] = [{"label": "architecture/depth-control", "count": -1}]
+            write_json(root / "submission-meta.json", submission)
+
+            report = check_asset_budgets.check_asset_budgets(root)
+
+        violations = "\n".join(report.violations)
+        self.assertIn("papers.json.survey_taxonomy.sections[0].number must be a non-empty string", violations)
+        self.assertIn("papers.json.survey_taxonomy.sections[0].title must be a non-empty string", violations)
+        self.assertIn("papers.json.survey_taxonomy.axes.claims must be an object", violations)
+        self.assertIn("papers.json.survey_taxonomy.axes.sharing.values must be a non-empty array of strings", violations)
+        self.assertIn("submission-meta.json.inventories.comparison must be an array", violations)
+        self.assertIn("submission-meta.json.inventories.survey_section[0].count must be a non-negative integer", violations)
 
     def test_rejects_invalid_briefing_field_types(self):
         """Required briefing scalar, highlight, and candidate fields must match the UI schema."""
@@ -397,7 +425,8 @@ class AssetBudgetContractTests(unittest.TestCase):
         violations = "\n".join(report.violations)
         self.assertIn("papers.json: top-level JSON value must be an object", violations)
         self.assertIn("submission-meta.json.existing_paths must be an array", violations)
-        self.assertIn("submission-meta.json.tag_inventories must be an object", violations)
+        self.assertIn("submission-meta.json.survey_taxonomy must be an object", violations)
+        self.assertIn("submission-meta.json.inventories must be an object", violations)
 
     def test_cli_prints_measurements_and_returns_zero_on_success(self):
         """The CLI should print measured/limit rows and return zero on success."""
@@ -475,7 +504,7 @@ class AssetBudgetContractTests(unittest.TestCase):
                 self.assertNotIn("if", steps_by_name[name])
 
         self.assertIn("Validate YAML files", steps_by_name)
-        self.assertIn("Check new free-form tags need review", steps_by_name)
+        self.assertNotIn("Check new free-form tags need review", steps_by_name)
 
         forbidden_names = (
             "Require Semantic Scholar API key",

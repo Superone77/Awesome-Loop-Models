@@ -12,28 +12,20 @@ scope:
   evidence: "The architecture obtains depth by applying the same learned state-space-model block for multiple iterations within one forward computation."
   locator: "Abstract, paragraphs 1-2"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper extends tied-depth recurrence to state-space models and adds an input-reshaping design."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "One SSM block is iterated repeatedly along a single depth-recurrence axis."
-  focus_tags:
-    values:
-      - architecture
-      - inference-algorithm
-    rationale: "The work changes the SSM architecture and exposes the number of repeated depth steps in the forward computation."
-  domain_tags:
-    values:
-      - sequence-modeling
-      - efficiency
-    rationale: "The model is evaluated on time-series classification and reduces parameters through shared-depth recurrence."
-  tags:
-    values:
-      - depth-recurrent
-      - shared-weight-recurrence
-    rationale: "Both aliases describe the paper's reuse of one learned block across model depth."
+      - architecture/hybrid
+      - applications/embodied-other
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One SSM block is iterated repeatedly along a single depth-recurrence axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One SSM block is iterated repeatedly along a single depth-recurrence axis."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

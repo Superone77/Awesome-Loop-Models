@@ -12,21 +12,20 @@ scope:
   evidence: "A frozen LoopLM backbone repeatedly applies the same shared Transformer stack for recurrent hidden-state updates before next-token prediction."
   locator: "Figure 1; Section 3.1, Equations 2-5"
 taxonomy:
-  category:
-    value: applications
-    rationale: "The main contribution applies an existing latent-reasoning LoopLM backbone to translation across 32 directions."
-  mechanism_tags:
-    values: [flat-loop]
-    rationale: "One shared recurrent stack is unrolled along a single depth axis."
-  focus_tags:
-    values: [training-algorithm, inference-algorithm]
-    rationale: "The work uses frozen-backbone LoRA adaptation and controls recurrent inference depth."
-  domain_tags:
-    values: [language-modeling, machine-translation, efficiency]
-    rationale: "LatentMT is a looped language model evaluated on translation with explicit training, memory, latency, and inference-efficiency analysis."
-  tags:
-    values: []
-    rationale: "No optional alias is needed."
+  survey_section:
+    values:
+      - applications/language-speech-multimodal
+      - scaling/test-time
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One shared recurrent stack is unrolled along a single depth axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One shared recurrent stack is unrolled along a single depth axis."
+  depth_control:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

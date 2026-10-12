@@ -12,28 +12,20 @@ scope:
   evidence: "DVLT applies one learned transformer block recurrently for K refinement steps over per-view features within a forward 3D reconstruction computation."
   locator: "Abstract, paragraphs 2-4; official NVIDIA project page, Method"
 taxonomy:
-  category:
-    value: applications
-    rationale: "The recurrent transformer is applied to multi-view 3D reconstruction."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "One shared transformer block is repeated along a single refinement axis."
-  focus_tags:
-    values:
-      - architecture
-      - inference-algorithm
-    rationale: "The paper introduces a looped multi-view architecture whose loop count controls inference-time computation."
-  domain_tags:
-    values:
-      - vision
-      - efficiency
-    rationale: "The task is visual 3D reconstruction, and parameter sharing plus adjustable loop count target efficient computation."
-  tags:
-    values:
-      - looped-transformer
-      - DVLT
-    rationale: "Looped-transformer names the architecture family and DVLT is the paper's model acronym."
+      - applications/flow-3d
+      - capabilities/efficiency
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: prelude-core-coda
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One shared transformer block is repeated along a single refinement axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One shared transformer block is repeated along a single refinement axis."
+  depth_control:
+    value: sampled-train
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

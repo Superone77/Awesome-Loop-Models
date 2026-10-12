@@ -12,27 +12,22 @@ scope:
   evidence: "Universal Transformers reuse shared self-attention and transition functions over recurrent depth, optionally with per-position ACT halting."
   locator: "Section 2.1, Equations 4-5; Section 2.2"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces the Universal Transformer architecture and adaptive execution."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "A shared transition block is repeated over one recurrent-depth axis."
-  focus_tags:
-    values:
-      - architecture
-      - inference-algorithm
-    rationale: "The contribution includes the architecture and optional per-position halting at inference."
-  domain_tags:
-    values:
-      - language-modeling
-      - algorithmic-reasoning
-    rationale: "The experiments span language tasks and algorithmic generalization."
-  tags:
-    values:
-      - UT
-    rationale: "UT is the standard abbreviation for Universal Transformer."
+      - foundations/depth-sharing
+      - capabilities/generalization
+      - architecture/sharing
+      - architecture/topology
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): A shared transition block is repeated over one recurrent-depth axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): A shared transition block is repeated over one recurrent-depth axis."
+  depth_control:
+    value: adaptive-halting
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

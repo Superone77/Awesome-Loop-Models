@@ -12,32 +12,20 @@ scope:
   evidence: "The analyzed TRM-style reasoner repeatedly applies one shared inner reasoning block while an outer recurrence updates its carry state."
   locator: "Section 3.1, Equations 1-2"
 taxonomy:
-  category:
-    value: analysis
-    rationale: "The paper analyzes how compression changes existing recursive reasoners rather than proposing a new recurrent backbone."
-  mechanism_tags:
+  survey_section:
     values:
-      - hierarchical-loop
-    rationale: "The audited formulation contains a shared inner reasoning loop and an outer carry-state recurrence."
-  focus_tags:
-    values:
-      - inference-algorithm
-      - architecture
-    rationale: "The study evaluates compressed inference variants and diagnoses their effects on the recurrent architecture's trajectories."
-  domain_tags:
-    values:
-      - reasoning
-      - algorithmic-reasoning
-      - efficiency
-      - memory-efficiency
-      - hardware-aware
-    rationale: "The experiments compress recursive puzzle reasoners for memory- and hardware-constrained edge inference."
-  tags:
-    values:
-      - TRM
-      - HRM
-      - activation-compression
-    rationale: "The paper studies TRM/HRM-style models and compression of their activation and weight representations."
+      - systems/quantization-edge
+      - understanding/failure-modes
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: hierarchical
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: hierarchical-loop): The audited formulation contains a shared inner reasoning loop and an outer carry-state recurrence."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: hierarchical-loop): The audited formulation contains a shared inner reasoning loop and an outer carry-state recurrence."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

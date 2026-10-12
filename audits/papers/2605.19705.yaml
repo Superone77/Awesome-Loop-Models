@@ -12,28 +12,20 @@ scope:
   evidence: "i-DEQ repeatedly evaluates a learned implicit image-restoration operator to a fixed point and adds inertial momentum to those iterations."
   locator: "Abstract, paragraphs 1-2"
 taxonomy:
-  category:
-    value: applications
-    rationale: "The equilibrium architecture is applied to image restoration."
-  mechanism_tags:
+  survey_section:
     values:
-      - implicit-layer
-    rationale: "The output is defined through the fixed point of a shared learned restoration operator."
-  focus_tags:
-    values:
-      - architecture
-      - inference-algorithm
-    rationale: "The paper designs an inertial equilibrium architecture and a momentum-accelerated fixed-point inference procedure."
-  domain_tags:
-    values:
-      - vision
-      - efficiency
-    rationale: "The evaluated problem is image restoration, with reported stability, robustness, and inference-time improvements."
-  tags:
-    values:
-      - DEQ
-      - i-DEQ
-    rationale: "DEQ identifies the architecture family and i-DEQ is the proposed inertial model name."
+      - applications/vision
+      - training/supervision-optimization
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: implicit-fixed-point
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: implicit-layer): The output is defined through the fixed point of a shared learned restoration operator."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: implicit-layer): The output is defined through the fixed point of a shared learned restoration operator."
+  depth_control:
+    value: convergence
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

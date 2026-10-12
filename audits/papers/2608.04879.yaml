@@ -12,21 +12,21 @@ scope:
   evidence: "The recurrent Vision Transformer repeatedly applies one shared block over finite recurrent depth in each forward computation."
   locator: "Abstract; Section 2; Section 3.3"
 taxonomy:
-  category:
-    value: analysis
-    rationale: "The authors explicitly present a controlled characterization rather than a new architecture."
-  mechanism_tags:
-    values: [flat-loop]
-    rationale: "The study uses finite-horizon reuse of a single shared block; it does not solve an implicit equilibrium."
-  focus_tags:
-    values: [architecture, training-algorithm]
-    rationale: "The study compares recurrent architecture and multiple training protocols."
-  domain_tags:
-    values: [vision, efficiency, memory-efficiency, scaling]
-    rationale: "The work studies vision scaling under matched parameter memory, including O(1)-in-depth training memory through detachment."
-  tags:
-    values: []
-    rationale: "No optional alias is needed."
+  survey_section:
+    values:
+      - scaling/compute-optimal
+      - training/supervision-optimization
+      - understanding/failure-modes
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The study uses finite-horizon reuse of a single shared block; it does not solve an implicit equilibrium."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The study uses finite-horizon reuse of a single shared block; it does not solve an implicit equilibrium."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

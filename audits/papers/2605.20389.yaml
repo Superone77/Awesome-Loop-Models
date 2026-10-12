@@ -12,26 +12,19 @@ scope:
   evidence: "The nonlocal model repeatedly applies a learned latent integral operator until a fixed point is reached before its downstream decoder."
   locator: "Abstract, paragraph 1"
 taxonomy:
-  category:
-    value: applications
-    rationale: "The implicit operator is applied to fMRI encoding and decoding tasks."
-  mechanism_tags:
+  survey_section:
     values:
-      - implicit-layer
-    rationale: "A shared latent neural integral operator is solved by fixed-point iteration."
-  focus_tags:
-    values:
-      - architecture
-      - inference-algorithm
-    rationale: "The work uses a latent nonlocal-operator architecture and an equilibrium inference process."
-  domain_tags:
-    values:
-      - sequence-modeling
-      - neuroscience
-    rationale: "The model processes structured fMRI signals for neural encoding, decoding, classification, and stimulus prediction."
-  tags:
-    values: []
-    rationale: "The canonical entry uses no optional alias tags."
+      - applications/embodied-other
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: implicit-fixed-point
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: implicit-layer): A shared latent neural integral operator is solved by fixed-point iteration."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: implicit-layer): A shared latent neural integral operator is solved by fixed-point iteration."
+  depth_control:
+    value: convergence
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

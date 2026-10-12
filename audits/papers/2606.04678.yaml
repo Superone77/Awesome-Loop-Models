@@ -12,30 +12,21 @@ scope:
   evidence: "LARM repeatedly applies one shared learned acoustic-encoder block within a recognition forward pass, conditioning the block on recurrent depth."
   locator: "Section 3.1, Equation 1; Section 3.2, Figure 2 and Equations 2-12"
 taxonomy:
-  category:
-    value: applications
-    rationale: "The paper applies recurrent-depth Transformers to automatic speech recognition."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "One shared acoustic block is reused over a single recurrent-depth axis."
-  focus_tags:
-    values:
-      - architecture
-      - inference-algorithm
-    rationale: "The contribution is the depth-conditioned shared encoder and test-time control of its loop count."
-  domain_tags:
-    values:
-      - speech-recognition
-      - efficiency
-      - scaling
-    rationale: "LARM targets ASR and trades inference-time recurrent compute against recognition quality without adding distinct encoder blocks."
-  tags:
-    values:
-      - LARM
-      - looped-transformer
-      - test-time-compute
-    rationale: "LARM is the official model name, and the remaining aliases describe its architecture and adjustable inference-depth axis."
+      - applications/language-speech-multimodal
+      - scaling/test-time
+      - architecture/sharing
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One shared acoustic block is reused over a single recurrent-depth axis."
+  sharing:
+    value: partial-adapter
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One shared acoustic block is reused over a single recurrent-depth axis."
+  depth_control:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

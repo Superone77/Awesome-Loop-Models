@@ -12,21 +12,20 @@ scope:
   evidence: "The model iteratively reapplies its E2 decoder, and each Runge-Kutta update repeatedly evaluates the same learned decoder function without adding decoder parameters."
   locator: "Section 3.3, Equation 1; Section 3.4, RK-2 and RK-4 formulations"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The main reusable artifact is an ODE-inspired Runge-Kutta decoder-update algorithm, with sign-language translation as its validation domain."
-  mechanism_tags:
-    values: [hierarchical-loop, flat-loop]
-    rationale: "Outer iterative refinement contains inner repeated evaluations of the shared decoder function at Runge-Kutta stages."
-  focus_tags:
-    values: [architecture, inference-algorithm]
-    rationale: "The paper replaces residual decoder updates with reusable RK-2 and RK-4 inference updates."
-  domain_tags:
-    values: [machine-translation, multimodal, efficiency]
-    rationale: "The method is evaluated for video-to-text sign-language translation with FLOP and latency trade-offs."
-  tags:
-    values: []
-    rationale: "No optional alias is needed."
+  survey_section:
+    values:
+      - applications/language-speech-multimodal
+      - architecture/residual-init
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: partial
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: hierarchical-loop, flat-loop): Outer iterative refinement contains inner repeated evaluations of the shared decoder function at Runge-Kutta stages."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: hierarchical-loop, flat-loop): Outer iterative refinement contains inner repeated evaluations of the shared decoder function at Runge-Kutta stages."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

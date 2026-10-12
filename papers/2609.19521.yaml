@@ -5,20 +5,9 @@ year: 2026
 published_date: '2026-09-17'
 added_date: '2026-09-20'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- algorithmic-reasoning
-- reasoning
-- sequence-modeling
-- memory-efficiency
-focus_tags:
-- architecture
 survey_section:
-- design/state-memory
-- benefits/generalization
+- architecture/state-memory
+- capabilities/generalization
 loop_topology: whole-stack
 sharing: full
 depth_control: fixed

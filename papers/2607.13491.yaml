@@ -9,23 +9,9 @@ year: 2026
 published_date: '2026-07-15'
 added_date: '2026-07-16'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- hierarchical-loop
-- flat-loop
-domain_tags:
-- language-modeling
-- scaling
-- theory
-focus_tags:
-- architecture
-- training-algorithm
-tags:
-- DeepLoop
 survey_section:
-- train/stability
-- design/residual-injection
+- training/supervision-optimization
+- architecture/residual-init
 loop_topology: whole-stack
 sharing: full
 depth_control: fixed
@@ -39,14 +25,14 @@ links:
   arxiv: https://arxiv.org/abs/2607.13491
   alphaxiv: https://www.alphaxiv.org/abs/2607.13491
   github: https://github.com/lszshu/DeepLoop
-citations: 5
+citations: 6
 citation_sources:
-  semantic_scholar: 5
+  semantic_scholar: 6
   openalex: 0
   opencitations: 0
 citation_source_best: semantic_scholar
-metrics_updated: '2026-10-11'
-github_stars: 45
+metrics_updated: '2026-10-12'
+github_stars: 47
 star_sources:
-  github_api: 45
+  github_api: 47
 star_source_best: github_api

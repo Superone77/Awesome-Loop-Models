@@ -12,21 +12,19 @@ scope:
   evidence: "RSF-GLLM repeatedly reuses its recurrent soft-flow update to refine query and graph-relevance states before a single LLM generation call."
   locator: "Section 1; method section"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The main reusable artifact is the recurrent soft-flow architecture and regularizer, not only its KGQA application."
-  mechanism_tags:
-    values: [flat-loop]
-    rationale: "The same soft-flow transition is iterated over one recurrent axis."
-  focus_tags:
-    values: [architecture, objective-loss, inference-algorithm]
-    rationale: "The paper contributes the recurrent graph-flow module, a flow-sparsity regularizer, and grounded path extraction."
-  domain_tags:
-    values: [graph-data, reasoning, efficiency]
-    rationale: "Experiments cover multi-hop knowledge-graph reasoning and report one-call generation efficiency."
-  tags:
-    values: [RSF-GLLM]
-    rationale: "RSF-GLLM is the paper's method name."
+  survey_section:
+    values:
+      - applications/graphs-science
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: partial
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The same soft-flow transition is iterated over one recurrent axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The same soft-flow transition is iterated over one recurrent axis."
+  depth_control:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

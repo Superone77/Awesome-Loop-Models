@@ -14,31 +14,22 @@ scope:
     pipeline concurrently executes displaced token/loop stages and shares first-loop KV state.
   locator: "Section 2.2, Equations 1-2, Table 1 and Figure 1"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The named LoopCoder-v2/PLT design studies efficient loop-count and execution choices."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-      - parallel-loop
-    rationale: "A shared block is repeated in flat depth and cross-loop stages are genuinely pipelined in one forward execution."
-  focus_tags:
-    values:
-      - architecture
-      - inference-algorithm
-    rationale: "The contribution combines a looped model family with cross-loop execution and KV-sharing choices."
-  domain_tags:
-    values:
-      - language-modeling
-      - reasoning
-      - efficiency
-      - memory-efficiency
-    rationale: "The coder/reasoning study evaluates accuracy, latency, loop count, and shared-KV memory behavior."
-  tags:
-    values:
-      - LoopCoder-v2
-      - PLT
-    rationale: "These are the official model and Parallel Loop Transformer identifiers."
+      - applications/language-speech-multimodal
+      - training/post-training
+      - understanding/failure-modes
+      - open-problems/depth-into-time
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: shifted-parallel
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop, parallel-loop): A shared block is repeated in flat depth and cross-loop stages are genuinely pipelined in one forward execution."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop, parallel-loop): A shared block is repeated in flat depth and cross-loop stages are genuinely pipelined in one forward execution."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

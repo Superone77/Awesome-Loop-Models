@@ -7,22 +7,9 @@ year: 2026
 published_date: '2026-09-30'
 added_date: '2026-10-04'
 venue: arXiv
-category: analysis
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- scaling
-- language-modeling
-tags:
-- MoE
-- LoopMoE
-- scaling-laws
-focus_tags:
-- architecture
 survey_section:
 - scaling/compute-optimal
-- design/sharing-scheme
+- architecture/sharing
 loop_topology: unspecified
 sharing: expert-routed
 depth_control: fixed

@@ -30,26 +30,24 @@ scope:
 # A verified canonical entry with `catalog_fit: adjacent` uses out-of-scope
 # evidence here; strict verified entries use in-scope.
 
+# Values must match the canonical papers/<paper-id>.yaml survey fields for a
+# verified record (same primary section and section set; same axis values).
+# Allowed values live in scripts/taxonomy.py. A remove record may omit this block.
 taxonomy:
-  category:
-    value: "designs"
-    rationale: "Explain why the paper belongs on this catalog shelf."
-  mechanism_tags:
-    values:
-      - "flat-loop"
-    rationale: "Explain the loop form using primary-source evidence."
-  focus_tags:
-    values:
-      - "architecture"
-    rationale: "Explain the paper's technical focus."
-  domain_tags:
-    values:
-      - "reasoning"
-    rationale: "Explain the evaluated or intended domain."
-  tags:
-    values:
-      - "looped-transformer"
-    rationale: "Explain each optional alias or short identifier."
+  survey_section:
+    values: # primary section first
+      - "architecture/topology"
+      - "capabilities/efficiency"
+    rationale: "Explain why the paper belongs in these survey sections."
+  loop_topology:
+    value: "whole-stack" # whole-stack | prelude-core-coda | partial | hierarchical | shifted-parallel | implicit-fixed-point | unspecified
+    rationale: "Describe which layers are looped, citing primary-source evidence."
+  sharing:
+    value: "full" # full | partial-adapter | expert-routed | unspecified
+    rationale: "Describe how weights are shared across iterations."
+  depth_control:
+    value: "fixed" # fixed | sampled-train | adaptive-halting | convergence | unspecified
+    rationale: "Describe how the number of iterations is chosen in training and inference."
 
 content_checks:
   title_authors:

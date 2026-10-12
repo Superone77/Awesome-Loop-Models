@@ -8,19 +8,9 @@ year: 2024
 published_date: '2023-11-21'
 added_date: '2026-04-24'
 venue: ICLR
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- algorithmic-reasoning
-tags:
-- looped-transformer
-focus_tags:
-- architecture
-- training-algorithm
 survey_section:
-- benefits/expressivity
-- benefits/efficiency
+- capabilities/expressivity
+- capabilities/efficiency
 loop_topology: whole-stack
 sharing: full
 depth_control: sampled-train

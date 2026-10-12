@@ -9,19 +9,8 @@ year: 2026
 published_date: '2026-08-18'
 added_date: '2026-08-23'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-- efficiency
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
-- train/retrofitting
+- training/retrofitting
 - scaling/test-time
 loop_topology: unspecified
 sharing: full

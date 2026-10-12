@@ -12,29 +12,21 @@ scope:
   evidence: "Hyperloop executes beginning and ending blocks once while repeatedly applying the same learned middle core, augmented by small loop-specific hyper-connections."
   locator: "Section 3, Figure 1"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces the Hyperloop parameter-sharing architecture."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "The shared middle core is repeated over one recurrent-depth axis."
-  focus_tags:
-    values:
-      - architecture
-    rationale: "The contribution is the recurrent core plus loop-specific hyper-connection design."
-  domain_tags:
-    values:
-      - language-modeling
-      - efficiency
-      - memory-efficiency
-    rationale: "The model is evaluated for language modeling with parameter and activation-memory efficiency as central goals."
-  tags:
-    values:
-      - Hyperloop
-      - looped-transformer
-      - hyper-connections
-    rationale: "Hyperloop is the official model name, and the remaining aliases describe its looped Transformer and hyper-connection mechanisms."
+      - architecture/residual-init
+      - systems/quantization-edge
+      - architecture/topology
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: prelude-core-coda
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The shared middle core is repeated over one recurrent-depth axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The shared middle core is repeated over one recurrent-depth axis."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

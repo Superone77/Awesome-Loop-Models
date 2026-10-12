@@ -12,21 +12,20 @@ scope:
   evidence: "The construction recurrently applies the same learned linear Transformer layer within one forward computation, with each application implementing another power-method iteration."
   locator: "Abstract; Section 3.2; Theorem 4.1"
 taxonomy:
-  category:
-    value: analysis
-    rationale: "The central result proves what algorithm a trained looped Transformer implements."
-  mechanism_tags:
-    values: [flat-loop]
-    rationale: "One weight-shared Transformer layer is reused sequentially."
-  focus_tags:
-    values: [architecture, training-algorithm]
-    rationale: "The paper specifies the recurrent architecture and proves the behavior learned by gradient-based training."
-  domain_tags:
-    values: [theory, algorithmic-reasoning]
-    rationale: "The main contribution is a theorem about learning an iterative numerical algorithm."
-  tags:
-    values: [looped-transformer, shared-weight-recurrence]
-    rationale: "Both aliases directly describe the studied architecture."
+  survey_section:
+    values:
+      - capabilities/expressivity
+      - architecture/residual-init
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One weight-shared Transformer layer is reused sequentially."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One weight-shared Transformer layer is reused sequentially."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

@@ -11,23 +11,10 @@ year: 2026
 published_date: '2026-09-28'
 added_date: '2026-09-28'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-- adaptive-compute
-tags:
-- TaH2
-focus_tags:
-- training-algorithm
-- inference-algorithm
 survey_section:
-- design/depth-control
+- architecture/depth-control
 - scaling/test-time
-- train/post-training
+- training/post-training
 loop_topology: whole-stack
 sharing: full
 depth_control: adaptive-halting

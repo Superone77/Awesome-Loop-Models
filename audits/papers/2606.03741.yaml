@@ -12,21 +12,20 @@ scope:
   evidence: "Within one forward computation, every low-level micro-step reuses f_L with the same learned parameters theta_L, while the periodic high-level updates reuse f_H with the same theta_H."
   locator: "Section 3.1, Equations 1-2; Section 3.2"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces a persistence-aware hierarchical recurrent design."
-  mechanism_tags:
-    values: [hierarchical-loop]
-    rationale: "Slow manager and fast worker recurrences operate at different timescales."
-  focus_tags:
-    values: [architecture, objective-loss]
-    rationale: "The contribution combines the persistent-subgoal architecture with losses that train its directional latent guidance."
-  domain_tags:
-    values: [reasoning, algorithmic-reasoning]
-    rationale: "The model targets latent reasoning on structured algorithmic tasks."
-  tags:
-    values: [HRM]
-    rationale: "HRM identifies the hierarchical recurrent model lineage."
+  survey_section:
+    values:
+      - architecture/topology
+      - training/supervision-optimization
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: hierarchical
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: hierarchical-loop): Slow manager and fast worker recurrences operate at different timescales."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: hierarchical-loop): Slow manager and fast worker recurrences operate at different timescales."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

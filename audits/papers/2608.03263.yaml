@@ -12,21 +12,19 @@ scope:
   evidence: "The analyzed recurrent-depth Transformer repeatedly applies a shared four-layer block over a fixed ladder of inference iterations."
   locator: "Section 2, Substrate and instruments"
 taxonomy:
-  category:
-    value: analysis
-    rationale: "The paper diagnoses commitment and hidden-state/readout dynamics in a reproduced recurrent-depth reasoner."
-  mechanism_tags:
-    values: [flat-loop]
-    rationale: "The recurrent block evolves hidden state along one iterative depth axis."
-  focus_tags:
-    values: [architecture]
-    rationale: "The analysis centers on hidden-state geometry and the tied vocabulary-readout interface."
-  domain_tags:
-    values: [language-modeling, reasoning]
-    rationale: "The work studies a latent-reasoning language model on synthetic multi-hop relational composition."
-  tags:
-    values: []
-    rationale: "No optional alias is needed."
+  survey_section:
+    values:
+      - understanding/interpretability
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The recurrent block evolves hidden state along one iterative depth axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The recurrent block evolves hidden state along one iterative depth axis."
+  depth_control:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

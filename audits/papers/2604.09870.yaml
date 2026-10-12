@@ -12,27 +12,19 @@ scope:
   evidence: "The analysis probes hidden states from successive applications of Ouro's shared recurrent-depth module within one forward computation."
   locator: "Section 1, first paragraph; Section 2.1, first paragraph"
 taxonomy:
-  category:
-    value: analysis
-    rationale: "The paper analyzes relational preference information encoded in a frozen looped model."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "The audited Ouro backbone reuses one module over a single recurrent-depth axis."
-  focus_tags:
-    values:
-      - architecture
-    rationale: "The work probes how preference structure is represented across internal states of an existing architecture."
-  domain_tags:
-    values:
-      - language-modeling
-      - alignment
-    rationale: "The frozen language model is probed on HH-RLHF preference pairs."
-  tags:
-    values:
-      - Ouro
-      - preference-probing
-    rationale: "These identify the analyzed backbone and the paper's diagnostic task."
+      - understanding/interpretability
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The audited Ouro backbone reuses one module over a single recurrent-depth axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The audited Ouro backbone reuses one module over a single recurrent-depth axis."
+  depth_control:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

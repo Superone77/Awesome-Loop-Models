@@ -8,17 +8,8 @@ year: 2026
 published_date: '2026-09-22'
 added_date: '2026-09-23'
 venue: arXiv
-category: analysis
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- reasoning
-- algorithmic-reasoning
-focus_tags:
-- inference-algorithm
 survey_section:
-- interpretability
+- understanding/interpretability
 - scaling/test-time
 loop_topology: hierarchical
 sharing: full

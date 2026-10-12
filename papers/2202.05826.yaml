@@ -12,23 +12,10 @@ year: 2022
 published_date: '2022-02-11'
 added_date: '2026-09-06'
 venue: NeurIPS
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- reasoning
-- algorithmic-reasoning
-tags:
-- convergence
-focus_tags:
-- objective-loss
-- training-algorithm
-- architecture
-- inference-algorithm
 survey_section:
-- benefits/generalization
+- capabilities/generalization
 - foundations/algorithmic
-- design/residual-injection
+- architecture/residual-init
 loop_topology: prelude-core-coda
 sharing: full
 depth_control: sampled-train

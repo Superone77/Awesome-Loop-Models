@@ -9,18 +9,8 @@ year: 2021
 published_date: '2021-11-09'
 added_date: '2026-04-24'
 venue: NeurIPS
-category: designs
-domain_tags:
-- efficiency
-mechanism_tags:
-- implicit-layer
-tags:
-- DEQ
-- phantom-gradient
-focus_tags:
-- training-algorithm
 survey_section:
-- train/gradients
+- training/supervision-optimization
 loop_topology: implicit-fixed-point
 sharing: full
 depth_control: convergence

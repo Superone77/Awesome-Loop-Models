@@ -7,22 +7,9 @@ year: 2026
 published_date: '2026-05-30'
 added_date: '2026-06-02'
 venue: arXiv
-category: analysis
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- theory
-- algorithmic-reasoning
-tags:
-- looped-transformer
-- shared-weight-recurrence
-focus_tags:
-- architecture
-- training-algorithm
 survey_section:
-- benefits/expressivity
-- design/residual-injection
+- capabilities/expressivity
+- architecture/residual-init
 loop_topology: whole-stack
 sharing: full
 depth_control: fixed

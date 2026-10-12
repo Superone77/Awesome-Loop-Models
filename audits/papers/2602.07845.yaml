@@ -12,30 +12,20 @@ scope:
   evidence: "RD-VLA repeatedly applies a weight-tied learned core to update an internal scratchpad and uses a learned stopping rule."
   locator: "Section III-B.1, pages 4-5, Figure 2 and Equations 3-4; Section III-C, Equation 7"
 taxonomy:
-  category:
-    value: applications
-    rationale: "The main contribution applies recurrent-depth computation to vision-language-action robotics."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "The title's 'implicit' means latent/non-verbal computation, not a fixed-point implicit layer."
-  focus_tags:
-    values:
-      - architecture
-      - training-algorithm
-      - inference-algorithm
-    rationale: "The work covers the recurrent head, its training, and adaptive stopping."
-  domain_tags:
-    values:
-      - robotics-vla
-      - efficiency
-      - memory-efficiency
-      - adaptive-compute
-    rationale: "The robotics architecture targets latent adaptive compute with constant-memory execution."
-  tags:
-    values:
-      - RD-VLA
-    rationale: "RD-VLA is the official model abbreviation."
+      - applications/embodied-other
+      - scaling/test-time
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: partial
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The title's 'implicit' means latent/non-verbal computation, not a fixed-point implicit layer."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The title's 'implicit' means latent/non-verbal computation, not a fixed-point implicit layer."
+  depth_control:
+    value: convergence
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

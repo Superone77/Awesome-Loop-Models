@@ -12,21 +12,20 @@ scope:
   evidence: "RecRec runs shared inner recursive updates inside each outer recommendation-refinement step."
   locator: "Section 4.1, Equations 1-3"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The main artifact is a reusable evidence-conditioned recursive recommender architecture."
-  mechanism_tags:
-    values: [hierarchical-loop, flat-loop]
-    rationale: "Each outer step contains repeated applications of the same inner module, while the shared update itself forms a flat recurrent axis."
-  focus_tags:
-    values: [architecture, training-algorithm, inference-algorithm]
-    rationale: "The paper specifies the recursive architecture, deep supervision, and iterative correction procedure."
-  domain_tags:
-    values: [recommendation, reasoning]
-    rationale: "The model performs recursive evidence-guided reasoning for sequential recommendation."
-  tags:
-    values: [RecRec]
-    rationale: "RecRec is the paper's official method name."
+  survey_section:
+    values:
+      - applications/embodied-other
+      - architecture/residual-init
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: partial
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: hierarchical-loop, flat-loop): Each outer step contains repeated applications of the same inner module, while the shared update itself forms a flat recurrent axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: hierarchical-loop, flat-loop): Each outer step contains repeated applications of the same inner module, while the shared update itself forms a flat recurrent axis."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

@@ -10,26 +10,9 @@ year: 2026
 published_date: '2026-09-10'
 added_date: '2026-09-13'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- reasoning
-- algorithmic-reasoning
-- adaptive-compute
-- scaling
-tags:
-- TRM
-- latent-refinement
-focus_tags:
-- objective-loss
-- architecture
-- training-algorithm
-- inference-algorithm
 survey_section:
-- design/loop-x
-- train/supervision
+- architecture/hybrid
+- training/supervision-optimization
 - scaling/test-time
 loop_topology: whole-stack
 sharing: full

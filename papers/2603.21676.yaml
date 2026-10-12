@@ -6,24 +6,10 @@ year: 2026
 published_date: '2026-03-23'
 added_date: '2026-04-21'
 venue: arXiv
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- reasoning
-- compositional-reasoning
-tags:
-- depth-recurrent
-- compositional-generalization
-- silent-thinking
-focus_tags:
-- architecture
-- objective-loss
-- inference-algorithm
 survey_section:
-- benefits/generalization
-- design/residual-injection
-- train/supervision
+- capabilities/generalization
+- architecture/residual-init
+- training/supervision-optimization
 loop_topology: whole-stack
 sharing: full
 depth_control: unspecified

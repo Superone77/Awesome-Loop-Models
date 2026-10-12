@@ -9,20 +9,6 @@ year: 2026
 published_date: '2026-05-02'
 added_date: '2026-09-06'
 venue: ICML
-category: designs
-mechanism_tags:
-- implicit-layer
-domain_tags:
-- vision
-- efficiency
-- memory-efficiency
-- adaptive-compute
-tags:
-- DEQ
-focus_tags:
-- architecture
-- training-algorithm
-- inference-algorithm
 survey_section:
 - applications/vision
 loop_topology: implicit-fixed-point

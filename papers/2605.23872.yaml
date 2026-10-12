@@ -9,24 +9,8 @@ year: 2026
 published_date: '2026-05-22'
 added_date: '2026-05-27'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-- efficiency
-- scaling
-tags:
-- looped-transformer
-- training-free-looping
-- test-time-compute
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
-- train/retrofitting
+- training/retrofitting
 loop_topology: prelude-core-coda
 sharing: full
 depth_control: fixed
@@ -40,10 +24,10 @@ desc: Retrofits frozen pretrained transformers with a training-free inference wr
 links:
   arxiv: https://arxiv.org/abs/2605.23872
   alphaxiv: https://www.alphaxiv.org/abs/2605.23872
-citations: 12
+citations: 13
 citation_sources:
-  semantic_scholar: 12
+  semantic_scholar: 13
   openalex: 0
   opencitations: 0
 citation_source_best: semantic_scholar
-metrics_updated: '2026-10-08'
+metrics_updated: '2026-10-12'

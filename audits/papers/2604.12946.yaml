@@ -12,29 +12,21 @@ scope:
   evidence: "Parcae repeatedly applies one learned recurrent core between prelude and coda modules, with stable injection parameterization for variable recurrent depth."
   locator: "Section 4.1, Equation 3; Section 4.2; Sections 5.2-5.3"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces Parcae and studies its training- and test-time scaling laws."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "One shared recurrent core is repeated over a single depth axis."
-  focus_tags:
-    values:
-      - architecture
-      - training-algorithm
-      - inference-algorithm
-    rationale: "The work covers stable recurrent parameterization, training-scale studies, and variable-depth test-time execution."
-  domain_tags:
-    values:
-      - language-modeling
-      - reasoning
-    rationale: "Parcae is trained as a language model and evaluated for reasoning with recurrent test-time compute."
-  tags:
-    values:
-      - Parcae
-      - isoFLOPs
-    rationale: "These identify the model and its named compute-controlled scaling analysis."
+      - scaling/compute-optimal
+      - architecture/depth-control
+      - scaling/test-time
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: prelude-core-coda
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One shared recurrent core is repeated over a single depth axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One shared recurrent core is repeated over a single depth axis."
+  depth_control:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

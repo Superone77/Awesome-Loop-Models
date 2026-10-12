@@ -12,21 +12,20 @@ scope:
   evidence: "LoopMoE repeatedly executes a weight-shared Transformer-MoE loop body between nonrecurrent input and output layers during one language-model forward pass."
   locator: "Section 3.2, looped sandwich architecture; Section 3.3"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The main contribution is a looped sparse-expert language-model architecture."
-  mechanism_tags:
-    values: [flat-loop]
-    rationale: "The shared loop body is applied sequentially along a single recurrence axis."
-  focus_tags:
-    values: [architecture]
-    rationale: "Sparse routing, iteration conditioning, and capacity balancing are components of the proposed architecture."
-  domain_tags:
-    values: [language-modeling]
-    rationale: "The model is designed and evaluated for language modeling."
-  tags:
-    values: [looped-transformer, looped-llm, MoE, LoopMoE]
-    rationale: "The aliases identify the looping family, sparse-expert design, and method name."
+  survey_section:
+    values:
+      - architecture/hybrid
+      - architecture/sharing
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The shared loop body is applied sequentially along a single recurrence axis."
+  sharing:
+    value: expert-routed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The shared loop body is applied sequentially along a single recurrence axis."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

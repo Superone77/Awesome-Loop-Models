@@ -12,28 +12,24 @@ scope:
   evidence: "Huginn repeatedly executes the same learned recurrent core R between prelude and coda modules within one forward pass."
   locator: "Section 3.1, prelude/shared-core/coda architecture"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces a large recurrent-depth language model and its training/inference methods."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "One shared recurrent core is unrolled over a single depth axis."
-  focus_tags:
-    values:
-      - architecture
-      - training-algorithm
-      - inference-algorithm
-    rationale: "The work contributes architecture, large-scale recurrent pretraining, and variable/adaptive-depth inference."
-  domain_tags:
-    values:
-      - language-modeling
-      - reasoning
-    rationale: "The 3.5B model is pretrained for language modeling and evaluated on reasoning with extra recurrence."
-  tags:
-    values:
-      - Huginn
-    rationale: "Huginn is the official model name."
+      - scaling/test-time
+      - architecture/topology
+      - architecture/residual-init
+      - architecture/depth-control
+      - capabilities/efficiency
+      - applications/language-speech-multimodal
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: prelude-core-coda
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One shared recurrent core is unrolled over a single depth axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One shared recurrent core is unrolled over a single depth axis."
+  depth_control:
+    value: sampled-train
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

@@ -12,24 +12,9 @@ year: 2026
 published_date: '2026-09-30'
 added_date: '2026-10-04'
 venue: arXiv
-category: applications
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- world-modeling
-- rl-control
-- adaptive-compute
-tags:
-- DeepJEPA
-- halting
-- test-time-compute
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
 - applications/embodied-other
-- design/depth-control
+- architecture/depth-control
 loop_topology: partial
 sharing: full
 depth_control: adaptive-halting

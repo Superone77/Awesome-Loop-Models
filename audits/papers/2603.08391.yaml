@@ -12,29 +12,21 @@ scope:
   evidence: "The architecture repeatedly applies a shared Transformer block within each layer while learned halting selects the number of local loop steps."
   locator: "Section 2.1, Equations 3-5 and Figure 1"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces adaptive per-layer loops and gated memory banks."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "Each shared block is repeated over one local recurrent-depth axis."
-  focus_tags:
-    values:
-      - architecture
-      - inference-algorithm
-    rationale: "The contribution covers the loop-and-memory architecture and learned adaptive halting."
-  domain_tags:
-    values:
-      - language-modeling
-      - reasoning
-      - efficiency
-    rationale: "The work evaluates language-model reasoning under matched parameter and FLOP budgets."
-  tags:
-    values:
-      - memory-banks
-      - ACT
-    rationale: "These identify the gated storage mechanism and adaptive-computation method."
+      - architecture/state-memory
+      - architecture/topology
+      - scaling/compute-optimal
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: partial
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): Each shared block is repeated over one local recurrent-depth axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): Each shared block is repeated over one local recurrent-depth axis."
+  depth_control:
+    value: adaptive-halting
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

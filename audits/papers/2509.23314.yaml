@@ -12,26 +12,20 @@ scope:
   evidence: "The analyzed recurrent-depth Transformer repeatedly applies the same learned block to its latent state within a forward pass."
   locator: "Section 2, recurrent-depth formulation; Section 3"
 taxonomy:
-  category:
-    value: analysis
-    rationale: "The contribution is a latent-dynamics analysis and early-exit criterion for recurrent-depth Transformers."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "One learned block is reused sequentially along the recurrent-depth axis."
-  focus_tags:
-    values:
-      - inference-algorithm
-    rationale: "The paper derives an early-exit rule to improve the latency-quality trade-off at inference."
-  domain_tags:
-    values:
-      - language-modeling
-    rationale: "The analyzed recurrent-depth models and evaluations are language models; the source does not establish a dedicated reasoning domain claim."
-  tags:
-    values:
-      - depth-recurrent
-      - test-time-compute
-    rationale: "These aliases identify the studied architecture and its variable-depth inference setting; ACT is not the paper's named method."
+      - understanding/interpretability
+      - architecture/depth-control
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: prelude-core-coda
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One learned block is reused sequentially along the recurrent-depth axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One learned block is reused sequentially along the recurrent-depth axis."
+  depth_control:
+    value: adaptive-halting
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

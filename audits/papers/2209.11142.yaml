@@ -12,26 +12,20 @@ scope:
   evidence: "A single learned GNN processor P consumes the prior hidden state and is reused over each algorithm trajectory."
   locator: "Section 3.1, page 3, Equation 1"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper develops a generalist neural algorithmic learner and shared processor."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "The same processor is repeatedly applied over one algorithmic execution loop."
-  focus_tags:
-    values:
-      - architecture
-      - data
-    rationale: "The work combines a shared processor design with joint training across the CLRS task collection."
-  domain_tags:
-    values:
-      - algorithmic-reasoning
-    rationale: "All evaluations are neural execution of classical algorithms."
-  tags:
-    values:
-      - generalist-processor
-    rationale: "This alias describes the paper's single shared processor."
+      - foundations/algorithmic
+      - applications/graphs-science
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: prelude-core-coda
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The same processor is repeatedly applied over one algorithmic execution loop."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The same processor is repeatedly applied over one algorithmic execution loop."
+  depth_control:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

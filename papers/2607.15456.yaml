@@ -6,18 +6,6 @@ year: 2026
 published_date: '2026-07-16'
 added_date: '2026-07-20'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- efficiency
-- memory-efficiency
-focus_tags:
-- inference-algorithm
-tags:
-- LLA
 survey_section:
 - systems/kv-memory
 loop_topology: whole-stack

@@ -12,21 +12,20 @@ scope:
   evidence: "ReLoop-UME repeatedly reuses a parameter-shared retrieval-forming block while carrying retrieval registers across loop depth."
   locator: "Abstract; Sections 3.2-3.5"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The principal artifact is a new recurrent-depth embedding architecture with learnable retrieval registers."
-  mechanism_tags:
-    values: [flat-loop]
-    rationale: "The retrieval-forming block is reused sequentially along one recurrent-depth axis."
-  focus_tags:
-    values: [architecture, inference-algorithm]
-    rationale: "The paper contributes the register-based architecture and its recurrent retrieval computation."
-  domain_tags:
-    values: [multimodal, retrieval, efficiency]
-    rationale: "The architecture targets efficient universal multimodal embedding and retrieval."
-  tags:
-    values: []
-    rationale: "No optional alias is needed."
+  survey_section:
+    values:
+      - applications/language-speech-multimodal
+      - architecture/state-memory
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: prelude-core-coda
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The retrieval-forming block is reused sequentially along one recurrent-depth axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The retrieval-forming block is reused sequentially along one recurrent-depth axis."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

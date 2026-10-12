@@ -8,20 +8,6 @@ year: 2022
 published_date: '2022-04-18'
 added_date: '2026-09-06'
 venue: CVPR
-category: designs
-mechanism_tags:
-- implicit-layer
-domain_tags:
-- vision
-- efficiency
-- memory-efficiency
-tags:
-- DEQ
-- convergence
-focus_tags:
-- architecture
-- training-algorithm
-- inference-algorithm
 survey_section:
 - applications/flow-3d
 loop_topology: implicit-fixed-point
@@ -43,10 +29,10 @@ citation_source_best: semantic_scholar
 citations: 95
 citation_sources:
   semantic_scholar: 95
-  openalex: 0
+  openalex: 47
   opencitations: 0
 star_source_best: github_api
 github_stars: 180
 star_sources:
   github_api: 180
-metrics_updated: '2026-10-07'
+metrics_updated: '2026-10-12'

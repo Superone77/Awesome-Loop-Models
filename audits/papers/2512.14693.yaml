@@ -12,27 +12,20 @@ scope:
   evidence: "URM reuses the same attention and transition parameters over every recurrent step in one forward computation."
   locator: "Section 2.2.1, page 3"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces the Universal Reasoning Model architecture."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "One parameter-shared Universal Transformer block is repeated over depth."
-  focus_tags:
-    values:
-      - architecture
-      - training-algorithm
-    rationale: "The work contributes the recurrent architecture and truncated-backpropagation training."
-  domain_tags:
-    values:
-      - algorithmic-reasoning
-      - reasoning
-    rationale: "URM is evaluated on ARC and related reasoning benchmarks."
-  tags:
-    values:
-      - URM
-    rationale: "URM is the official model abbreviation."
+      - architecture/hybrid
+      - training/supervision-optimization
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One parameter-shared Universal Transformer block is repeated over depth."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One parameter-shared Universal Transformer block is repeated over depth."
+  depth_control:
+    value: adaptive-halting
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

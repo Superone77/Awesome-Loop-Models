@@ -6,19 +6,9 @@ year: 2026
 published_date: '2026-07-17'
 added_date: '2026-09-16'
 venue: arXiv
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- algorithmic-reasoning
-- efficiency
-- reasoning
-focus_tags:
-- inference-algorithm
-- objective-loss
 survey_section:
 - scaling/test-time
-- design/depth-control
+- architecture/depth-control
 loop_topology: unspecified
 sharing: full
 depth_control: unspecified

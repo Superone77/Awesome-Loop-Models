@@ -11,29 +11,12 @@ year: 2026
 published_date: '2026-10-02'
 added_date: '2026-10-04'
 venue: IFM Research
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- efficiency
-- memory-efficiency
-tags:
-- Huginn
-- Parcae
-- fixed-point-analysis
-- depth-recurrent
-focus_tags:
-- training-algorithm
-- architecture
-- inference-algorithm
 survey_section:
-- train/gradients
+- training/supervision-optimization
 - systems/kv-memory
-- design/depth-control
-- design/residual-injection
-- train/post-training
+- architecture/depth-control
+- architecture/residual-init
+- training/post-training
 loop_topology: prelude-core-coda
 sharing: full
 depth_control: sampled-train

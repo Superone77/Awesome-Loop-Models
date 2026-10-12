@@ -7,21 +7,8 @@ year: 2026
 published_date: '2026-09-01'
 added_date: '2026-09-02'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- reasoning
-- algorithmic-reasoning
-- language-modeling
-- efficiency
-focus_tags:
-- architecture
-- training-algorithm
-- inference-algorithm
 survey_section:
-- benefits/efficiency
+- capabilities/efficiency
 - applications/language-speech-multimodal
 loop_topology: partial
 sharing: full

@@ -37,6 +37,33 @@ BRIEFINGS_DIR = REPO_ROOT / "briefings"
 FAVICON_PATH = REPO_ROOT / "assets" / "favicon.png"
 
 
+def survey_fields(**overrides) -> dict:
+    """Return a complete, valid set of paper survey fields with optional overrides."""
+    fields = {
+        "survey_section": ["architecture/topology", "scaling/test-time"],
+        "loop_topology": "prelude-core-coda",
+        "sharing": "full",
+        "depth_control": "sampled-train",
+        "claims": ["test-time-scaling"],
+        "comparison": ["iso-param"],
+    }
+    fields.update(overrides)
+    return fields
+
+
+SURVEY_YAML = (
+    "survey_section:\n"
+    "  - architecture/topology\n"
+    "  - scaling/test-time\n"
+    "loop_topology: prelude-core-coda\n"
+    "sharing: full\n"
+    "depth_control: sampled-train\n"
+    "claims:\n"
+    "  - test-time-scaling\n"
+    "comparison: []\n"
+)
+
+
 class BuildTaxonomyTests(unittest.TestCase):
     def test_peer_review_requires_a_boolean_and_publication_source(self):
         """A venue name or truthy string cannot stand in for verified evidence."""
@@ -75,146 +102,130 @@ class BuildTaxonomyTests(unittest.TestCase):
             "venue-arxiv",
         )
 
-    def test_foundation_category_is_rejected_as_legacy_shelf(self):
-        paper = {"category": "foundation"}
-        with self.assertRaisesRegex(ValueError, "invalid category"):
-            build.normalize_paper_taxonomy_fields(paper, "paper.yaml")
+    def test_retired_fields_are_rejected_for_papers(self):
+        for field in (*build.RETIRED_FIELDS, "family_tags"):
+            with self.subTest(field=field):
+                with self.assertRaisesRegex(ValueError, f"{field} no longer exist"):
+                    build.normalize_paper_taxonomy_fields({field: "anything"}, "paper.yaml")
 
-    def test_analysis_category_is_valid(self):
-        paper = {"category": "analysis"}
-        normalized = build.normalize_paper_taxonomy_fields(paper, "paper.yaml")
-        self.assertEqual(normalized["category"], "analysis")
-        self.assertNotIn("category_path", normalized)
-        self.assertFalse(normalized["foundation"])
-
-    def test_applications_category_is_valid(self):
-        paper = {"category": "applications"}
-        normalized = build.normalize_paper_taxonomy_fields(paper, "paper.yaml")
-        self.assertEqual(normalized["category"], "applications")
-        self.assertNotIn("category_path", normalized)
-        self.assertFalse(normalized["foundation"])
-
-    def test_designs_category_is_valid(self):
-        paper = {"category": "designs"}
-        normalized = build.normalize_paper_taxonomy_fields(paper, "paper.yaml")
-        self.assertEqual(normalized["category"], "designs")
-        self.assertNotIn("category_path", normalized)
-        self.assertFalse(normalized["foundation"])
-
-    def test_legacy_category_values_are_rejected(self):
-        legacy_categories = (
-            "neural_algorithmic",
-            "model_family",
-            "training",
-            "capability",
-            "efficiency",
-            "fastrun",
-            "slowrun",
-            "methods",
-            "optimization",
-            "architecture",
-            "design",
-            "algorithm",
+    def test_retired_field_vocabulary_matches_the_survey_migration(self):
+        self.assertEqual(
+            set(build.RETIRED_FIELDS),
+            {"category", "category_path", "subcategory", "foundation", "mechanism_tags", "focus_tags", "domain_tags", "tags"},
         )
-        for category in legacy_categories:
-            with self.subTest(category=category):
-                with self.assertRaisesRegex(ValueError, "invalid category"):
-                    build.normalize_paper_taxonomy_fields({"category": category}, "paper.yaml")
+        for removed in (
+            "VALID_CATEGORIES", "VALID_MECHANISM_TAGS", "VALID_FOCUS_TAGS", "normalize_mechanism_tags",
+            "normalize_focus_tags", "merge_mechanism_tags", "split_focus_and_mechanism_tags",
+            "split_domain_and_mechanism_tags", "guess_capability_category", "guess_efficiency_category",
+        ):
+            self.assertFalse(hasattr(build, removed), removed)
 
-    def test_explicit_foundation_flag_keeps_designs_category_and_adds_badge(self):
-        paper = {
-            "category": "designs",
-            "foundation": True,
-        }
-        normalized = build.normalize_paper_taxonomy_fields(paper, "paper.yaml")
-        self.assertEqual(normalized["category"], "designs")
-        self.assertNotIn("category_path", normalized)
-        self.assertTrue(normalized["foundation"])
+    def test_reject_retired_fields_lists_every_retired_field_present(self):
+        with self.assertRaises(ValueError) as ctx:
+            build.reject_retired_fields({"category": "designs", "tags": ["x"], "survey_section": ["x"]}, "e.yaml")
+        message = str(ctx.exception)
+        self.assertIn("e.yaml: category, tags no longer exist", message)
+        build.reject_retired_fields({"survey_section": ["architecture/topology"]}, "e.yaml")
 
     def test_adjacent_catalog_fit_is_valid_and_strict_is_the_default(self):
-        adjacent = build.normalize_paper_taxonomy_fields(
-            {"category": "designs", "catalog_fit": "adjacent"},
-            "paper.yaml",
+        adjacent = build.normalize_paper_taxonomy_fields({"catalog_fit": "adjacent"}, "paper.yaml")
+        strict = build.normalize_paper_taxonomy_fields({}, "paper.yaml")
+        self.assertEqual(adjacent, {"catalog_fit": "adjacent"})
+        self.assertEqual(strict, {"catalog_fit": "strict"})
+        self.assertEqual(
+            build.normalize_paper_taxonomy_fields({"catalog_fit": " Adjacent "}, "paper.yaml"),
+            {"catalog_fit": "adjacent"},
         )
-        strict = build.normalize_paper_taxonomy_fields(
-            {"category": "designs"},
-            "paper.yaml",
-        )
-
-        self.assertEqual(adjacent["catalog_fit"], "adjacent")
-        self.assertEqual(strict["catalog_fit"], "strict")
 
     def test_unknown_catalog_fit_is_rejected(self):
         with self.assertRaisesRegex(ValueError, "invalid catalog_fit"):
-            build.normalize_paper_taxonomy_fields(
-                {"category": "designs", "catalog_fit": "borderline"},
-                "paper.yaml",
-            )
+            build.normalize_paper_taxonomy_fields({"catalog_fit": "borderline"}, "paper.yaml")
 
-    def test_legacy_category_path_mappings_are_rejected(self):
-        legacy_cases = (
-            {"category": "capability", "category_path": ["theory_mechanisms"]},
-            {"category": "efficiency", "category_path": ["training_objectives"]},
-            {"category": "fastrun", "category_path": ["architecture-routing"]},
-            {"category": "slowrun", "category_path": ["empirical-limits"]},
-        )
-        for paper in legacy_cases:
-            with self.subTest(paper=paper):
-                with self.assertRaisesRegex(ValueError, "invalid category"):
-                    build.normalize_paper_taxonomy_fields(paper, "paper.yaml")
-
-    def test_category_path_field_is_rejected(self):
-        paper = {"category": "designs", "category_path": ["unknown_branch"]}
-        with self.assertRaisesRegex(ValueError, "category_path is no longer supported"):
-            build.normalize_paper_taxonomy_fields(paper, "paper.yaml")
-
-    def test_subcategory_field_is_rejected(self):
-        paper = {"category": "designs", "subcategory": ["anything"]}
-        with self.assertRaisesRegex(ValueError, "subcategory is no longer supported"):
-            build.normalize_paper_taxonomy_fields(paper, "paper.yaml")
-
-    def test_focus_tags_are_normalized_and_validated(self):
-        focus_tags = build.normalize_focus_tags(["architecture", "data", "architecture"], "paper.yaml")
-        self.assertEqual(focus_tags, ["architecture", "data"])
-
-    def test_mechanism_tags_are_normalized_and_validated(self):
-        mechanism_tags = build.normalize_mechanism_tags(
-            ["implicit-layer", "Implicit Layer", "hierarchical-loop", "flat-loop"], "paper.yaml"
-        )
-        self.assertEqual(mechanism_tags, ["implicit-layer", "hierarchical-loop", "flat-loop"])
-
-        with self.assertRaisesRegex(ValueError, "invalid mechanism_tags"):
-            build.normalize_mechanism_tags(["recurrent-depth"], "paper.yaml")
-
-    def test_mechanism_tag_allowlist_is_loop_form_only(self):
+    def test_required_paper_survey_fields_are_enforced(self):
+        complete = survey_fields()
         self.assertEqual(
-            build.VALID_MECHANISM_TAGS,
-            ("hierarchical-loop", "flat-loop", "parallel-loop", "implicit-layer"),
+            build.normalize_survey_fields(complete, "paper.yaml", build.REQUIRED_PAPER_SURVEY_FIELDS),
+            complete,
         )
-        self.assertFalse(hasattr(build, "MECHANISM_TAG_ALIASES"))
-        for old_tag in ("recurrent-depth", "adaptive-compute", "algorithmic-loop", "memory-compression", "recursive-loop", "hierarchy-loop"):
-            self.assertNotIn(old_tag, build.VALID_MECHANISM_TAGS)
+        for field in build.REQUIRED_PAPER_SURVEY_FIELDS:
+            for broken in ({k: v for k, v in complete.items() if k != field}, {**complete, field: None}):
+                with self.subTest(field=field, broken=broken):
+                    with self.assertRaisesRegex(ValueError, f"missing required {field}"):
+                        build.normalize_survey_fields(broken, "paper.yaml", build.REQUIRED_PAPER_SURVEY_FIELDS)
 
-    def test_mechanism_tag_merging_does_not_map_old_alias_values(self):
-        mechanism_tags = build.merge_mechanism_tags(["DEQ", "recurrent-depth", "flat-loop"], ["Implicit Layer"])
-        self.assertEqual(mechanism_tags, ["flat-loop", "implicit-layer"])
+    def test_required_scalar_axis_cannot_be_blank(self):
+        for field in ("loop_topology", "sharing", "depth_control"):
+            with self.subTest(field=field):
+                with self.assertRaisesRegex(ValueError, f"missing required {field}"):
+                    build.normalize_survey_fields(
+                        survey_fields(**{field: ""}), "paper.yaml", build.REQUIRED_PAPER_SURVEY_FIELDS
+                    )
 
-    def test_focus_tags_do_not_accept_mechanism_aliases(self):
-        with self.assertRaisesRegex(ValueError, "invalid focus_tags"):
-            build.split_focus_and_mechanism_tags(["architecture", "recurrent-depth"], "paper.yaml")
+    def test_survey_list_fields_are_deduplicated_and_keep_primary_order(self):
+        result = build.normalize_survey_fields(
+            survey_fields(
+                survey_section=["scaling/test-time", "architecture/topology", "scaling/test-time"],
+                claims="stability",
+                comparison=["iso-flop", "iso-param", "iso-flop"],
+            ),
+            "paper.yaml",
+        )
+        self.assertEqual(result["survey_section"], ["scaling/test-time", "architecture/topology"])
+        self.assertEqual(result["claims"], ["stability"])
+        self.assertEqual(result["comparison"], ["iso-flop", "iso-param"])
+        self.assertEqual(build.primary_section(result), "scaling/test-time")
+        self.assertIsNone(build.primary_section({}))
+        self.assertIsNone(build.primary_section({"survey_section": []}))
 
-    def test_domain_tags_do_not_emit_mechanism_tags(self):
-        domain_tags, mechanism_tags = build.split_domain_and_mechanism_tags(["implicit-layers", "reasoning"])
-        self.assertEqual(domain_tags, ["implicit-layers", "reasoning"])
-        self.assertEqual(mechanism_tags, [])
+    def test_section_label_uses_survey_number_and_title(self):
+        self.assertEqual(build.section_label("architecture/topology"), "§4.1 Loop topology")
+        self.assertEqual(build.section_label("open-problems/diffusion"), "§10.1 Unification with diffusion models")
+        with self.assertRaises(KeyError):
+            build.section_label("design/topology")
 
-    def test_invalid_focus_tags_are_rejected(self):
-        with self.assertRaisesRegex(ValueError, "invalid focus_tags"):
-            build.normalize_focus_tags(["made-up-tag"], "paper.yaml")
+    def test_count_field_values_counts_scalars_and_lists(self):
+        entries = [
+            {"survey_section": ["architecture/topology", "scaling/test-time"], "sharing": "full"},
+            {"survey_section": ["scaling/test-time"], "sharing": "full"},
+            {"sharing": ""},
+            {},
+        ]
+        self.assertEqual(
+            build.count_field_values(entries, "survey_section"),
+            {"architecture/topology": 1, "scaling/test-time": 2},
+        )
+        self.assertEqual(build.count_field_values(entries, "sharing"), {"full": 2})
 
-    def test_legacy_category_guess_helpers_are_removed(self):
-        self.assertFalse(hasattr(build, "guess_capability_category"))
-        self.assertFalse(hasattr(build, "guess_efficiency_category"))
+    def test_render_survey_taxonomy_shape(self):
+        taxonomy = build.render_survey_taxonomy()
+        self.assertEqual(set(taxonomy), {"parts", "chapters", "sections", "axes"})
+        self.assertEqual([part["id"] for part in taxonomy["parts"]], [p for p, _ in build.SURVEY_PARTS])
+        self.assertEqual(
+            [chapter["number"] for chapter in taxonomy["chapters"]],
+            ["2", "3", "4", "5", "6", "7", "8", "9", "10"],
+        )
+        part_ids = {part["id"] for part in taxonomy["parts"]}
+        chapter_numbers = {chapter["number"] for chapter in taxonomy["chapters"]}
+        for chapter in taxonomy["chapters"]:
+            self.assertEqual(set(chapter), {"number", "part", "title"})
+            self.assertIn(chapter["part"], part_ids)
+        self.assertEqual([section["id"] for section in taxonomy["sections"]], list(build.VALID_SURVEY_SECTIONS))
+        for section in taxonomy["sections"]:
+            self.assertEqual(set(section), {"id", "number", "chapter", "title"})
+            self.assertIn(section["chapter"], chapter_numbers)
+            self.assertTrue(section["number"].startswith(section["chapter"] + "."))
+        self.assertIn(
+            {"id": "architecture/topology", "number": "4.1", "chapter": "4", "title": "Loop topology"},
+            taxonomy["sections"],
+        )
+        self.assertEqual(
+            list(taxonomy["axes"]),
+            ["loop_topology", "sharing", "depth_control", "claims", "comparison"],
+        )
+        self.assertEqual(taxonomy["axes"]["sharing"], {"label": "Sharing", "values": list(build.VALID_SHARING_SCHEMES)})
+        self.assertEqual(taxonomy["axes"]["claims"]["values"], list(build.VALID_CLAIMS))
+        self.assertEqual(taxonomy["axes"]["comparison"]["values"], ["iso-param", "iso-flop", "iso-depth", "unclear"])
+        json.dumps(taxonomy)
 
     def test_optional_date_fields_accept_python_date_objects(self):
         self.assertEqual(
@@ -371,6 +382,29 @@ class DailyBriefingBuildTests(unittest.TestCase):
         self.assertIn("alphaxiv", entry["links"])
         self.assertEqual(build.serialize_browser_entry({"entry_type": "blog"}), {"entry_type": "blog"})
 
+    def test_serialize_browser_entry_keeps_survey_fields_and_drops_retired_fields(self):
+        entry = {
+            "id": "2604.21999",
+            "entry_type": "paper",
+            "title": "A paper",
+            **survey_fields(),
+            "survey_core": False,
+            "category": "designs",
+            "category_path": ["x"],
+            "subcategory": "x",
+            "foundation": True,
+            "mechanism_tags": ["flat-loop"],
+            "focus_tags": ["architecture"],
+            "domain_tags": ["reasoning"],
+            "tags": ["LoopLM"],
+            "family_tags": ["ut"],
+        }
+        browser_entry = build.serialize_browser_entry(entry)
+        for field in build.SURVEY_FIELDS:
+            self.assertEqual(browser_entry[field], entry[field])
+        for field in (*build.RETIRED_FIELDS, "family_tags"):
+            self.assertNotIn(field, browser_entry)
+
     def test_compact_browser_links_keeps_alphaxiv_it_cannot_rebuild_exactly(self):
         arxiv = "https://arxiv.org/abs/2604.21999"
         cases = [
@@ -412,12 +446,14 @@ class DailyBriefingBuildTests(unittest.TestCase):
                     "added_date": "2026-04-28",
                     "desc": "A reader-facing summary.",
                     "links": {"arxiv": "https://arxiv.org/abs/2604.21999"},
-                    "category": "designs",
-                    "foundation": False,
                     "catalog_fit": "adjacent",
-                    "mechanism_tags": [],
-                    "focus_tags": ["architecture"],
-                    "domain_tags": ["reasoning"],
+                    "survey_section": ["architecture/topology", "scaling/test-time"],
+                    "loop_topology": "prelude-core-coda",
+                    "sharing": "full",
+                    "depth_control": "sampled-train",
+                    "claims": ["test-time-scaling"],
+                    "comparison": [],
+                    "survey_core": True,
                     "must_read": True,
                     "citations": 12,
                     "github_stars": 34,
@@ -442,9 +478,7 @@ class DailyBriefingBuildTests(unittest.TestCase):
                     "published_date": "2026-04-27",
                     "desc": "A blog summary.",
                     "links": {"blog": "https://example.com/blog"},
-                    "mechanism_tags": ["flat-loop"],
-                    "focus_tags": [],
-                    "domain_tags": [],
+                    "survey_section": ["understanding/why"],
                     "source_file": "blog-1.yaml",
                     "source_path": "blogs/blog-1.yaml",
                     "citation_sources": {"internal": 1},
@@ -497,9 +531,9 @@ class DailyBriefingBuildTests(unittest.TestCase):
         browser_fields = (
             "id", "entry_type", "title", "authors_list", "venue", "venueClass",
             "peer_reviewed", "venue_source",
-            "year", "published_date", "added_date", "desc", "links", "category", "foundation",
-            "catalog_fit", "mechanism_tags", "focus_tags", "domain_tags", "must_read", "citations",
-            "github_stars", "community_comments",
+            "year", "published_date", "added_date", "desc", "links", "catalog_fit",
+            "survey_section", "loop_topology", "sharing", "depth_control", "claims", "comparison",
+            "survey_core", "must_read", "citations", "github_stars", "community_comments",
         )
         expected_paper = {
             field: papers_before[0][field]
@@ -523,6 +557,15 @@ class DailyBriefingBuildTests(unittest.TestCase):
         self.assertEqual(payload["meta"]["briefing_total"], 2)
         self.assertEqual(payload["meta"]["latest_briefing_date"], "2026-04-28")
         self.assertEqual(payload["meta"]["briefing_section_title"], "Daily Briefing")
+        self.assertEqual(payload["meta"]["taxonomy_note"], build.TAXONOMY_NOTE)
+        self.assertIn("Looped Models Survey", payload["meta"]["taxonomy_note"])
+        self.assertEqual(payload["survey_taxonomy"], build.render_survey_taxonomy())
+        self.assertEqual(
+            set(payload),
+            {"meta", "survey_taxonomy", "paper_chunks", "blogs", "briefings"},
+        )
+        for retired in build.RETIRED_FIELDS:
+            self.assertNotIn(f'"{retired}"', raw_payload)
         self.assertEqual(build.CATALOG_TIME_ZONE.key, "America/New_York")
         self.assertEqual(
             payload["meta"]["generated_local_date"],
@@ -614,37 +657,40 @@ process.stdout.write(JSON.stringify(result));
 
     @staticmethod
     def run_top_level_tab_block(initial_hash: str, test_body: str):
-        """Evaluate the complete production tab state and interaction block in Node."""
+        """Evaluate the production tab, survey-taxonomy and filter-routing code in Node.
+
+        The real survey vocabulary from ``build.render_survey_taxonomy()`` is loaded
+        before ``test_body`` runs; rendering and stats entry points are stubbed.
+        """
         html = INDEX_HTML_PATH.read_text(encoding="utf-8")
-        state_start = html.index("let ALL_PAPERS = [];")
-        state_end = html.index("let CURRENT_VIEW = 'category';", state_start) + len("let CURRENT_VIEW = 'category';")
-        block_start = html.index("function normalizeTopLevelTab(tab) {")
-        block_end = html.index("initResearchPrompt();", block_start)
-        toggle_start = html.index("function removeTagFilter(tagKey) {")
-        toggle_end = html.index("function renderTagFilterGroups() {", toggle_start)
-        category_start = html.index("function renderCategoryFilter() {")
-        category_end = html.index("function paperMatchesActiveFilters(", category_start)
-        rerender_start = html.index("function rerenderCurrentResults() {")
-        rerender_end = html.index("function setToggleButtonState(", rerender_start)
-        query_start = html.find("function syncSearchQueryToUrl(query) {")
-        query_block = ""
-        if query_start >= 0:
-            query_end = html.index("function initPublicationDateFilter() {", query_start)
-            query_block = html[query_start:query_end]
-        production_block = (
-            html[state_start:state_end]
-            + html[block_start:block_end]
-            + html[toggle_start:toggle_end]
-            + html[category_start:category_end]
-            + html[rerender_start:rerender_end]
-            + query_block
-        )
+
+        def between(start_marker: str, end_marker: str, include_end: bool = False) -> str:
+            start = html.index(start_marker)
+            end = html.index(end_marker, start)
+            return html[start:end + (len(end_marker) if include_end else 0)]
+
+        production_block = "\n".join((
+            between("function escapeHtml(str) {", "function getPaperVenueLabel("),
+            between("const CATALOG_ADJACENT_NOTE = ", "\n", include_end=True),
+            between("const AXIS_CHIP_PREFIXES = {", "/** Mark survey-core references"),
+            between("let CURRENT_SORT = 'date';", "let CURRENT_VIEW = 'list';", include_end=True),
+            between("function normalizeTopLevelTab(tab) {", "initResearchPrompt();"),
+            between("function setSurveyTaxonomy(taxonomy) {", "function setFacetFilterOpen(isOpen) {"),
+            between("function toggleFacetFilter(group, value) {", "function updateFacetFilterUI() {"),
+            between("function normalizeDateInputValue(raw) {", "function getFilterSidebarActiveCount() {"),
+            between("function rerenderCurrentResults() {", "function setToggleButtonState("),
+            between("function buildPrimaryChapterCounts(papers) {", "function syncSurveyNavCounts("),
+            between("function syncSearchQueryToUrl(query) {", "function initPublicationDateFilter() {"),
+            between("function shouldHandleFacetLinkClick(event) {", "function initFacetLinkInteractions() {"),
+        ))
+        taxonomy = json.dumps(build.render_survey_taxonomy())
         script = f"""
 let browserHash = {json.dumps(initial_hash)};
 let focusedTabId = null;
 const hashWrites = [];
 const renderStatsCalls = [];
 const scrollRequests = [];
+const activatedNavTargets = [];
 const animationFrameCallbacks = [];
 const windowListeners = {{}};
 const replaceStateCalls = [];
@@ -670,6 +716,7 @@ function makeStaticElement(hidden) {{
   return {{
     hidden: Boolean(hidden),
     textContent: '',
+    innerHTML: '',
     attributes: {{}},
     listeners: {{}},
     setAttribute: function(name, value) {{ this.attributes[name] = String(value); }},
@@ -683,11 +730,11 @@ const publicationDateStart = makeStaticElement(false);
 publicationDateStart.value = '';
 const publicationDateEnd = makeStaticElement(false);
 publicationDateEnd.value = '';
+const sectionFilter = makeStaticElement(false);
+sectionFilter.value = '';
+const facetFilterGroups = makeStaticElement(false);
 const searchCalls = [];
-let uiUpdates = 0;
-let FILTER_SIDEBAR_OPEN = false;
-const sidebarOpenCalls = [];
-const tagOpenCalls = [];
+let facetUiUpdates = 0;
 let quickFilterUiUpdates = 0;
 
 function makeTab(id, selected, tabIndex) {{
@@ -715,8 +762,6 @@ const tabs = [makeTab('papers-tab', true, 0), makeTab('stats-tab', false, -1), m
 const papersPanel = makeStaticElement(false);
 const statsPanel = makeStaticElement(true);
 const catalogHeading = makeStaticElement(false);
-const categoryFilter = makeStaticElement(false);
-categoryFilter.value = '';
 const bodyClasses = {{}};
 const elements = {{
   'papers-tab': tabs[0],
@@ -728,9 +773,8 @@ const elements = {{
   'search': searchInput,
   'publication-date-start': publicationDateStart,
   'publication-date-end': publicationDateEnd,
-  'category-filter': categoryFilter,
-  'papers-grid': {{}},
-  'section-blogs': {{}}
+  'section-filter': sectionFilter,
+  'facet-filter-groups': facetFilterGroups
 }};
 const document = {{
   activeElement: null,
@@ -744,6 +788,13 @@ const document = {{
   }},
   getElementById: function(id) {{ return elements[id] || null; }}
 }};
+function recordUrl(calls, url) {{
+  const nextUrl = new URL(String(url), window.location.href);
+  calls.push({{ search: nextUrl.search, hash: nextUrl.hash }});
+  window.location.href = nextUrl.href;
+  window.location.search = nextUrl.search;
+  browserHash = nextUrl.hash;
+}}
 const window = {{
   location: {{
     href: 'https://example.test/index.html' + {json.dumps(initial_hash)},
@@ -751,28 +802,8 @@ const window = {{
   }},
   history: {{
     state: null,
-    replaceState: function(state, title, url) {{
-      const nextUrl = new URL(String(url), window.location.href);
-      replaceStateCalls.push({{
-        tags: nextUrl.searchParams.getAll('tag'),
-        q: nextUrl.searchParams.get('q'),
-        hash: nextUrl.hash
-      }});
-      window.location.href = nextUrl.href;
-      window.location.search = nextUrl.search;
-      browserHash = nextUrl.hash;
-    }},
-    pushState: function(state, title, url) {{
-      const nextUrl = new URL(String(url), window.location.href);
-      pushStateCalls.push({{
-        tags: nextUrl.searchParams.getAll('tag'),
-        q: nextUrl.searchParams.get('q'),
-        hash: nextUrl.hash
-      }});
-      window.location.href = nextUrl.href;
-      window.location.search = nextUrl.search;
-      browserHash = nextUrl.hash;
-    }}
+    replaceState: function(state, title, url) {{ recordUrl(replaceStateCalls, url); }},
+    pushState: function(state, title, url) {{ recordUrl(pushStateCalls, url); }}
   }},
   addEventListener: function(name, listener) {{
     if (!windowListeners[name]) windowListeners[name] = [];
@@ -798,25 +829,18 @@ function renderStatsPanel() {{
   renderStatsCalls.push({{ ready: CATALOG_DATA_READY, error: CATALOG_DATA_ERROR }});
 }}
 function scrollToSection(sectionId) {{ scrollRequests.push(sectionId); }}
-/** Keep this tab harness independent of detail-pane rendering. */
+function activateSurveyNavLink(targetId) {{ activatedNavTargets.push(targetId); }}
+/** Keep this harness independent of detail-pane and card rendering. */
 function syncReadingDeskPanel() {{}}
+function renderCard(paper) {{ return '[card ' + paper.id + ']'; }}
 /** Preserve view transitions without rendering the catalog in this harness. */
 function setView(view) {{ CURRENT_VIEW = view; }}
-function updateTagFilterUI() {{ uiUpdates += 1; }}
-function setFilterSidebarOpen(isOpen) {{
-  FILTER_SIDEBAR_OPEN = Boolean(isOpen);
-  sidebarOpenCalls.push(FILTER_SIDEBAR_OPEN);
-}}
-function setTagFilterOpen(isOpen) {{
-  TAG_FILTER_OPEN = Boolean(isOpen);
-  tagOpenCalls.push(TAG_FILTER_OPEN);
-  updateTagFilterUI();
-}}
+function updateFacetFilterUI() {{ facetUiUpdates += 1; }}
 function updateQuickFilterButtons() {{ quickFilterUiUpdates += 1; }}
 function doSearch(query) {{ searchCalls.push(query); }}
 
 {production_block}
-CATEGORIES = {{ designs: {{ title: 'Architecture' }} }};
+setSurveyTaxonomy({taxonomy});
 {test_body}
 """
         output = subprocess.check_output(["node", "-e", script], text=True)
@@ -854,679 +878,605 @@ CATEGORIES = {{ designs: {{ title: 'Architecture' }} }};
         self.assertNotIn("function getYearFilter() {", html)
         self.assertNotIn("function matchYear(paper, yearFilter) {", html)
 
-    def test_tag_filter_chips_show_paper_counts(self):
+    def test_frontend_drops_retired_taxonomy_identifiers(self):
+        """The browser, submit page and reading desk no longer know categories or free-form tags."""
+        sources = {
+            "index.html": INDEX_HTML_PATH.read_text(encoding="utf-8"),
+            "submit.html": SUBMIT_PAGE_PATH.read_text(encoding="utf-8"),
+            "reading-desk.js": READING_DESK_JS_PATH.read_text(encoding="utf-8"),
+        }
+        retired = (
+            "mechanism_tags", "focus_tags", "domain_tags", "family_tags", "category_path", "subcategory",
+            "foundation", "TAG_FILTER_LOOKUP", "ACTIVE_TAG_FILTERS", "URL_TAG_FILTER_KEYS",
+            "ROUTE_OWNED_TAG_FILTER_KEYS", "TagDrilldown", "tag-filter", "_tagKeySet", "paper-tag",
+            "category-filter", "setCategoryFilter", "ACTIVE_CATEGORY_FILTER", "CATEGORIES",
+            "searchParams.getAll('tag')", "mechanism::", "focus::", "domain::",
+        )
+        for name, source in sources.items():
+            for identifier in retired:
+                with self.subTest(file=name, identifier=identifier):
+                    self.assertNotIn(identifier, source)
+
+    def test_index_uses_survey_section_and_design_axis_url_params(self):
         html = INDEX_HTML_PATH.read_text(encoding="utf-8")
-        self.assertIn("tag-filter-chip-count", html)
-        self.assertIn("tag.count", html)
+        self.assertIn(
+            "const FACET_GROUPS = ['loop_topology', 'sharing', 'depth_control', 'claims', 'comparison'];",
+            html,
+        )
+        params_start = html.index("function buildFilterSearchParams(sectionFilter, facetFilters, query) {")
+        params_source = html[params_start:html.index("function cloneFacetFilters() {", params_start)]
+        self.assertIn("params.set('q', query);", params_source)
+        self.assertIn("params.set('section', sectionFilter);", params_source)
+        self.assertIn("params.append(group, value);", params_source)
+        read_start = html.index("function readFiltersFromUrl() {")
+        read_source = html[read_start:html.index("function syncFiltersToUrl(mode) {", read_start)]
+        self.assertIn("params.get('section')", read_source)
+        self.assertIn("params.getAll(group)", read_source)
+        self.assertIn("params.get('q')", read_source)
+        self.assertIn('id="section-filter"', html)
+        self.assertIn('id="facet-filter-toggle"', html)
+        self.assertIn('id="facet-filter-panel"', html)
+        self.assertIn('id="facet-filter-groups"', html)
+        self.assertIn('id="facet-filter-summary"', html)
+        self.assertIn("setSurveyTaxonomy(data.survey_taxonomy);", html)
 
-    def test_tag_drilldown_opens_filters_and_lists_each_active_tag(self):
-        """Tag routes expose independent removable filters without changing search UI."""
+    def test_facet_url_state_is_validated_against_the_survey_vocabulary(self):
+        result = self.run_top_level_tab_block("#papers", """
+function read(search) {
+  window.location.search = search;
+  const state = readFiltersFromUrl();
+  const facets = {};
+  Object.keys(state.facets).sort().forEach(function(group) { facets[group] = Array.from(state.facets[group]); });
+  return { section: state.section, facets: facets, query: state.query };
+}
+process.stdout.write(JSON.stringify({
+  full: read('?section=architecture%2Ftopology&loop_topology=partial&loop_topology=flat&claims=stability&claims=expressivity&q=Norm'),
+  chapter: read('?section=4&sharing=full&sharing=tied'),
+  unknownSection: read('?section=design%2Ftopology&depth_control=adaptive-halting'),
+  retiredParams: read('?tag=mechanism%3A%3Aflat-loop&category=designs&mechanism_tags=flat-loop'),
+  empty: read('')
+}));
+""")
+        self.assertEqual(
+            result,
+            {
+                "full": {
+                    "section": "architecture/topology",
+                    "facets": {"claims": ["stability", "expressivity"], "loop_topology": ["partial"]},
+                    "query": "Norm",
+                },
+                "chapter": {"section": "4", "facets": {"sharing": ["full"]}, "query": ""},
+                "unknownSection": {"section": "", "facets": {"depth_control": ["adaptive-halting"]}, "query": ""},
+                "retiredParams": {"section": "", "facets": {}, "query": ""},
+                "empty": {"section": "", "facets": {}, "query": ""},
+            },
+        )
+
+    def test_facet_links_are_cumulative_and_serialized_in_vocabulary_order(self):
+        result = self.run_top_level_tab_block("#papers", """
+window.location.search = '?q=norm';
+ACTIVE_SECTION_FILTER = '4';
+ACTIVE_FACET_FILTERS = { claims: new Set(['stability']), sharing: new Set(['full']) };
+const result = {
+  addClaim: getFacetDrilldownHref('claims', 'param-efficiency'),
+  replaceSection: getFacetDrilldownHref('section', 'scaling/test-time'),
+  liveState: { section: ACTIVE_SECTION_FILTER, claims: Array.from(ACTIVE_FACET_FILTERS.claims) },
+  statsAxisRow: getFacetOnlyHref('depth_control', 'convergence'),
+  statsSectionRow: getFacetOnlyHref('section', 'architecture/topology')
+};
+ACTIVE_TOP_LEVEL_TAB = 'blogs';
+result.blogsSection = getFacetDrilldownHref('section', 'understanding/why');
+process.stdout.write(JSON.stringify(result));
+""")
+        self.assertEqual(
+            result,
+            {
+                "addClaim": "?q=norm&section=4&sharing=full&claims=param-efficiency&claims=stability#papers",
+                "replaceSection": "?q=norm&section=scaling%2Ftest-time&sharing=full&claims=stability#papers",
+                "liveState": {"section": "4", "claims": ["stability"]},
+                "statsAxisRow": "?depth_control=convergence#papers",
+                "statsSectionRow": "?section=architecture%2Ftopology#papers",
+                "blogsSection": "?q=norm&section=understanding%2Fwhy&sharing=full&claims=stability#blogs",
+            },
+        )
+
+    def test_facet_link_navigation_pushes_history_and_back_restores_filters(self):
+        result = self.run_top_level_tab_block("#papers", """
+CATALOG_DATA_READY = true;
+function link(href, reset) {
+  return { getAttribute: function() { return href; }, dataset: reset ? { facetReset: 'true' } : {} };
+}
+navigateToFacetLink(link(getFacetDrilldownHref('sharing', 'full')));
+navigateToFacetLink(link(getFacetDrilldownHref('claims', 'stability')));
+const entered = {
+  facets: { sharing: Array.from(ACTIVE_FACET_FILTERS.sharing), claims: Array.from(ACTIVE_FACET_FILTERS.claims) },
+  pushes: pushStateCalls.slice()
+};
+window.location.search = '?sharing=full';
+dispatchWindowEvent('popstate');
+const back = { groups: Object.keys(ACTIVE_FACET_FILTERS), searches: searchCalls.slice() };
+
+setBrowserHash('#stats');
+dispatchWindowEvent('hashchange');
+ACCEPTED_ONLY = true;
+HAS_CODE_ONLY = true;
+publicationDateStart.value = '2025-01-01';
+CURRENT_VIEW = 'table';
+navigateToFacetLink(link(getFacetOnlyHref('section', '4'), true));
+process.stdout.write(JSON.stringify({
+  entered: entered,
+  back: back,
+  reset: {
+    active: ACTIVE_TOP_LEVEL_TAB,
+    section: ACTIVE_SECTION_FILTER,
+    groups: Object.keys(ACTIVE_FACET_FILTERS),
+    accepted: ACCEPTED_ONLY,
+    hasCode: HAS_CODE_ONLY,
+    startDate: publicationDateStart.value,
+    view: CURRENT_VIEW,
+    sectionSelect: sectionFilter.value,
+    lastPush: pushStateCalls.at(-1)
+  }
+}));
+""")
+        self.assertEqual(
+            result["entered"],
+            {
+                "facets": {"sharing": ["full"], "claims": ["stability"]},
+                "pushes": [
+                    {"search": "?sharing=full", "hash": "#papers"},
+                    {"search": "?sharing=full&claims=stability", "hash": "#papers"},
+                ],
+            },
+        )
+        self.assertEqual(result["back"], {"groups": ["sharing"], "searches": ["", "", ""]})
+        self.assertEqual(
+            result["reset"],
+            {
+                "active": "papers",
+                "section": "4",
+                "groups": [],
+                "accepted": False,
+                "hasCode": False,
+                "startDate": "",
+                "view": "list",
+                "sectionSelect": "4",
+                "lastPush": {"search": "?section=4", "hash": "#papers"},
+            },
+        )
+
+    def test_panel_filter_edits_replace_history_and_keep_query(self):
+        result = self.run_top_level_tab_block("#papers", """
+CATALOG_DATA_READY = true;
+window.location.href = 'https://example.test/index.html?q=LayerNorm#papers';
+window.location.search = '?q=LayerNorm';
+toggleFacetFilter('loop_topology', 'partial');
+toggleFacetFilter('claims', 'stability');
+toggleFacetFilter('claims', 'not-a-claim');
+toggleFacetFilter('tags', 'flat-loop');
+setSectionFilter('architecture/topology');
+setSectionFilter('design/topology');
+setSectionFilter('9');
+toggleFacetFilter('loop_topology', 'partial');
+process.stdout.write(JSON.stringify({
+  replaces: replaceStateCalls,
+  pushes: pushStateCalls.length,
+  section: ACTIVE_SECTION_FILTER,
+  groups: Object.keys(ACTIVE_FACET_FILTERS),
+  searches: searchCalls
+}));
+""")
+        self.assertEqual(
+            result["replaces"],
+            [
+                {"search": "?q=LayerNorm&loop_topology=partial", "hash": "#papers"},
+                {"search": "?q=LayerNorm&loop_topology=partial&claims=stability", "hash": "#papers"},
+                {"search": "?q=LayerNorm&section=architecture%2Ftopology&loop_topology=partial&claims=stability", "hash": "#papers"},
+                {"search": "?q=LayerNorm&loop_topology=partial&claims=stability", "hash": "#papers"},
+                {"search": "?q=LayerNorm&section=9&loop_topology=partial&claims=stability", "hash": "#papers"},
+                {"search": "?q=LayerNorm&section=9&claims=stability", "hash": "#papers"},
+            ],
+        )
+        self.assertEqual(result["pushes"], 0)
+        self.assertEqual(result["section"], "9")
+        self.assertEqual(result["groups"], ["claims"])
+        self.assertEqual(len(result["searches"]), 6)
+
+    def test_prepared_records_index_sections_chapters_and_axes(self):
+        result = self.run_top_level_tab_block("#papers", """
+const paper = preparePaperRecord({
+  id: 'p1', title: 'Looped', authors_list: ['A. Author'],
+  survey_section: ['architecture/topology', 'design/topology', 'scaling/test-time', 'architecture/topology'],
+  loop_topology: 'prelude-core-coda', sharing: 'unspecified', depth_control: 'bogus',
+  claims: ['stability', 'speed', 'stability'], comparison: [], survey_core: true,
+  links: { arxiv: 'https://arxiv.org/abs/2604.21999' }
+});
+const blog = preparePaperRecord({
+  id: 'b1', entry_type: 'blog', title: 'Post', survey_section: ['understanding/why'], sharing: 'full'
+});
+const unplaced = preparePaperRecord({ id: 'p2', title: 'Unplaced', survey_section: ['design/topology'] });
+process.stdout.write(JSON.stringify({
+  sections: paper._sections,
+  chapters: Array.from(paper._chapterSet).sort(),
+  primary: [paper._primarySection, paper._primaryChapter, paper._sectionLabel],
+  axes: paper._axisEntries,
+  visibleAxes: getVisibleAxisEntries(paper).map(function(entry) { return entry.group + '=' + entry.value; }),
+  links: Object.keys(paper.links),
+  search: ['§4.1 loop topology', 'prelude-core-coda', 'survey core'].map(function(text) { return paper._searchText.includes(text); }),
+  blog: { type: blog.entry_type, axes: blog._axisEntries, primary: blog._primarySection },
+  unplaced: { sections: unplaced._sections, primary: unplaced._primarySection, label: unplaced._sectionLabel }
+}));
+""")
+        self.assertEqual(result["sections"], ["architecture/topology", "scaling/test-time"])
+        self.assertEqual(result["chapters"], ["4", "6"])
+        self.assertEqual(result["primary"], ["architecture/topology", "4", "§4.1 Loop topology"])
+        self.assertEqual(
+            result["axes"],
+            [
+                {"group": "loop_topology", "value": "prelude-core-coda"},
+                {"group": "sharing", "value": "unspecified"},
+                {"group": "claims", "value": "stability"},
+            ],
+        )
+        self.assertEqual(result["visibleAxes"], ["loop_topology=prelude-core-coda", "claims=stability"])
+        self.assertEqual(result["links"], ["arxiv", "alphaxiv"])
+        self.assertEqual(result["search"], [True, True, True])
+        self.assertEqual(result["blog"], {"type": "blog", "axes": [], "primary": "understanding/why"})
+        self.assertEqual(result["unplaced"], {"sections": [], "primary": "", "label": ""})
+
+    def test_section_and_axis_filters_match_any_placement_and_combine_axes(self):
+        result = self.run_top_level_tab_block("#papers", """
+ALL_PAPERS = [
+  { id: 'a', survey_section: ['architecture/topology'], loop_topology: 'partial', sharing: 'full', claims: ['stability'] },
+  { id: 'b', survey_section: ['scaling/test-time', 'architecture/depth-control'], loop_topology: 'whole-stack', sharing: 'full', claims: ['test-time-scaling'] },
+  { id: 'c', survey_section: ['understanding/why'], loop_topology: 'partial', sharing: 'partial-adapter', claims: [] }
+].map(preparePaperRecord);
+ALL_BLOGS = [
+  { id: 'blog', entry_type: 'blog', survey_section: ['architecture/hybrid'] }
+].map(preparePaperRecord);
+const noDates = { active: false };
+function ids(section, facets, tab) {
+  ACTIVE_TOP_LEVEL_TAB = tab || 'papers';
+  ACTIVE_SECTION_FILTER = section;
+  ACTIVE_FACET_FILTERS = {};
+  Object.keys(facets).forEach(function(group) { ACTIVE_FACET_FILTERS[group] = new Set(facets[group]); });
+  return getFilteredPapers('', noDates).map(function(paper) { return paper.id; });
+}
+process.stdout.write(JSON.stringify({
+  chapter4: ids('4', {}),
+  secondarySection: ids('architecture/depth-control', {}),
+  orWithinAxis: ids('', { loop_topology: ['partial', 'whole-stack'] }),
+  andAcrossAxes: ids('', { loop_topology: ['partial'], sharing: ['full'] }),
+  sectionAndAxis: ids('4', { sharing: ['full'], claims: ['test-time-scaling'] }),
+  blogsIgnoreAxes: ids('4', { sharing: ['full'] }, 'blogs'),
+  blogsOtherChapter: ids('8', {}, 'blogs'),
+  sectionLabels: [
+    (ACTIVE_SECTION_FILTER = '4', getSectionFilterLabel()),
+    (ACTIVE_SECTION_FILTER = 'architecture/depth-control', getSectionFilterLabel())
+  ]
+}));
+""")
+        self.assertEqual(
+            result,
+            {
+                "chapter4": ["a", "b"],
+                "secondarySection": ["b"],
+                "orWithinAxis": ["a", "b", "c"],
+                "andAcrossAxes": ["a"],
+                "sectionAndAxis": ["b"],
+                "blogsIgnoreAxes": ["blog"],
+                "blogsOtherChapter": [],
+                "sectionLabels": ["§4 Architecture and Design", "§4.5 Controlling recurrence depth"],
+            },
+        )
+
+    def test_facet_filter_groups_count_papers_in_vocabulary_order(self):
+        result = self.run_top_level_tab_block("#papers", """
+const papers = [
+  { survey_section: ['architecture/topology'], loop_topology: 'partial', sharing: 'full', claims: ['stability', 'expressivity'] },
+  { survey_section: ['architecture/topology'], loop_topology: 'whole-stack', sharing: 'full', claims: ['stability'] },
+  { survey_section: ['architecture/topology'], loop_topology: 'partial', sharing: 'full', claims: [] }
+].map(preparePaperRecord);
+process.stdout.write(JSON.stringify(buildFacetFilterGroups(papers)));
+""")
+        self.assertEqual(
+            result,
+            [
+                {
+                    "id": "loop_topology",
+                    "title": "Loop topology",
+                    "values": [{"value": "whole-stack", "count": 1}, {"value": "partial", "count": 2}],
+                },
+                {"id": "sharing", "title": "Sharing", "values": [{"value": "full", "count": 3}]},
+                {
+                    "id": "claims",
+                    "title": "Claims",
+                    "values": [{"value": "expressivity", "count": 1}, {"value": "stability", "count": 2}],
+                },
+            ],
+        )
+
+    def test_active_facet_summary_and_filter_chips_are_escaped_toggle_controls(self):
+        result = self.run_top_level_tab_block("#papers", """
+ACTIVE_FACET_FILTERS = { claims: new Set(['stability', 'expressivity']), sharing: new Set(['full']) };
+FACET_FILTER_GROUPS = [{ id: 'sharing', title: 'Sharing <b>', values: [{ value: 'full', count: 3 }, { value: 'partial-adapter', count: 1 }] }];
+renderFacetFilterGroups();
+process.stdout.write(JSON.stringify({ summary: renderActiveFacetFiltersHtml(), chips: facetFilterGroups.innerHTML }));
+""")
+        summary = result["summary"]
+        self.assertEqual(summary.count("facet-filter-active-item"), 3)
+        self.assertLess(summary.index('data-remove-facet-value="full"'), summary.index('data-remove-facet-value="expressivity"'))
+        self.assertLess(summary.index('data-remove-facet-value="expressivity"'), summary.index('data-remove-facet-value="stability"'))
+        self.assertIn('aria-label="Remove Claims filter: stability"', summary)
+        self.assertIn('aria-label="Remove Sharing filter: full"', summary)
+        self.assertIn('<span class="paper-chip-prefix">Claim</span>', summary)
+        chips = result["chips"]
+        self.assertIn("Sharing &lt;b&gt;", chips)
+        self.assertNotIn("<b>", chips)
+        self.assertIn('data-facet-value="full" aria-pressed="true"', chips)
+        self.assertIn('data-facet-value="partial-adapter" aria-pressed="false"', chips)
+        self.assertIn('<span class="facet-filter-chip-count">3</span>', chips)
+        self.assertNotIn("disabled", chips)
+
+    def test_section_badges_and_axis_chips_are_filter_links(self):
+        result = self.run_top_level_tab_block("#papers", """
+ACTIVE_SECTION_FILTER = '4';
+ACTIVE_FACET_FILTERS = { sharing: new Set(['full']) };
+process.stdout.write(JSON.stringify({
+  primary: renderSectionBadgeHtml('architecture/topology', true, false),
+  secondary: renderSectionBadgeHtml('scaling/test-time', false, true),
+  unknown: renderSectionBadgeHtml('design/topology', true, false),
+  axis: renderAxisChipHtml({ group: 'sharing', value: 'full' }),
+  axisInactive: renderAxisChipHtml({ group: 'claims', value: 'stability' }, true)
+}));
+""")
+        self.assertIn('class="paper-section-badge is-primary is-active"', result["primary"])
+        self.assertIn('href="?section=architecture%2Ftopology&amp;sharing=full#papers"', result["primary"])
+        self.assertIn('<span class="paper-section-title">Loop topology</span>', result["primary"])
+        self.assertIn('title="Primary survey section: §4.1 Loop topology"', result["primary"])
+        self.assertIn('class="paper-section-badge is-secondary"', result["secondary"])
+        self.assertIn('aria-label="Also discussed in: §6.2 Test-time scaling"', result["secondary"])
+        self.assertNotIn("paper-section-title", result["secondary"])
+        self.assertEqual(result["unknown"], "")
+        self.assertIn('class="paper-chip paper-chip-axis is-active"', result["axis"])
+        self.assertIn('data-facet-group="sharing" data-facet-value="full"', result["axis"])
+        self.assertIn('<span class="paper-chip-prefix">Sharing</span>full</a>', result["axis"])
+        self.assertIn('href="?section=4&amp;sharing=full&amp;claims=stability#papers"', result["axisInactive"])
+        self.assertNotIn("paper-chip-prefix", result["axisInactive"])
+
+    def test_survey_list_groups_papers_by_part_chapter_and_primary_section(self):
+        result = self.run_top_level_tab_block("#papers", """
+const papers = [
+  { id: 'late', survey_section: ['open-problems/diffusion'] },
+  { id: 'topo2', survey_section: ['architecture/topology'] },
+  { id: 'depth', survey_section: ['architecture/depth-control', 'architecture/topology'] },
+  { id: 'topo1', survey_section: ['architecture/topology'] },
+  { id: 'nowhere', survey_section: [] }
+].map(preparePaperRecord);
+process.stdout.write(JSON.stringify({ html: renderSurveyListHtml(papers, ''), counts: buildPrimaryChapterCounts(papers) }));
+""")
+        html = result["html"]
+        order = [
+            '<section class="survey-part" id="part-building">',
+            '<span class="survey-part-label">Part III</span><h3 class="survey-part-title">Building, Training and Deploying</h3>',
+            '<section class="survey-chapter" id="chapter-4" data-chapter="4">',
+            '<span class="survey-count" aria-label="3 papers">3</span>',
+            '<section class="survey-section" id="section-4-1" data-section-id="architecture/topology">',
+            "[card topo2]",
+            "[card topo1]",
+            '<section class="survey-section" id="section-4-5" data-section-id="architecture/depth-control">',
+            "[card depth]",
+            '<section class="survey-part" id="part-open-problems">',
+            '<section class="survey-chapter" id="chapter-10" data-chapter="10">',
+            "[card late]",
+            '<section class="survey-part" id="part-unplaced">',
+            "[card nowhere]",
+        ]
+        positions = [html.index(marker) for marker in order]
+        self.assertEqual(positions, sorted(positions))
+        self.assertEqual(html.count("[card depth]"), 1)
+        self.assertNotIn('id="part-foundations"', html)
+        self.assertNotIn('id="chapter-5"', html)
+        self.assertEqual(result["counts"], {"4": 3, "10": 1})
+
+    def test_section_filter_options_are_grouped_by_chapter_with_counts(self):
+        result = self.run_top_level_tab_block("#papers", """
+ALL_PAPERS = [
+  { survey_section: ['architecture/topology', 'scaling/test-time'] },
+  { survey_section: ['architecture/topology'] }
+].map(preparePaperRecord);
+ALL_BLOGS = [{ entry_type: 'blog', survey_section: ['understanding/why'] }].map(preparePaperRecord);
+ACTIVE_SECTION_FILTER = 'architecture/topology';
+renderSectionFilter();
+const papers = { html: sectionFilter.innerHTML, value: sectionFilter.value };
+ACTIVE_TOP_LEVEL_TAB = 'blogs';
+ACTIVE_SECTION_FILTER = '';
+renderSectionFilter();
+process.stdout.write(JSON.stringify({ papers: papers, blogs: sectionFilter.innerHTML }));
+""")
+        html = result["papers"]["html"]
+        self.assertTrue(html.startswith('<option value="">All survey sections</option>'))
+        self.assertEqual(html.count("<optgroup"), 9)
+        self.assertIn('<optgroup label="§4 Architecture and Design"><option value="4">All of §4 · 2</option>', html)
+        self.assertIn('<option value="architecture/topology">§4.1 Loop topology · 2</option>', html)
+        self.assertIn('<option value="scaling/test-time">§6.2 Test-time scaling · 1</option>', html)
+        self.assertIn('<option value="2">All of §2 · 0</option>', html)
+        self.assertEqual(result["papers"]["value"], "architecture/topology")
+        self.assertIn('<option value="understanding/why">§8.1 Why looped models work · 1</option>', result["blogs"])
+        self.assertIn('<option value="architecture/topology">§4.1 Loop topology · 0</option>', result["blogs"])
+
+    def test_reading_desk_survey_placement_lists_sections_and_specified_axes(self):
+        desk = READING_DESK_JS_PATH.read_text(encoding="utf-8")
+        start = desk.index("function renderReadingDeskSurveyHtml(paper) {")
+        helper = desk[start:desk.index("/** Reuse catalog renderers", start)]
+        result = self.run_top_level_tab_block("#papers", helper + """
+const paper = preparePaperRecord({
+  id: 'p', survey_section: ['architecture/topology', 'scaling/test-time'],
+  loop_topology: 'partial', sharing: 'unspecified', depth_control: 'fixed', claims: ['stability'], comparison: []
+});
+const blog = preparePaperRecord({ id: 'b', entry_type: 'blog', survey_section: ['understanding/why'], sharing: 'full' });
+const unplaced = preparePaperRecord({ id: 'u', entry_type: 'blog', survey_section: [] });
+process.stdout.write(JSON.stringify({
+  paper: renderReadingDeskSurveyHtml(paper),
+  blog: renderReadingDeskSurveyHtml(blog),
+  unplaced: renderReadingDeskSurveyHtml(unplaced)
+}));
+""")
+        paper = result["paper"]
+        self.assertLess(paper.index("§4.1"), paper.index("§6.2"))
+        self.assertIn("is-primary", paper[:paper.index("§6.2")])
+        for label in ("Loop topology", "Sharing", "Depth control", "Claims", "Looped-vs-untied comparison"):
+            self.assertIn(f"<dt>{label}</dt>", paper)
+        self.assertIn("<dt>Sharing</dt><dd><span class=\"desk-axis-unspecified\">unspecified</span></dd>", paper)
+        self.assertIn("<dt>Looped-vs-untied comparison</dt><dd><span class=\"desk-axis-unspecified\">none recorded</span></dd>", paper)
+        self.assertIn('data-facet-group="claims" data-facet-value="stability"', paper)
+        self.assertNotIn('data-facet-group="sharing"', paper)
+        self.assertIn("§8.1", result["blog"])
+        self.assertNotIn("desk-axis-list", result["blog"])
+        self.assertEqual(result["unplaced"], "<p>Not yet placed in a survey section.</p>")
+
+    def test_stats_distribution_rows_link_to_filters_or_survey_anchors(self):
+        """Stats rows are safe DOM nodes; axis rows reset filters and chapter rows open anchors."""
         html = INDEX_HTML_PATH.read_text(encoding="utf-8")
-        self.assertIn('class="search-field"', html)
-        self.assertIn('aria-live="polite"', html[html.index('id="search-count"') - 120:html.index('id="search-count"') + 120])
-        self.assertNotIn("search-tag-scope", html)
-        self.assertNotIn("updateTagDrilldownSearchUI", html)
-        restore_start = html.index("function restoreTagDrilldownFromUrl() {")
-        restore_end = html.index("function applyTopLevelTab() {", restore_start)
-        restore_source = html[restore_start:restore_end]
-        self.assertIn("setFilterSidebarOpen(true);", restore_source)
-        self.assertIn("setTagFilterOpen(false);", restore_source)
-        self.assertNotIn("setTagFilterOpen(true);", restore_source)
-        summary_start = html.index("function renderActiveTagFiltersHtml() {")
-        summary_end = html.index("function renderTagFilterGroups() {", summary_start)
-        summary_source = html[summary_start:summary_end]
-        self.assertIn("ACTIVE_TAG_FILTERS", summary_source)
-        self.assertIn("data-remove-tag-key", summary_source)
-        self.assertIn("aria-label", summary_source)
-        self.assertNotIn("ACTIVE_TAG_FILTERS.size + ' active'", summary_source)
-        self.assertIn("summary.innerHTML = summaryHtml;", html)
-        self.assertIn("summary.hidden = !summaryHtml;", html)
-
-        shell_start = html.index('<div class="tag-filter-shell filter-sidebar-tag-shell">')
-        shell_end = html.index('<div class="tag-filter-panel"', shell_start)
-        shell_source = html[shell_start:shell_end]
-        toggle_start = shell_source.index('id="tag-filter-toggle"')
-        toggle_end = shell_source.index("</button>", toggle_start)
-        self.assertGreater(shell_source.index('id="tag-filter-summary"'), toggle_end)
-
-        navigate_start = html.index("function navigateToTagDrilldown(tagKey) {")
-        navigate_end = html.index("function restoreTagDrilldownFromUrl() {", navigate_start)
-        navigate_source = html[navigate_start:navigate_end]
-        self.assertIn("window.requestAnimationFrame(function() { tagFilterToggle.focus(); });", navigate_source)
-        self.assertNotIn("searchInput.focus();", navigate_source)
-
-    def test_active_tag_summary_renders_independent_accessible_remove_buttons(self):
-        """Each active filter remains a distinct, safely escaped removal control."""
-        html = INDEX_HTML_PATH.read_text(encoding="utf-8")
-        escape_start = html.index("function escapeHtml(str) {")
-        escape_end = html.index("function highlightQuery(", escape_start)
-        group_start = html.index("function getTagDrilldownGroupLabel(group) {")
-        group_end = html.index("function getTagDrilldownHref(", group_start)
-        count_start = html.index("function getPaperCountForTagKey(tagKey) {")
-        count_end = html.index("function getTagDrilldownKeysWith(", count_start)
-        render_start = html.index("function renderActiveTagFiltersHtml() {")
-        render_end = html.index("function renderTagFilterGroups() {", render_start)
-        script = f"""
-{html[escape_start:escape_end]}
-{html[group_start:group_end]}
-{html[count_start:count_end]}
-{html[render_start:render_end]}
-const ACTIVE_TAG_FILTERS = new Set(['focus::architecture', 'domain::theory']);
-const URL_TAG_FILTER_KEYS = new Set(['domain::theory']);
-const TAG_FILTER_LOOKUP = {{
-  'focus::architecture': {{ group: 'focus', displayLabel: 'architecture <img>', count: 3 }},
-  'domain::theory': {{ group: 'domain', displayLabel: 'theory', count: 9 }}
-}};
-const ALL_PAPERS = [
-  {{ _tagKeySet: new Set(['domain::theory']) }},
-  {{ _tagKeySet: new Set(['domain::theory']) }}
-];
-process.stdout.write(renderActiveTagFiltersHtml());
-"""
-        output = subprocess.check_output(["node", "-e", script], text=True)
-        self.assertEqual(output.count("tag-filter-active-item"), 2)
-        self.assertEqual(output.count("tag-filter-active-remove"), 2)
-        self.assertIn('data-remove-tag-key="focus::architecture"', output)
-        self.assertIn('data-remove-tag-key="domain::theory"', output)
-        self.assertIn('aria-label="Remove Focus filter: architecture &lt;img&gt;"', output)
-        self.assertIn('aria-label="Remove Domain filter: theory"', output)
-        self.assertIn('<span class="tag-filter-chip-count">3</span>', output)
-        self.assertIn('<span class="tag-filter-chip-count">2</span>', output)
-        self.assertNotIn("<img>", output)
-
-        init_start = html.index("function initTagFilterControls() {")
-        init_end = html.index("function shouldHandleTagDrilldownClick(", init_start)
-        init_source = html[init_start:init_end]
-        self.assertIn(".tag-filter-active-remove[data-remove-tag-key]", init_source)
-        self.assertIn("removeTagFilter(removeButton.dataset.removeTagKey);", init_source)
-
-    def test_stats_tag_distributions_link_to_papers_but_categories_do_not(self):
-        """Only genuine multi-label taxonomy rows expose tag drill-down links."""
-        html = INDEX_HTML_PATH.read_text(encoding="utf-8")
-        stats_start = html.index("function renderStatsPanel() {")
-        stats_end = html.index("function escapeHtml(str) {", stats_start)
-        stats_source = html[stats_start:stats_end]
-
-        direction_start = html.index("function renderStatsActiveDirections() {")
-        direction_end = html.index("function initStatsTaxonomyInteractions()", direction_start)
-        direction_source = html[direction_start:direction_end]
-
-        category_call = stats_source[stats_source.index("'stats-category-distribution'"):stats_source.index("'stats-mechanism-distribution'")]
-        self.assertNotIn("tagGroup", category_call)
-        self.assertIn("{ tagGroup: 'mechanism' }", stats_source)
-        self.assertIn("{ tagGroup: CURRENT_STATS_DIRECTION_GROUP }", direction_source)
-
         renderer_start = html.index("function renderStatsDistribution(")
-        renderer_end = html.index("function renderStatsCategoryComposition(", renderer_start)
-        renderer_source = html[renderer_start:renderer_end]
-        self.assertIn("options.tagGroup", renderer_source)
-        self.assertIn("buildTagEntry(tagGroup, row.key).key", renderer_source)
-        self.assertIn("getTagDrilldownHref(", renderer_source)
-        self.assertIn("'View ' + row.count + ' papers tagged '", renderer_source)
-
-    def test_stats_distribution_renderer_builds_native_accessible_tag_links(self):
-        """Stats rows keep safe DOM rendering while tag rows become native links."""
-        html = INDEX_HTML_PATH.read_text(encoding="utf-8")
-        renderer_start = html.index("function renderStatsDistribution(")
-        renderer_end = html.index("function renderStatsCategoryComposition(", renderer_start)
-        renderer_source = html[renderer_start:renderer_end]
-        href_start = html.index("function getTagDrilldownGroupLabel(")
-        href_end = html.index("function navigateToTagDrilldown(", href_start)
-        href_source = html[href_start:href_end]
-        entry_start = html.index("function buildTagEntry(group, label) {")
-        entry_end = html.index("function getPaperTagEntries(", entry_start)
-        entry_source = html[entry_start:entry_end]
-        script = f"""
-class FakeElement {{
-  constructor(tagName) {{
+        renderer = html[renderer_start:html.index("/** Label survey sections by number", renderer_start)]
+        self.assertNotIn("innerHTML", renderer)
+        result = self.run_top_level_tab_block("#stats", """
+class FakeElement {
+  constructor(tagName) {
     this.tagName = tagName.toUpperCase();
-    this.attributes = {{}};
+    this.attributes = {};
     this.children = [];
-    this.style = {{}};
+    this.style = {};
     this.className = '';
     this.textContent = '';
-  }}
-  setAttribute(name, value) {{ this.attributes[name] = String(value); }}
-  appendChild(child) {{ this.children.push(child); return child; }}
-  append(...children) {{ this.children.push(...children); }}
-  replaceChildren(...children) {{ this.children = children; }}
-}}
-const document = {{ createElement: (tagName) => new FakeElement(tagName) }};
-{href_source}
-{entry_source}
-{renderer_source}
-const data = {{ rows: [{{ key: 'Flat-Loop', label: 'Flat loop', count: 2, percentage: 50 }}] }};
-const category = new FakeElement('div');
-const mechanism = new FakeElement('div');
-renderStatsDistribution(category, data);
-renderStatsDistribution(mechanism, data, {{ tagGroup: 'mechanism' }});
-const categoryList = category.children[0];
-const mechanismList = mechanism.children[0];
-const categoryItem = categoryList.children[0];
-const mechanismItem = mechanismList.children[0];
-const categoryRow = categoryItem;
-const mechanismRow = mechanismItem.children[0] || mechanismItem;
-process.stdout.write(JSON.stringify({{
-  listRoles: [categoryList.attributes.role || null, mechanismList.attributes.role || null],
-  itemRoles: [categoryItem.attributes.role || null, mechanismItem.attributes.role || null],
-  categoryTag: categoryRow.tagName,
-  categoryAria: categoryRow.attributes['aria-label'],
-  mechanismTag: mechanismRow.tagName,
-  href: mechanismRow.attributes.href,
-  tagKey: mechanismRow.attributes['data-tag-key'],
-  tagGroup: mechanismRow.attributes['data-tag-group'],
-  role: mechanismRow.attributes.role || null,
-  aria: mechanismRow.attributes['aria-label']
-}}));
-"""
-        output = subprocess.check_output(["node", "-e", script], text=True)
-        self.assertEqual(
-            json.loads(output),
-            {
-                "listRoles": ["list", "list"],
-                "itemRoles": ["listitem", "listitem"],
-                "categoryTag": "DIV",
-                "categoryAria": "Flat loop: 2 papers, 50 percent",
-                "mechanismTag": "A",
-                "href": "?tag=mechanism%3A%3Aflat-loop#papers",
-                "tagKey": "mechanism::flat-loop",
-                "tagGroup": "mechanism",
-                "role": None,
-                "aria": "View 2 papers tagged Loop mechanism: Flat loop",
-            },
-        )
-
-    def test_tag_navigation_accumulates_active_paper_tags_with_and(self):
-        """Consecutive paper-tag clicks preserve earlier tags and apply AND filtering."""
-        result = self.run_top_level_tab_block("#stats", """
-ALL_PAPERS = [
-  { _tagKeySet: new Set(['focus::architecture', 'mechanism::flat-loop']) },
-  { _tagKeySet: new Set(['mechanism::flat-loop']) },
-  { _tagKeySet: new Set(['focus::architecture']) }
-];
-ALL_RESOURCES = ALL_PAPERS.concat([{ entry_type: 'blog', _tagKeySet: new Set(['mechanism::flat-loop']) }]);
-TAG_FILTER_LOOKUP = {
-  'mechanism::flat-loop': { group: 'mechanism', displayLabel: 'flat-loop' },
-  'focus::architecture': { group: 'focus', displayLabel: 'architecture' }
-};
-CATALOG_DATA_READY = true;
-FILTER_SIDEBAR_OPEN = false;
-TAG_FILTER_OPEN = false;
-
-navigateToTagDrilldown('focus::architecture');
-navigateToTagDrilldown('mechanism::flat-loop');
-const entered = {
-  active: Array.from(ACTIVE_TAG_FILTERS).sort(),
-  urlTags: Array.from(URL_TAG_FILTER_KEYS).sort(),
-  routeOwned: Array.from(ROUTE_OWNED_TAG_FILTER_KEYS).sort(),
-  visibleCount: ALL_PAPERS.filter(function(paper) {
-    return Array.from(ACTIVE_TAG_FILTERS).every(function(key) { return paper._tagKeySet.has(key); });
-  }).length
-};
+  }
+  setAttribute(name, value) { this.attributes[name] = String(value); }
+  appendChild(child) { this.children.push(child); return child; }
+  append(...children) { this.children.push(...children); }
+  replaceChildren(...children) { this.children = children; }
+}
+document.createElement = function(tagName) { return new FakeElement(tagName); };
+""" + renderer + """
+const data = { rows: [{ key: 'partial', label: 'partial', count: 2, percentage: 50 }] };
+const plain = new FakeElement('div');
+const axis = new FakeElement('div');
+const chapter = new FakeElement('div');
+const empty = new FakeElement('div');
+renderStatsDistribution(plain, data);
+renderStatsDistribution(axis, data, { facetGroup: 'loop_topology' });
+renderStatsDistribution(chapter, { rows: [{ key: '4', label: '§4 Architecture and Design', count: 3, percentage: 30 }] }, {
+  anchorFor: function(row) { return getChapterDomId(row.key); }
+});
+renderStatsDistribution(empty, { rows: [] });
+function firstRow(container) {
+  const item = container.children[0].children[0];
+  return item.children[0] && item.children[0].tagName === 'A' ? item.children[0] : item;
+}
 process.stdout.write(JSON.stringify({
-  pushes: pushStateCalls,
-  entered: entered
+  roles: [plain.children[0].attributes.role, plain.children[0].children[0].attributes.role],
+  plain: { tag: firstRow(plain).tagName, aria: firstRow(plain).attributes['aria-label'] },
+  axis: firstRow(axis).attributes,
+  axisTag: firstRow(axis).tagName,
+  chapter: firstRow(chapter).attributes,
+  empty: empty.children[0].textContent
 }));
 """)
+        self.assertEqual(result["roles"], ["list", "listitem"])
+        self.assertEqual(result["plain"], {"tag": "DIV", "aria": "partial: 2 papers, 50 percent"})
+        self.assertEqual(result["axisTag"], "A")
         self.assertEqual(
-            result,
+            result["axis"],
             {
-                "pushes": [
-                    {"tags": ["focus::architecture"], "q": None, "hash": "#papers"},
-                    {
-                        "tags": ["focus::architecture", "mechanism::flat-loop"],
-                        "q": None,
-                        "hash": "#papers",
-                    },
-                ],
-                "entered": {
-                    "active": ["focus::architecture", "mechanism::flat-loop"],
-                    "urlTags": ["focus::architecture", "mechanism::flat-loop"],
-                    "routeOwned": ["focus::architecture", "mechanism::flat-loop"],
-                    "visibleCount": 1,
-                },
+                "href": "?loop_topology=partial#papers",
+                "data-facet-group": "loop_topology",
+                "data-facet-value": "partial",
+                "data-facet-reset": "true",
+                "aria-label": "View 2 papers with Loop topology: partial",
             },
         )
+        self.assertEqual(
+            result["chapter"],
+            {
+                "href": "?#chapter-4",
+                "data-survey-anchor": "chapter-4",
+                "aria-label": "Browse 3 papers in §4 Architecture and Design",
+            },
+        )
+        self.assertEqual(result["empty"], "No classification data is available.")
 
-    def test_url_backed_chips_use_paper_only_counts_and_remain_interactive(self):
-        """Active URL chips match Stats and can still be cleared in Filters."""
-        html = INDEX_HTML_PATH.read_text(encoding="utf-8")
-        count_start = html.index("function getPaperCountForTagKey(")
-        count_end = html.index("function navigateToTagDrilldown(", count_start)
-        count_source = html[count_start:count_end]
-        render_start = html.index("function renderTagFilterGroups() {")
-        render_end = html.index("function updateTagFilterUI() {", render_start)
-        render_source = html[render_start:render_end]
-        escape_start = html.index("function escapeHtml(str) {")
-        escape_end = html.index("function highlightQuery(", escape_start)
-        escape_source = html[escape_start:escape_end]
-        script = f"""
-{escape_source}
-{count_source}
-{render_source}
-const key = 'mechanism::flat-loop';
-const ALL_PAPERS = [
-  {{ _tagKeySet: new Set([key]) }},
-  {{ _tagKeySet: new Set([key]) }}
-];
-const ACTIVE_TAG_FILTERS = new Set([key]);
-const URL_TAG_FILTER_KEYS = new Set([key]);
-const TAG_FILTER_GROUPS = [{{
-  title: 'Loop <mechanism>',
-  tags: [
-    {{ key: key, group: 'mechanism', displayLabel: 'flat-loop <img>', count: 3 }},
-    {{ key: 'focus::architecture', group: 'focus', displayLabel: 'architecture', count: 4 }}
-  ]
-}}];
-const container = {{ innerHTML: '' }};
-const document = {{ getElementById: function() {{ return container; }} }};
-renderTagFilterGroups();
-process.stdout.write(JSON.stringify({{ html: container.innerHTML }}));
-"""
-        output = json.loads(subprocess.check_output(["node", "-e", script], text=True))["html"]
-        self.assertIn('<span class="tag-filter-chip-count">2</span>', output)
-        self.assertIn('<span class="tag-filter-chip-count">4</span>', output)
-        self.assertIn("Loop &lt;mechanism&gt;", output)
-        self.assertIn("flat-loop &lt;img&gt;", output)
-        self.assertNotIn("<img>", output)
-        self.assertIn('aria-pressed="true"', output)
-        self.assertNotIn("aria-disabled", output)
-        self.assertNotIn(" disabled", output)
-
-    def test_tag_click_interception_only_handles_unmodified_left_clicks(self):
+    def test_filter_link_click_interception_only_handles_unmodified_left_clicks(self):
         """Modified and non-left clicks retain the native anchor behavior."""
-        html = INDEX_HTML_PATH.read_text(encoding="utf-8")
-        helper_start = html.index("function shouldHandleTagDrilldownClick(")
-        helper_end = html.index("function initPaperTagInteractions() {", helper_start)
-        helper_source = html[helper_start:helper_end]
-        script = f"""
-{helper_source}
-const base = {{ button: 0, defaultPrevented: false, metaKey: false, ctrlKey: false, shiftKey: false, altKey: false }};
-process.stdout.write(JSON.stringify({{
-  left: shouldHandleTagDrilldownClick(base),
-  prevented: shouldHandleTagDrilldownClick({{ ...base, defaultPrevented: true }}),
-  middle: shouldHandleTagDrilldownClick({{ ...base, button: 1 }}),
-  meta: shouldHandleTagDrilldownClick({{ ...base, metaKey: true }}),
-  ctrl: shouldHandleTagDrilldownClick({{ ...base, ctrlKey: true }}),
-  shift: shouldHandleTagDrilldownClick({{ ...base, shiftKey: true }}),
-  alt: shouldHandleTagDrilldownClick({{ ...base, altKey: true }})
-}}));
-"""
-        output = json.loads(subprocess.check_output(["node", "-e", script], text=True))
+        result = self.run_top_level_tab_block("#papers", """
+const base = { button: 0, defaultPrevented: false, metaKey: false, ctrlKey: false, shiftKey: false, altKey: false };
+process.stdout.write(JSON.stringify({
+  left: shouldHandleFacetLinkClick(base),
+  prevented: shouldHandleFacetLinkClick({ ...base, defaultPrevented: true }),
+  middle: shouldHandleFacetLinkClick({ ...base, button: 1 }),
+  meta: shouldHandleFacetLinkClick({ ...base, metaKey: true }),
+  ctrl: shouldHandleFacetLinkClick({ ...base, ctrlKey: true }),
+  shift: shouldHandleFacetLinkClick({ ...base, shiftKey: true }),
+  alt: shouldHandleFacetLinkClick({ ...base, altKey: true }),
+  missing: shouldHandleFacetLinkClick(null)
+}));
+""")
         self.assertEqual(
-            output,
+            result,
             {
-                "left": True,
-                "prevented": False,
-                "middle": False,
-                "meta": False,
-                "ctrl": False,
-                "shift": False,
-                "alt": False,
+                "left": True, "prevented": False, "middle": False, "meta": False,
+                "ctrl": False, "shift": False, "alt": False, "missing": False,
             },
         )
-        interactions_start = html.index("function initPaperTagInteractions() {")
-        interactions_end = html.index("function initTableInteractions() {", interactions_start)
-        self.assertIn("shouldHandleTagDrilldownClick(event)", html[interactions_start:interactions_end])
-
-    def test_blog_only_tags_are_noninteractive_but_shared_paper_tags_link(self):
-        """A blog tag only links when the Papers route has matching results."""
         html = INDEX_HTML_PATH.read_text(encoding="utf-8")
-        helper_start = html.index("function renderPaperTagHtml(")
-        helper_end = html.index("function renderCard(paper, query) {", helper_start)
-        helper_source = html[helper_start:helper_end]
-        route_start = html.index("function getTagDrilldownHref(")
-        route_end = html.index("function navigateToTagDrilldown(", route_start)
-        route_source = html[route_start:route_end]
-        escape_start = html.index("function escapeHtml(str) {")
-        escape_end = html.index("function highlightQuery(", escape_start)
-        escape_source = html[escape_start:escape_end]
-        script = f"""
-{escape_source}
-{route_source}
-{helper_source}
-const sharedKey = 'domain::reasoning';
-const ALL_PAPERS = [{{ _tagKeySet: new Set([sharedKey]) }}];
-const ACTIVE_TAG_FILTERS = new Set();
-const blogOnly = renderPaperTagHtml(
-  {{ key: 'domain::blog-only', group: 'domain', label: 'blog-only', displayLabel: 'blog-only' }},
-  'paper-tag-domain'
-);
-const shared = renderPaperTagHtml(
-  {{ key: sharedKey, group: 'domain', label: 'reasoning', displayLabel: 'reasoning' }},
-  'paper-tag-domain'
-);
-process.stdout.write(JSON.stringify({{ blogOnly: blogOnly, shared: shared }}));
-"""
-        output = json.loads(subprocess.check_output(["node", "-e", script], text=True))
-        self.assertEqual(
-            output["blogOnly"],
-            '<span class="paper-tag paper-tag-domain">blog-only</span>',
-        )
-        self.assertNotIn("href=", output["blogOnly"])
-        self.assertNotIn("data-tag-key", output["blogOnly"])
-        self.assertIn('<a href="?tag=domain%3A%3Areasoning#papers"', output["shared"])
-        self.assertIn('data-tag-key="domain::reasoning"', output["shared"])
+        start = html.index("function initFacetLinkInteractions() {")
+        source = html[start:html.index("function initTableInteractions() {", start)]
+        self.assertIn("shouldHandleFacetLinkClick(event)", source)
+        self.assertIn("a[data-survey-anchor]", source)
+        self.assertIn("navigateToUnfilteredSurveyAnchor(anchorLink.dataset.surveyAnchor);", source)
+        self.assertIn("a[data-facet-group][href]", source)
+        self.assertIn("navigateToFacetLink(link);", source)
+        self.assertIn("if (FACET_LINK_INTERACTIONS_BOUND) return;", source)
 
-        style = html[html.index("<style>"):html.index("</style>")]
-        self.assertIn("span.paper-tag {\n      cursor: default;", style)
-        self.assertIn("a.paper-tag:hover,", style)
-        self.assertNotIn("\n    .paper-tag:hover,", style)
-
-    def test_card_tags_are_native_links_and_advanced_chips_expose_state(self):
-        """Card tags navigate; advanced filter buttons remain explicit toggle controls."""
+    def test_catalog_load_restores_url_filters_after_indexing_the_survey(self):
         html = INDEX_HTML_PATH.read_text(encoding="utf-8")
-        card_start = html.index("function renderPaperTagHtml(")
-        card_end = html.index("// ── State & Category Tree", card_start)
-        card_source = html[card_start:card_end]
-        self.assertIn("getPaperCountForTagKey(entry.key)", card_source)
-        self.assertIn("'<a href=\"' + escapeHtml(getTagDrilldownHref(", card_source)
-        self.assertIn("'<span class=\"' + classes.join(' ')", card_source)
-        self.assertIn("data-tag-key", card_source)
-
-        chip_start = html.index("function renderTagFilterGroups() {")
-        chip_end = html.index("function updateTagFilterUI() {", chip_start)
-        chip_source = html[chip_start:chip_end]
-        self.assertIn("aria-pressed", chip_source)
-        self.assertNotIn("aria-disabled", chip_source)
-        self.assertNotIn(" disabled", chip_source)
-        self.assertIn("URL_TAG_FILTER_KEYS.has(tag.key)", chip_source)
-
-        interactions_start = html.index("function initPaperTagInteractions() {")
-        interactions_end = html.index("function initTableInteractions() {", interactions_start)
-        interactions_source = html[interactions_start:interactions_end]
-        self.assertIn("document.addEventListener('click'", interactions_source)
-        self.assertIn("navigateToTagDrilldown", interactions_source)
-        self.assertIn("shouldHandleTagDrilldownClick(event)", interactions_source)
-
-    def test_tag_drilldown_state_is_url_backed_and_paper_only(self):
-        """URL tag routes must be URL-driven and exclude non-paper resources."""
-        html = INDEX_HTML_PATH.read_text(encoding="utf-8")
-        for snippet in (
-            "let URL_TAG_FILTER_KEYS = new Set();",
-            "let ROUTE_OWNED_TAG_FILTER_KEYS = new Set();",
-            "function getTagDrilldownKeysFromUrl() {",
-            "function restoreTagDrilldownFromUrl() {",
-            "ACTIVE_TOP_LEVEL_TAB === 'blogs' ? ALL_BLOGS : ALL_PAPERS",
-            "window.addEventListener('popstate', restoreTagDrilldownFromUrl);",
-        ):
-            self.assertIn(snippet, html)
-
-        hash_start = html.index("window.addEventListener('hashchange'")
-        hash_end = html.index("window.addEventListener('popstate'", hash_start)
-        self.assertIn("restoreTagDrilldownFromUrl();", html[hash_start:hash_end])
-
         build_start = html.index("function buildDOM(data) {")
-        build_end = html.index("// ── Search", build_start)
-        build_source = html[build_start:build_end]
-        self.assertLess(
-            build_source.index("TAG_FILTER_GROUPS = buildTagFilterGroups(ALL_RESOURCES);"),
-            build_source.index("restoreTagDrilldownFromUrl();"),
+        source = html[build_start:html.index("// ── Search", build_start)]
+        order = (
+            "setSurveyTaxonomy(data.survey_taxonomy);",
+            "ALL_PAPERS = (data.papers || []).map(preparePaperRecord);",
+            "ALL_BLOGS = (data.blogs || []).map(preparePaperRecord);",
+            "FACET_FILTER_GROUPS = buildFacetFilterGroups(ALL_PAPERS);",
+            "renderSurveyNav();",
+            "renderSectionFilter();",
+            "restoreFiltersFromUrl();",
+            "restoreTopLevelTabAfterCatalogLoad();",
+            "restoreSurveyHashPosition(window.location.hash);",
         )
+        positions = [source.index(marker) for marker in order]
+        self.assertEqual(positions, sorted(positions))
+        init_start = html.index("function initTopLevelTabInteractions() {")
+        init_source = html[init_start:html.index("function restoreTopLevelTabAfterCatalogLoad() {", init_start)]
+        popstate = init_source[init_source.index("window.addEventListener('popstate'"):]
+        self.assertIn("restoreFiltersFromUrl();", popstate)
+        hashchange = init_source[init_source.index("window.addEventListener('hashchange'"):init_source.index("window.addEventListener('popstate'")]
+        self.assertIn("restoreSurveyHashPosition(window.location.hash);", hashchange)
+        self.assertNotIn("restoreFiltersFromUrl", hashchange)
 
-    def test_tag_drilldown_url_restore_behavior(self):
-        """Valid paper tag sets and q restore; invalid routes fail closed."""
+    def test_search_query_sync_uses_replace_state_and_preserves_filter_params(self):
+        """Free search updates q in place without losing section, axis params or the hash."""
         result = self.run_top_level_tab_block("#papers", """
-ALL_PAPERS = [
-  { _tagKeySet: new Set(['mechanism::flat-loop', 'focus::architecture']) },
-  { _tagKeySet: new Set(['mechanism::flat-loop']) }
-];
-ALL_RESOURCES = ALL_PAPERS.concat([{ _tagKeySet: new Set(['domain::blog-only']) }]);
-ACTIVE_TAG_FILTERS = new Set(['focus::architecture']);
-TAG_FILTER_LOOKUP = {
-  'mechanism::flat-loop': { displayLabel: 'flat-loop' },
-  'focus::architecture': { displayLabel: 'architecture' },
-  'domain::blog-only': { displayLabel: 'blog-only' }
-};
-CATALOG_DATA_READY = true;
-
-function parse(search, hash) {
-  window.location.search = search;
-  window.location.hash = hash;
-  return Array.from(getTagDrilldownKeysFromUrl()).sort();
-}
-
-const parsed = {
-  valid: parse('?tag=mechanism%3A%3Aflat-loop&tag=focus%3A%3Aarchitecture', '#papers'),
-  section: parse('?tag=mechanism%3A%3Aflat-loop&tag=focus%3A%3Aarchitecture', '#section-designs'),
-  duplicate: parse('?tag=mechanism%3A%3Aflat-loop&tag=mechanism%3A%3Aflat-loop', '#papers'),
-  unknown: parse('?tag=domain%3A%3Aunknown', '#papers'),
-  malformed: parse('?tag=mechanism%3Aflat-loop', '#papers'),
-  nonPaper: parse('?tag=domain%3A%3Ablog-only', '#papers'),
-  blogs: parse('?tag=mechanism%3A%3Aflat-loop', '#blogs'),
-  legacyBlogs: parse('?tag=mechanism%3A%3Aflat-loop', '#section-blogs'),
-  stats: parse('?tag=mechanism%3A%3Aflat-loop', '#stats')
-};
-
-window.location.search = '?tag=mechanism%3A%3Aflat-loop&tag=focus%3A%3Aarchitecture&q=LayerNorm';
-window.location.hash = '#papers';
-dispatchWindowEvent('popstate');
-const restored = {
-  urlTags: Array.from(URL_TAG_FILTER_KEYS).sort(),
-  routeOwned: Array.from(ROUTE_OWNED_TAG_FILTER_KEYS).sort(),
-  active: Array.from(ACTIVE_TAG_FILTERS).sort(),
-  query: searchInput.value,
-  searchCall: searchCalls.at(-1)
-};
-
-window.location.hash = '#section-designs';
-dispatchWindowEvent('hashchange');
-const categoryRoute = {
-  urlTags: Array.from(URL_TAG_FILTER_KEYS).sort(),
-  routeOwned: Array.from(ROUTE_OWNED_TAG_FILTER_KEYS).sort(),
-  active: Array.from(ACTIVE_TAG_FILTERS).sort(),
-  query: searchInput.value,
-  searchCall: searchCalls.at(-1)
-};
-
-window.location.search = '?q=plain';
-dispatchWindowEvent('popstate');
-const leftRoute = {
-  urlTags: Array.from(URL_TAG_FILTER_KEYS).sort(),
-  routeOwned: Array.from(ROUTE_OWNED_TAG_FILTER_KEYS).sort(),
-  active: Array.from(ACTIVE_TAG_FILTERS).sort(),
-  query: searchInput.value,
-  searchCall: searchCalls.at(-1)
-};
-
-window.location.search = '?tag=mechanism%3A%3Aflat-loop&tag=focus%3A%3Aarchitecture&q=again';
-dispatchWindowEvent('popstate');
-window.location.hash = '#stats';
-dispatchWindowEvent('hashchange');
-const statsRoute = {
-  urlTags: Array.from(URL_TAG_FILTER_KEYS).sort(),
-  routeOwned: Array.from(ROUTE_OWNED_TAG_FILTER_KEYS).sort(),
-  active: Array.from(ACTIVE_TAG_FILTERS).sort(),
-  query: searchInput.value,
-  searchCall: searchCalls.at(-1)
-};
-
-process.stdout.write(JSON.stringify({
-  parsed: parsed,
-  listeners: {
-    popstate: (windowListeners.popstate || []).length,
-    hashchange: (windowListeners.hashchange || []).length
-  },
-  restored: restored,
-  categoryRoute: categoryRoute,
-  leftRoute: leftRoute,
-  statsRoute: statsRoute,
-  uiUpdates: uiUpdates
-}));
-""")
-        self.assertEqual(
-            result["parsed"],
-            {
-                "valid": ["focus::architecture", "mechanism::flat-loop"],
-                "section": ["focus::architecture", "mechanism::flat-loop"],
-                "duplicate": ["mechanism::flat-loop"],
-                "unknown": [],
-                "malformed": [],
-                "nonPaper": [],
-                "blogs": [],
-                "legacyBlogs": [],
-                "stats": [],
-            },
-        )
-        self.assertEqual(result["listeners"], {"popstate": 1, "hashchange": 1})
-        self.assertEqual(
-            result["restored"],
-            {
-                "urlTags": ["focus::architecture", "mechanism::flat-loop"],
-                "routeOwned": ["mechanism::flat-loop"],
-                "active": ["focus::architecture", "mechanism::flat-loop"],
-                "query": "LayerNorm",
-                "searchCall": "LayerNorm",
-            },
-        )
-        self.assertEqual(
-            result["categoryRoute"],
-            {
-                "urlTags": ["focus::architecture", "mechanism::flat-loop"],
-                "routeOwned": ["mechanism::flat-loop"],
-                "active": ["focus::architecture", "mechanism::flat-loop"],
-                "query": "LayerNorm",
-                "searchCall": "LayerNorm",
-            },
-        )
-        self.assertEqual(
-            result["leftRoute"],
-            {
-                "urlTags": [],
-                "routeOwned": [],
-                "active": ["focus::architecture"],
-                "query": "plain",
-                "searchCall": "plain",
-            },
-        )
-        self.assertEqual(
-            result["statsRoute"],
-            {
-                "urlTags": [],
-                "routeOwned": [],
-                "active": ["focus::architecture"],
-                "query": "again",
-                "searchCall": "again",
-            },
-        )
-        self.assertEqual(result["uiUpdates"], 4)
-
-    def test_removing_one_url_tag_preserves_other_tags_and_query(self):
-        """Removing one active chip keeps the remaining URL filter and q value."""
-        result = self.run_top_level_tab_block("#papers", """
-ALL_PAPERS = [{ _tagKeySet: new Set(['mechanism::flat-loop', 'focus::architecture']) }];
-TAG_FILTER_LOOKUP = {
-  'mechanism::flat-loop': { displayLabel: 'flat-loop' },
-  'focus::architecture': { displayLabel: 'architecture' }
-};
-CATALOG_DATA_READY = true;
-window.location.href = 'https://example.test/index.html?tag=mechanism%3A%3Aflat-loop&tag=focus%3A%3Aarchitecture&q=LayerNorm#papers';
-window.location.search = '?tag=mechanism%3A%3Aflat-loop&tag=focus%3A%3Aarchitecture&q=LayerNorm';
-restoreTagDrilldownFromUrl();
-toggleTagFilter('mechanism::flat-loop');
-process.stdout.write(JSON.stringify({
-  urlTags: Array.from(URL_TAG_FILTER_KEYS).sort(),
-  routeOwned: Array.from(ROUTE_OWNED_TAG_FILTER_KEYS).sort(),
-  active: Array.from(ACTIVE_TAG_FILTERS).sort(),
-  pushes: pushStateCalls
-}));
-""")
-        self.assertEqual(
-            result,
-            {
-                "urlTags": ["focus::architecture"],
-                "routeOwned": ["focus::architecture"],
-                "active": ["focus::architecture"],
-                "pushes": [
-                    {"tags": ["focus::architecture"], "q": "LayerNorm", "hash": "#papers"}
-                ],
-            },
-        )
-
-        html = INDEX_HTML_PATH.read_text(encoding="utf-8")
-        toggle_start = html.index("function toggleTagFilter(tagKey) {")
-        toggle_end = html.index("function renderTagFilterGroups() {", toggle_start)
-        self.assertIn("removeTagFilter(tagKey);", html[toggle_start:toggle_end])
-
-    def test_duplicate_history_events_restore_tag_route_only_once(self):
-        """A combined popstate/hashchange navigation has one effective restore."""
-        result = self.run_top_level_tab_block("#papers", """
-ALL_PAPERS = [{ _tagKeySet: new Set(['mechanism::flat-loop']) }];
-TAG_FILTER_LOOKUP = { 'mechanism::flat-loop': { displayLabel: 'flat-loop' } };
-CATALOG_DATA_READY = true;
-window.location.search = '?tag=mechanism%3A%3Aflat-loop&q=layer';
-dispatchWindowEvent('popstate');
-dispatchWindowEvent('hashchange');
-process.stdout.write(JSON.stringify({
-  urlTags: Array.from(URL_TAG_FILTER_KEYS),
-  routeOwned: Array.from(ROUTE_OWNED_TAG_FILTER_KEYS),
-  uiUpdates: uiUpdates,
-  searchCalls: searchCalls
-}));
-""")
-        self.assertEqual(
-            result,
-            {
-                "urlTags": ["mechanism::flat-loop"],
-                "routeOwned": ["mechanism::flat-loop"],
-                "uiUpdates": 1,
-                "searchCalls": ["layer"],
-            },
-        )
-
-    def test_tag_route_does_not_claim_an_existing_active_filter(self):
-        """Leaving a route retains a matching filter that predated the route."""
-        result = self.run_top_level_tab_block("#papers", """
-ALL_PAPERS = [{ _tagKeySet: new Set(['mechanism::flat-loop']) }];
-TAG_FILTER_LOOKUP = { 'mechanism::flat-loop': { displayLabel: 'flat-loop' } };
-ACTIVE_TAG_FILTERS = new Set(['mechanism::flat-loop']);
-CATALOG_DATA_READY = true;
-window.location.search = '?tag=mechanism%3A%3Aflat-loop';
-dispatchWindowEvent('popstate');
-window.location.search = '';
-dispatchWindowEvent('popstate');
-process.stdout.write(JSON.stringify({
-  urlTags: Array.from(URL_TAG_FILTER_KEYS),
-  routeOwned: Array.from(ROUTE_OWNED_TAG_FILTER_KEYS),
-  active: Array.from(ACTIVE_TAG_FILTERS)
-}));
-""")
-        self.assertEqual(
-            result,
-            {
-                "urlTags": [],
-                "routeOwned": [],
-                "active": ["mechanism::flat-loop"],
-            },
-        )
-
-    def test_search_query_sync_uses_replace_state_and_preserves_tag_route(self):
-        """Free search updates q in place without losing URL tags or the hash."""
-        result = self.run_top_level_tab_block("#papers", """
-if (typeof syncSearchQueryToUrl !== 'function') {
-  process.stdout.write(JSON.stringify({ missing: true }));
-} else {
-  window.location.href = 'https://example.test/index.html?tag=mechanism%3A%3Aflat-loop&tag=focus%3A%3Aarchitecture#papers';
-  window.location.search = '?tag=mechanism%3A%3Aflat-loop&tag=focus%3A%3Aarchitecture';
-  syncSearchQueryToUrl('Layer Norm');
-  syncSearchQueryToUrl('');
-  process.stdout.write(JSON.stringify({ calls: replaceStateCalls }));
-}
+window.location.href = 'https://example.test/index.html?section=4&sharing=full#papers';
+window.location.search = '?section=4&sharing=full';
+syncSearchQueryToUrl('Layer Norm');
+syncSearchQueryToUrl('');
+process.stdout.write(JSON.stringify({ calls: replaceStateCalls }));
 """)
         self.assertEqual(
             result,
             {
                 "calls": [
-                    {
-                        "tags": ["mechanism::flat-loop", "focus::architecture"],
-                        "q": "Layer Norm",
-                        "hash": "#papers",
-                    },
-                    {
-                        "tags": ["mechanism::flat-loop", "focus::architecture"],
-                        "q": None,
-                        "hash": "#papers",
-                    },
+                    {"search": "?section=4&sharing=full&q=Layer+Norm", "hash": "#papers"},
+                    {"search": "?section=4&sharing=full", "hash": "#papers"},
                 ]
             },
         )
@@ -1544,8 +1494,8 @@ if (typeof syncSearchQueryToUrl !== 'function') {
     def test_search_input_syncs_q_immediately_and_debounces_captured_query(self):
         """Navigation sees the latest q while rendering still uses the input event value."""
         result = self.run_top_level_tab_block("#papers", """
-window.location.href = 'https://example.test/index.html?tag=mechanism%3A%3Aflat-loop&tag=focus%3A%3Aarchitecture#papers';
-window.location.search = '?tag=mechanism%3A%3Aflat-loop&tag=focus%3A%3Aarchitecture';
+window.location.href = 'https://example.test/index.html?claims=stability#papers';
+window.location.search = '?claims=stability';
 initSearch();
 searchInput.value = 'first query';
 const eventTarget = { value: 'first query' };
@@ -1560,11 +1510,7 @@ setTimeout(function() {
   }));
 }, 180);
 """)
-        expected_call = {
-            "tags": ["mechanism::flat-loop", "focus::architecture"],
-            "q": "first query",
-            "hash": "#papers",
-        }
+        expected_call = {"search": "?claims=stability&q=first+query", "hash": "#papers"}
         self.assertEqual(
             result,
             {
@@ -1604,13 +1550,7 @@ setTimeout(function() {
   }));
 }, 180);
 """)
-        self.assertEqual(
-            result,
-            {
-                "input": "query B",
-                "searchCalls": ["query B"],
-            },
-        )
+        self.assertEqual(result, {"input": "query B", "searchCalls": ["query B"]})
 
         html = INDEX_HTML_PATH.read_text(encoding="utf-8")
         search_start = html.index("function initSearch() {")
@@ -1619,35 +1559,12 @@ setTimeout(function() {
         self.assertIn("searchEl.value !== query", timer_source)
         self.assertIn("new URLSearchParams(window.location.search).get('q')", timer_source)
 
-    def test_tag_filter_chip_counts_render_as_numbers_only(self):
-        html = INDEX_HTML_PATH.read_text(encoding="utf-8")
-        self.assertIn("+ '<span class=\"tag-filter-chip-count\">' + escapeHtml(tagCount) + '</span>'", html)
-        self.assertNotIn("tag.count + ' papers'", html)
-        self.assertNotIn("tag.count + \" papers\"", html)
-
-    def test_tag_filter_tags_are_sorted_by_descending_count(self):
-        html = INDEX_HTML_PATH.read_text(encoding="utf-8")
-        self.assertIn("const countDiff = b.count - a.count;", html)
-        self.assertIn("if (countDiff !== 0) return countDiff;", html)
-
-    def test_tag_filter_exposes_mechanism_focus_and_domain_groups(self):
-        html = INDEX_HTML_PATH.read_text(encoding="utf-8")
-        self.assertIn("mechanism: 'Loop Mechanism'", html)
-        self.assertIn("focus: 'Focus Tags'", html)
-        self.assertIn("domain: 'Domain Tags'", html)
-        self.assertIn("paper.mechanism_tags", html)
-        self.assertNotIn("paper.category_path", html)
-        self.assertNotIn("paper.subcategory", html)
-        self.assertNotIn("normalizePathSegments", html)
-        self.assertNotIn("family: 'Family Tags'", html)
-        self.assertNotIn("paper.family_tags", html)
-
     def test_paper_titles_select_details_and_keep_primary_source_links(self):
         """Reading-desk titles select a resource while sources remain native links."""
         html = INDEX_HTML_PATH.read_text(encoding="utf-8")
         desk = READING_DESK_JS_PATH.read_text(encoding="utf-8")
         render_start = html.index("function renderCard(paper, query) {")
-        render_end = html.index("// ── State & Category Tree", render_start)
+        render_end = html.index("// ── State & Survey Taxonomy", render_start)
         card = html[render_start:render_end]
         self.assertIn("function getPrimaryPaperUrl(paper)", html)
         self.assertIn("paper.links.blog", html)
@@ -1661,10 +1578,13 @@ setTimeout(function() {
         self.assertIn("getPrimaryPaperUrl(paper)", desk)
         self.assertIn("escapeHtml(primaryUrl)", desk)
 
-    def test_foundation_badge_remains_without_classification_disclosure(self):
-        """Removing the classification explanation does not remove paper status."""
+    def test_survey_core_badge_replaces_the_foundation_badge(self):
+        """Survey-core status is the only anchor badge; no classification disclosure remains."""
         html = INDEX_HTML_PATH.read_text(encoding="utf-8")
-        self.assertIn("foundation-badge", html)
+        self.assertIn("survey-core-badge", html)
+        self.assertIn("paper.survey_core === true", html)
+        self.assertIn("A core reference of the Looped Models Survey", html)
+        self.assertNotIn("foundation", html)
         self.assertNotIn("category-disclaimer", html)
         self.assertNotIn("desk-scope", html)
         self.assertNotIn("About the classification", html)
@@ -1682,14 +1602,14 @@ setTimeout(function() {
         html = INDEX_HTML_PATH.read_text(encoding="utf-8")
         desk = READING_DESK_JS_PATH.read_text(encoding="utf-8")
         render_start = html.index("function renderCard(paper, query) {")
-        render_end = html.index("// ── State & Category Tree", render_start)
+        render_end = html.index("// ── State & Survey Taxonomy", render_start)
         marker = '(paper.must_read ? \'<span class="desk-must-read">Must read</span>\' : \'\')'
         self.assertIn(marker, html[render_start:render_end])
         self.assertIn(marker, desk)
         self.assertIn("must-read-marker", html)
         self.assertIn("paper.must_read", html)
         self.assertIn("🌟", html)
-        self.assertIn("mustReadMarkerHtml + '<span>' + highlightQuery(paper.title, query) + '</span>' + foundationBadgeHtml + catalogFitBadgeHtml", html)
+        self.assertIn("mustReadMarkerHtml + '<span>' + highlightQuery(paper.title, query) + '</span>' + surveyCoreBadgeHtml + catalogFitBadgeHtml", html)
 
     def test_filter_sidebar_hooks_exist_and_top_panel_resizer_is_removed(self):
         html = INDEX_HTML_PATH.read_text(encoding="utf-8")
@@ -1697,7 +1617,11 @@ setTimeout(function() {
         self.assertIn('aria-controls="filter-sidebar-panel"', html)
         self.assertIn('id="filter-sidebar-panel"', html)
         self.assertIn('class="controls-bar filter-sidebar-controls"', html)
-        self.assertIn('class="tag-filter-shell filter-sidebar-tag-shell"', html)
+        self.assertIn('class="facet-filter-shell filter-sidebar-facet-shell"', html)
+        sidebar_start = html.index('id="filter-sidebar-panel"')
+        sidebar = html[sidebar_start:html.index("</aside>", sidebar_start)]
+        self.assertIn('<select id="section-filter" onchange="setSectionFilter(this.value)">', sidebar)
+        self.assertIn('id="facet-filter-groups"', sidebar)
         self.assertIn("function setFilterSidebarOpen(isOpen) {", html)
         self.assertIn("function updateFilterSidebarSummary() {", html)
         self.assertIn("document.body.classList.toggle('filter-sidebar-open', isOpen);", html)
@@ -1708,7 +1632,8 @@ setTimeout(function() {
         self.assertIn("body.filter-sidebar-open > header {\n        padding: 12px;", html)
         self.assertIn(".filter-sidebar-controls {\n        grid-template-columns: 1fr;\n        gap: 10px;\n        overflow-x: visible;", html)
         self.assertIn(".filter-sidebar-controls .date-input {\n        flex: 1 1 128px;\n        width: auto;\n        min-width: 0;", html)
-        self.assertIn(".tag-chip {\n        max-width: 100%;", html)
+        chip_css = html[html.index(".facet-filter-chip {\n"):]
+        self.assertIn("max-width: 100%;", chip_css[:chip_css.index("}")])
         init_start = html.index("function initFilterSidebarControls() {")
         init_end = html.index("function rerenderCurrentResults() {", init_start)
         init_source = html[init_start:init_end]
@@ -1722,19 +1647,29 @@ setTimeout(function() {
         self.assertNotIn("function initTopPanelResizer() {", html)
         self.assertNotIn("top-panel-collapsed", html)
 
-    def test_category_counts_are_synced_after_filtering(self):
+    def test_survey_nav_counts_are_synced_after_filtering(self):
+        """Chapter navigation counts follow the filtered papers by primary chapter."""
         html = INDEX_HTML_PATH.read_text(encoding="utf-8")
-        self.assertIn("function buildFilteredNodeCounts(filteredPapers) {", html)
-        self.assertIn("function syncDynamicCounts(filteredPapers) {", html)
-        self.assertIn("counts.blogs = blogCount;", html)
-        self.assertIn("syncDynamicCounts(filteredPapers);", html)
-        self.assertIn("section.dataset.nodeKey", html)
-        self.assertIn("node.dataset.nodeKey", html)
+        sync_start = html.index("function syncSurveyNavCounts(filteredPapers) {")
+        sync = html[sync_start:html.index("function renderAllGrids(q) {", sync_start)]
+        self.assertIn("ACTIVE_TOP_LEVEL_TAB === 'blogs' ? {} : buildPrimaryChapterCounts(filteredPapers)", sync)
+        self.assertIn(".survey-nav-link[data-chapter]", sync)
+        self.assertIn("link.classList.toggle('is-empty', count === 0);", sync)
+        renderer_start = html.index("function renderAllGrids(q) {")
+        renderer = html[renderer_start:html.index("function updateDailyBriefingNotice(", renderer_start)]
+        self.assertIn("syncSurveyNavCounts(filteredPapers);", renderer)
+        nav_start = html.index("function renderSurveyNav() {")
+        nav = html[nav_start:html.index("function activateSurveyNavLink(", nav_start)]
+        self.assertIn("SURVEY.chapters.map", nav)
+        self.assertIn("getChapterDomId(chapter.number)", nav)
+        self.assertIn('<span class="survey-nav-count">0</span>', nav)
+        self.assertNotIn("nodeKey", html)
 
     def test_blogs_section_support_exists_in_frontend(self):
         html = INDEX_HTML_PATH.read_text(encoding="utf-8")
         self.assertIn("let ALL_BLOGS = [];", html)
-        self.assertIn("function createBlogTreeNode()", html)
+        self.assertIn("function createBlogSection()", html)
+        self.assertNotIn("createBlogTreeNode", html)
         self.assertIn("BLOG_SECTION_META", html)
         self.assertIn("section-blogs", html)
         self.assertIn("blogs-grid", html)
@@ -1746,13 +1681,13 @@ setTimeout(function() {
         build_end = html.index("// ── Search", build_start)
         list_builder = html[build_start:build_end]
         blog_start = html.index("function createBlogSection()")
-        blog_end = html.index("function renderTreeInto(container)", blog_start)
+        blog_end = html.index("function renderSurveyNav()", blog_start)
         blog_builder = html[blog_start:blog_end]
         renderer_start = html.index("function renderAllGrids(q) {")
         renderer_end = html.index("function updateDailyBriefingNotice(briefing)", renderer_start)
         renderer = html[renderer_start:renderer_end]
 
-        self.assertIn('<div class="papers-grid" id="papers-grid"></div>', list_builder)
+        self.assertIn("container.innerHTML = '<div class=\"survey-list\" id=\"papers-grid\"></div>';", list_builder)
         self.assertNotIn("createCategorySection", html)
         self.assertIn("grid.id = 'blogs-grid';", blog_builder)
         for builder in (list_builder, blog_builder):
@@ -1760,7 +1695,7 @@ setTimeout(function() {
             self.assertNotIn("renderCard(", builder)
 
         self.assertIn(
-            "grid.innerHTML = isBlogs ? '' : filteredPapers.map(function(paper) { return renderCard(paper, query); }).join('');",
+            "grid.innerHTML = isBlogs || !isList ? '' : renderSurveyListHtml(filteredPapers, query);",
             renderer,
         )
         self.assertIn(
@@ -1770,7 +1705,7 @@ setTimeout(function() {
         self.assertEqual(html.count("grid.innerHTML ="), 1)
         self.assertEqual(html.count("blogsGrid.innerHTML ="), 1)
 
-    def test_table_rows_are_rendered_only_for_table_view_and_cleared_in_category_view(self):
+    def test_table_rows_are_rendered_only_for_table_view_and_cleared_in_list_view(self):
         """Preserve lazy table rendering when view modes change."""
         html = INDEX_HTML_PATH.read_text(encoding="utf-8")
         renderer_start = html.index("function renderAllGrids(q) {")
@@ -1909,11 +1844,13 @@ setTimeout(function() {
         meta_end = html.index("}", meta_start)
         self.assertIn("display: none;", html[meta_start:meta_end])
 
-    def test_papers_list_does_not_generate_category_groups(self):
-        """Categories belong in Filters, not in the globally sorted paper list."""
+    def test_papers_list_is_grouped_by_survey_part_chapter_and_section(self):
+        """The list view follows the survey outline; the old category shelves are gone."""
         html = INDEX_HTML_PATH.read_text(encoding="utf-8")
         self.assertNotIn("function createCategorySection", html)
-        self.assertIn('id="category-filter" onchange="setCategoryFilter(this.value)"', html)
+        self.assertIn("function renderSurveyListHtml(papers, query) {", html)
+        self.assertIn("function renderSurveySectionHtml(section, papers, query) {", html)
+        self.assertIn('id="section-filter" onchange="setSectionFilter(this.value)"', html)
 
     def test_quick_filter_controls_and_table_view_markup_exist(self):
         """Expose the supported quick filters alongside both catalog views."""
@@ -1942,8 +1879,8 @@ setTimeout(function() {
             'class="sort-btn table-sort-btn" data-sort="date" onclick="setSort(\'date\')">Date</button>',
             '<th scope="col">Venue</th>',
             '<th scope="col">Links</th>',
-            '<th scope="col">Focus</th>',
-            '<th scope="col">Domains</th>',
+            '<th scope="col">Survey section</th>',
+            '<th scope="col">Design axes</th>',
             'class="sort-btn table-sort-btn" data-sort="citations" onclick="setSort(\'citations\')">Citations</button>',
             'class="sort-btn table-sort-btn" data-sort="stars" onclick="setSort(\'stars\')">Stars</button>',
         )
@@ -1963,6 +1900,8 @@ setTimeout(function() {
         self.assertEqual(header_snippet.count('<th scope="col">'), 8)
         self.assertNotIn('<th scope="col">Year</th>', header_snippet)
         self.assertNotIn("Category / Subcategory", header_snippet)
+        self.assertNotIn("Focus", header_snippet)
+        self.assertNotIn("Domains", header_snippet)
         self.assertNotIn("Added", header_snippet)
 
     def test_top_level_papers_stats_and_blogs_tab_shell_exists(self):
@@ -2008,7 +1947,7 @@ setTimeout(function() {
         self.assertIn('<svg class="site-brand-mark"', sidebar)
         self.assertNotIn('A field guide to recurrent depth', sidebar)
         self.assertNotIn('id="sidebar-nav"', sidebar)
-        self.assertIn('id="category-filter"', tools)
+        self.assertIn('id="section-filter"', tools)
         self.assertNotIn('id="mobile-directory"', html)
         self.assertIn('<div class="top-level-tabs" role="tablist"', sidebar)
         self.assertIn('<div class="header-actions">', sidebar)
@@ -2107,7 +2046,7 @@ setTimeout(function() {
         self.assertIn(".filter-sidebar-controls .date-input {\n        flex: 0 0 132px;", editorial_css)
 
     def test_top_level_tabs_restore_hash_and_support_keyboard_navigation(self):
-        """Top-level tabs must preserve category hashes and expose full tab keyboard UX."""
+        """Top-level tabs must preserve survey anchors and expose full tab keyboard UX."""
         html = INDEX_HTML_PATH.read_text(encoding="utf-8")
 
         hash_start = html.index("function getTopLevelTabFromHash(hash) {")
@@ -2128,7 +2067,8 @@ setTimeout(function() {
             "setTopLevelTab(getTopLevelTabFromHash(window.location.hash), { updateHash: false })",
             init_helper,
         )
-        self.assertIn("restoreCategoryHashPosition(window.location.hash)", init_helper)
+        self.assertIn("restoreSurveyHashPosition(window.location.hash)", init_helper)
+        self.assertIn("restoreFiltersFromUrl()", init_helper)
 
         restore_start = html.index("function restoreTopLevelTabAfterCatalogLoad() {")
         restore_end = html.index("initTopLevelTabInteractions();", restore_start)
@@ -2144,13 +2084,13 @@ setTimeout(function() {
         data_ready_index = build_helper.index("CATALOG_DATA_READY = true;")
         sections_created_index = build_helper.index('id="papers-grid"')
         restore_index = build_helper.index("restoreTopLevelTabAfterCatalogLoad();")
-        category_restore_index = build_helper.index("restoreCategoryHashPosition(window.location.hash);")
+        survey_restore_index = build_helper.index("restoreSurveyHashPosition(window.location.hash);")
         self.assertLess(data_ready_index, restore_index)
-        self.assertLess(sections_created_index, category_restore_index)
-        self.assertLess(restore_index, category_restore_index)
+        self.assertLess(sections_created_index, survey_restore_index)
+        self.assertLess(restore_index, survey_restore_index)
 
         bootstrap_start = html.index("initTopLevelTabInteractions();", restore_end)
-        bootstrap_end = html.index("const TAG_GROUP_LABELS = {", bootstrap_start)
+        bootstrap_end = html.index("initResearchPrompt();", bootstrap_start)
         bootstrap_helper = html[bootstrap_start:bootstrap_end]
         self.assertIn(
             "initTopLevelTabInteractions();\nsetTopLevelTab(getTopLevelTabFromHash(window.location.hash), { updateHash: false });",
@@ -2164,9 +2104,9 @@ setTimeout(function() {
         self.assertIn("window.location.hash = nextHash", setter_helper)
 
     def test_top_level_hash_mapping_behavior(self):
-        """Blogs has its own route while legacy category hashes remain compatible."""
+        """Blogs has its own route while survey anchors stay on Papers."""
         result = self.run_top_level_tab_block("", """
-const hashes = ['#stats', '#papers', '#blogs', '#section-blogs', '', '#section-designs'];
+const hashes = ['#stats', '#papers', '#blogs', '#section-blogs', '', '#part-building', '#chapter-4', '#section-4-5'];
 const result = hashes.map(function(hash) {
   return { hash: hash, tab: getTopLevelTabFromHash(hash) };
 });
@@ -2180,7 +2120,9 @@ process.stdout.write(JSON.stringify(result));
                 {"hash": "#blogs", "tab": "blogs"},
                 {"hash": "#section-blogs", "tab": "blogs"},
                 {"hash": "", "tab": "papers"},
-                {"hash": "#section-designs", "tab": "papers"},
+                {"hash": "#part-building", "tab": "papers"},
+                {"hash": "#chapter-4", "tab": "papers"},
+                {"hash": "#section-4-5", "tab": "papers"},
             ],
         )
 
@@ -2188,9 +2130,7 @@ process.stdout.write(JSON.stringify(result));
         """Blogs owns the shared content panel and legacy links never scroll Papers."""
         result = self.run_top_level_tab_block("#papers", """
 CATALOG_DATA_READY = true;
-HAS_RESTORED_TAG_DRILLDOWN_URL = true;
-ACTIVE_CATEGORY_FILTER = 'designs';
-LAST_RESTORED_SEARCH_QUERY = 'depth';
+ACTIVE_SECTION_FILTER = 'architecture/topology';
 searchInput.value = 'depth';
 window.location.search = '?q=depth';
 tabs[2].listeners.click[0]();
@@ -2212,7 +2152,7 @@ dispatchWindowEvent('hashchange');
 flushAnimationFrames();
 process.stdout.write(JSON.stringify({
   entered,
-  legacy: { active: ACTIVE_TOP_LEVEL_TAB, category: ACTIVE_CATEGORY_FILTER, scrolls: scrollRequests }
+  legacy: { active: ACTIVE_TOP_LEVEL_TAB, section: ACTIVE_SECTION_FILTER, scrolls: scrollRequests }
 }));
 """)
         self.assertEqual(result["entered"], {
@@ -2228,7 +2168,7 @@ process.stdout.write(JSON.stringify({
             "searches": ["depth"],
         })
         self.assertEqual(result["legacy"], {
-            "active": "blogs", "category": "designs", "scrolls": [],
+            "active": "blogs", "section": "architecture/topology", "scrolls": [],
         })
 
     def test_top_level_keyboard_navigation_behavior(self):
@@ -2349,8 +2289,8 @@ process.stdout.write(JSON.stringify(result));
             },
         )
 
-    def test_top_level_click_history_reconcile_and_category_restore_behavior(self):
-        """History maps old category links to Filters and the visible list without rewriting."""
+    def test_top_level_click_history_reconcile_and_survey_anchor_restore_behavior(self):
+        """History restores survey anchors in the list view without touching filters or the hash."""
         result = self.run_top_level_tab_block("", """
 tabs[1].listeners.click[0]();
 const firstClick = { active: ACTIVE_TOP_LEVEL_TAB, writes: hashWrites.slice() };
@@ -2364,11 +2304,12 @@ const statsHistory = { active: ACTIVE_TOP_LEVEL_TAB, writes: hashWrites.slice() 
 
 CATALOG_DATA_READY = true;
 CURRENT_VIEW = 'table';
-setBrowserHash('#section-designs');
+ACTIVE_SECTION_FILTER = 'architecture/topology';
+setBrowserHash('#chapter-4');
 dispatchWindowEvent('hashchange');
-const categoryHistoryBeforeFrame = {
+const anchorBeforeFrame = {
   active: ACTIVE_TOP_LEVEL_TAB,
-  category: ACTIVE_CATEGORY_FILTER,
+  section: ACTIVE_SECTION_FILTER,
   view: CURRENT_VIEW,
   hash: window.location.hash,
   writes: hashWrites.slice(),
@@ -2376,50 +2317,52 @@ const categoryHistoryBeforeFrame = {
   scrolls: scrollRequests.slice()
 };
 flushAnimationFrames();
-const categoryHistoryAfterFrame = { scrolls: scrollRequests.slice() };
+const anchorAfterFrame = { scrolls: scrollRequests.slice(), activated: activatedNavTargets.slice() };
 
 scrollRequests.length = 0;
-setBrowserHash('#section-designs');
+setBrowserHash('#chapter-4');
 dispatchWindowEvent('hashchange');
 setBrowserHash('#stats');
 dispatchWindowEvent('hashchange');
 flushAnimationFrames();
-const staleCategoryFrame = {
+const staleAnchorFrame = {
   active: ACTIVE_TOP_LEVEL_TAB,
   hash: window.location.hash,
   scrolls: scrollRequests.slice()
 };
 
-const result = {
+setBrowserHash('#chapter-four');
+dispatchWindowEvent('hashchange');
+const invalidAnchor = { active: ACTIVE_TOP_LEVEL_TAB, queuedFrames: animationFrameCallbacks.length };
+
+process.stdout.write(JSON.stringify({
   firstClick: firstClick,
   repeatedClick: repeatedClick,
   statsHistory: statsHistory,
-  categoryHistoryBeforeFrame: categoryHistoryBeforeFrame,
-  categoryHistoryAfterFrame: categoryHistoryAfterFrame,
-  staleCategoryFrame: staleCategoryFrame
-};
-process.stdout.write(JSON.stringify(result));
+  anchorBeforeFrame: anchorBeforeFrame,
+  anchorAfterFrame: anchorAfterFrame,
+  staleAnchorFrame: staleAnchorFrame,
+  invalidAnchor: invalidAnchor
+}));
 """)
         self.assertEqual(result["firstClick"], {"active": "stats", "writes": ["#stats"]})
         self.assertEqual(result["repeatedClick"], {"active": "stats", "writes": ["#stats"]})
         self.assertEqual(result["statsHistory"], {"active": "stats", "writes": []})
         self.assertEqual(
-            result["categoryHistoryBeforeFrame"],
+            result["anchorBeforeFrame"],
             {
                 "active": "papers",
-                "category": "designs",
-                "view": "category",
-                "hash": "#section-designs",
+                "section": "architecture/topology",
+                "view": "list",
+                "hash": "#chapter-4",
                 "writes": [],
                 "queuedFrames": 1,
                 "scrolls": [],
             },
         )
-        self.assertEqual(result["categoryHistoryAfterFrame"], {"scrolls": ["papers-grid"]})
-        self.assertEqual(
-            result["staleCategoryFrame"],
-            {"active": "stats", "hash": "#stats", "scrolls": []},
-        )
+        self.assertEqual(result["anchorAfterFrame"], {"scrolls": ["chapter-4"], "activated": ["chapter-4"]})
+        self.assertEqual(result["staleAnchorFrame"], {"active": "stats", "hash": "#stats", "scrolls": []})
+        self.assertEqual(result["invalidAnchor"], {"active": "papers", "queuedFrames": 0})
 
     def test_catalog_load_reconcile_preserves_empty_hash_user_choice_but_honors_hash(self):
         """Load completion preserves an unrepresented user choice unless a hash drives state."""
@@ -2440,13 +2383,13 @@ const explicitStats = ACTIVE_TOP_LEVEL_TAB;
 
 setBrowserHash('#section-blogs');
 restoreTopLevelTabAfterCatalogLoad();
-const explicitCategory = ACTIVE_TOP_LEVEL_TAB;
+const explicitBlogsAnchor = ACTIVE_TOP_LEVEL_TAB;
 
 process.stdout.write(JSON.stringify({
   emptyHashAfterClick: emptyHashAfterClick,
   explicitPapers: explicitPapers,
   explicitStats: explicitStats,
-  explicitCategory: explicitCategory
+  explicitBlogsAnchor: explicitBlogsAnchor
 }));
 """)
         self.assertEqual(
@@ -2455,15 +2398,15 @@ process.stdout.write(JSON.stringify({
                 "emptyHashAfterClick": "stats",
                 "explicitPapers": "papers",
                 "explicitStats": "stats",
-                "explicitCategory": "blogs",
+                "explicitBlogsAnchor": "blogs",
             },
         )
 
-    def test_paper_section_navigation_leaves_stats_and_restores_repeated_hash(self):
-        """Sidebar navigation must reveal Papers and restore even when the hash is unchanged."""
+    def test_survey_anchor_navigation_leaves_stats_and_restores_repeated_hash(self):
+        """Chapter navigation must reveal Papers and restore even when the hash is unchanged."""
         result = self.run_top_level_tab_block("#stats", """
 CATALOG_DATA_READY = true;
-navigateToPaperSection('section-designs');
+navigateToSurveyAnchor('section-4-5');
 const firstNavigation = {
   active: ACTIVE_TOP_LEVEL_TAB,
   hash: window.location.hash,
@@ -2478,11 +2421,13 @@ const firstScrolls = scrollRequests.slice();
 
 hashWrites.length = 0;
 scrollRequests.length = 0;
-navigateToPaperSection('section-designs');
+CURRENT_VIEW = 'table';
+navigateToSurveyAnchor('section-4-5');
 const repeatedNavigation = {
   active: ACTIVE_TOP_LEVEL_TAB,
   hash: window.location.hash,
   writes: hashWrites.slice(),
+  view: CURRENT_VIEW,
   queuedFrames: animationFrameCallbacks.length
 };
 flushAnimationFrames();
@@ -2491,31 +2436,69 @@ process.stdout.write(JSON.stringify({
   firstNavigation: firstNavigation,
   firstScrolls: firstScrolls,
   repeatedNavigation: repeatedNavigation,
-  repeatedScrolls: scrollRequests
+  repeatedScrolls: scrollRequests,
+  activated: activatedNavTargets
 }));
 """)
         self.assertEqual(
             result["firstNavigation"],
             {
                 "active": "papers",
-                "hash": "#section-designs",
-                "writes": ["#section-designs"],
+                "hash": "#section-4-5",
+                "writes": ["#section-4-5"],
                 "papersHidden": False,
                 "statsHidden": True,
                 "queuedFrames": 0,
             },
         )
-        self.assertEqual(result["firstScrolls"], ["papers-grid"])
+        self.assertEqual(result["firstScrolls"], ["section-4-5"])
         self.assertEqual(
             result["repeatedNavigation"],
+            {"active": "papers", "hash": "#section-4-5", "writes": [], "view": "list", "queuedFrames": 1},
+        )
+        self.assertEqual(result["repeatedScrolls"], ["section-4-5"])
+        self.assertEqual(result["activated"], ["section-4-5", "section-4-5"])
+
+    def test_stats_chapter_links_open_the_unfiltered_list_at_the_anchor(self):
+        """Stats chapter counts are unfiltered, so following one clears filters before scrolling."""
+        result = self.run_top_level_tab_block("#stats", """
+CATALOG_DATA_READY = true;
+window.location.href = 'https://example.test/index.html?section=9&sharing=full&q=norm#stats';
+window.location.search = '?section=9&sharing=full&q=norm';
+ACTIVE_SECTION_FILTER = '9';
+ACTIVE_FACET_FILTERS = { sharing: new Set(['full']) };
+HAS_COMMENTS_ONLY = true;
+publicationDateEnd.value = '2026-01-01';
+navigateToUnfilteredSurveyAnchor('chapter-4');
+const before = {
+  pushes: pushStateCalls.slice(),
+  active: ACTIVE_TOP_LEVEL_TAB,
+  section: ACTIVE_SECTION_FILTER,
+  groups: Object.keys(ACTIVE_FACET_FILTERS),
+  query: searchInput.value,
+  comments: HAS_COMMENTS_ONLY,
+  endDate: publicationDateEnd.value,
+  queuedFrames: animationFrameCallbacks.length
+};
+flushAnimationFrames();
+process.stdout.write(JSON.stringify({ before: before, scrolls: scrollRequests }));
+""")
+        self.assertEqual(
+            result,
             {
-                "active": "papers",
-                "hash": "#section-designs",
-                "writes": [],
-                "queuedFrames": 1,
+                "before": {
+                    "pushes": [{"search": "", "hash": "#chapter-4"}],
+                    "active": "papers",
+                    "section": "",
+                    "groups": [],
+                    "query": "",
+                    "comments": False,
+                    "endDate": "",
+                    "queuedFrames": 1,
+                },
+                "scrolls": ["chapter-4"],
             },
         )
-        self.assertEqual(result["repeatedScrolls"], ["papers-grid"])
 
     def test_stats_series_helpers_use_strict_utc_date_parsing(self):
         """Stats helpers must reject normalized-looking but impossible dates."""
@@ -2690,22 +2673,22 @@ process.stdout.write(JSON.stringify({
     emptyRange: slicePublicationRange(null, null, 'unexpected'),
     emptySummary: buildReleaseStatsSummary(null, null),
     summary: buildReleaseStatsSummary(summaryPapers, summaryDaily),
-    categoryDistribution: buildStatsDistribution([
-      { category: 'designs' },
-      { category: 'analysis' },
-      { category: 'designs' }
-    ], 'category', { designs: 'Designs', analysis: 'Analysis' }),
-    mechanismDistribution: buildStatsDistribution([
-      { mechanism_tags: ['flat-loop', 'flat-loop', 'implicit-layer'] },
-      { mechanism_tags: ['flat-loop'] },
-      { mechanism_tags: [] }
-    ], 'mechanism_tags'),
+    chapterDistribution: buildStatsDistribution([
+      { _primaryChapter: '4' },
+      { _primaryChapter: '8' },
+      { _primaryChapter: '4' }
+    ], '_primaryChapter', { '4': '§4 Architecture and Design', '8': '§8 Understanding Why Looped Models Work' }),
+    claimDistribution: buildStatsDistribution([
+      { claims: ['stability', 'stability', 'param-efficiency'] },
+      { claims: ['stability'] },
+      { claims: [] }
+    ], 'claims'),
     recentDirections: buildRecentStatsDistribution([
-      { published_date: '2026-07-03', focus_tags: ['architecture'] },
-      { published_date: '2026-06-01', focus_tags: ['training-algorithm'] },
-      { published_date: '2026-03-01', focus_tags: ['objective-loss'] }
-    ], 'focus_tags', 90, 1),
-    emptyDistribution: buildStatsDistribution(null, 'category')
+      { published_date: '2026-07-03', survey_section: ['architecture/topology', 'scaling/test-time'] },
+      { published_date: '2026-06-01', survey_section: ['architecture/topology'] },
+      { published_date: '2026-03-01', survey_section: ['understanding/why'] }
+    ], 'survey_section', 90, 1),
+    emptyDistribution: buildStatsDistribution(null, 'loop_topology')
   };
 })()""")
 
@@ -2797,24 +2780,24 @@ process.stdout.write(JSON.stringify({
         self.assertEqual(result["summary"]["releaseChangePercent"], 200)
         self.assertEqual(result["summary"]["latestReleaseDate"], "2026-07-03")
         self.assertEqual(
-            result["categoryDistribution"],
+            result["chapterDistribution"],
             {
                 "totalPapers": 3,
                 "assignmentCount": 3,
                 "rows": [
-                    {"key": "designs", "label": "Designs", "count": 2, "percentage": 66.7},
-                    {"key": "analysis", "label": "Analysis", "count": 1, "percentage": 33.3},
+                    {"key": "4", "label": "§4 Architecture and Design", "count": 2, "percentage": 66.7},
+                    {"key": "8", "label": "§8 Understanding Why Looped Models Work", "count": 1, "percentage": 33.3},
                 ],
             },
         )
         self.assertEqual(
-            result["mechanismDistribution"],
+            result["claimDistribution"],
             {
                 "totalPapers": 3,
                 "assignmentCount": 3,
                 "rows": [
-                    {"key": "flat-loop", "label": "Flat loop", "count": 2, "percentage": 66.7},
-                    {"key": "implicit-layer", "label": "Implicit layer", "count": 1, "percentage": 33.3},
+                    {"key": "stability", "label": "Stability", "count": 2, "percentage": 66.7},
+                    {"key": "param-efficiency", "label": "Param efficiency", "count": 1, "percentage": 33.3},
                 ],
             },
         )
@@ -2826,9 +2809,9 @@ process.stdout.write(JSON.stringify({
             result["recentDirections"],
             {
                 "totalPapers": 2,
-                "assignmentCount": 1,
+                "assignmentCount": 2,
                 "rows": [
-                    {"key": "architecture", "label": "Architecture", "count": 1, "percentage": 50},
+                    {"key": "architecture/topology", "label": "Architecture/topology", "count": 2, "percentage": 100},
                 ],
             },
         )
@@ -2905,11 +2888,11 @@ process.stdout.write(JSON.stringify([niceStatsAxis(17, 4), niceStatsAxis(45, 4),
             'class="stats-dashboard-grid stats-dashboard-primary stats-landscape-primary"',
             'id="release-pulse-chart"',
             'id="release-pulse-summary"',
-            'id="stats-category-distribution"',
-            'id="stats-mechanism-distribution"',
+            'id="stats-chapter-distribution"',
+            'id="stats-topology-distribution"',
             'id="stats-active-directions"',
-            'data-stats-direction="focus"',
-            'data-stats-direction="domain"',
+            'data-stats-direction="section" aria-pressed="true"',
+            'data-stats-direction="claims" aria-pressed="false"',
             'class="stats-dashboard-grid stats-dashboard-secondary stats-landscape-secondary"',
             'class="stats-range-control"',
             'data-stats-range="90d"',
@@ -2917,8 +2900,8 @@ process.stdout.write(JSON.stringify([niceStatsAxis(17, 4), niceStatsAxis(45, 4),
             'data-stats-range="all"',
             'aria-pressed="true">1Y</button>',
             "Release trend",
-            "Category mix",
-            "Loop mechanisms",
+            "Survey chapters",
+            "Loop topology",
             "Active directions",
         ):
             self.assertIn(marker, stats_markup)
@@ -2949,6 +2932,12 @@ process.stdout.write(JSON.stringify([niceStatsAxis(17, 4), niceStatsAxis(45, 4),
             "stats-tag-results",
             "Latest publications",
             "latest-releases-list",
+            "stats-category-distribution",
+            "stats-mechanism-distribution",
+            "Category mix",
+            "Loop mechanisms",
+            'data-stats-direction="focus"',
+            'data-stats-direction="domain"',
         ):
             self.assertNotIn(obsolete, stats_markup)
 
@@ -2956,7 +2945,7 @@ process.stdout.write(JSON.stringify([niceStatsAxis(17, 4), niceStatsAxis(45, 4),
         """Range changes must stay local to Stats and never pass full daily history."""
         html = INDEX_HTML_PATH.read_text(encoding="utf-8")
         state_start = html.index("let ACTIVE_TOP_LEVEL_TAB = 'papers';")
-        state_end = html.index("let CURRENT_VIEW = 'category';", state_start)
+        state_end = html.index("let CURRENT_VIEW = 'list';", state_start)
         state_source = html[state_start:state_end]
         bind_start = html.index("function initStatsRangeInteractions() {")
         bind_end = html.index("function renderStatsPanel() {", bind_start)
@@ -3098,7 +3087,7 @@ process.stdout.write(JSON.stringify({{
         """A rejected catalog request must replace the Stats loading message."""
         html = INDEX_HTML_PATH.read_text(encoding="utf-8")
         state_start = html.index("let ALL_PAPERS = [];")
-        state_end = html.index("const TAG_GROUP_LABELS", state_start)
+        state_end = html.index("let CURRENT_VIEW = 'list';", state_start)
         state_source = html[state_start:state_end]
         stats_start = html.index("function renderStatsPanel() {")
         stats_end = html.index("function escapeHtml(str) {", stats_start)
@@ -3201,10 +3190,10 @@ process.stdout.write(JSON.stringify({{
             "timeline-empty",
             "textContent",
             "renderStatsDistribution",
-            "renderStatsCategoryComposition",
             "renderStatsActiveDirections",
         ):
             self.assertIn(marker, timeline_source)
+        self.assertNotIn("renderStatsCategoryComposition", html)
         line_start = timeline_source.index("createStatsSvgElement('polyline'")
         line_end = timeline_source.index("}));", line_start)
         line_source = timeline_source[line_start:line_end]
@@ -3215,8 +3204,10 @@ process.stdout.write(JSON.stringify({{
         self.assertNotIn("innerHTML", stats_source)
         self.assertIn("buildDailyPublicationSeries(ALL_PAPERS)", stats_source)
         self.assertIn("buildMonthlyPublicationSeries(ALL_PAPERS)", stats_source)
-        self.assertIn("buildStatsDistribution(ALL_PAPERS, 'category'", stats_source)
-        self.assertIn("buildStatsDistribution(ALL_PAPERS, 'mechanism_tags'", stats_source)
+        self.assertIn("buildStatsDistribution(ALL_PAPERS, '_primaryChapter', chapterLabels)", stats_source)
+        self.assertIn("buildStatsDistribution(ALL_PAPERS, 'loop_topology'", stats_source)
+        self.assertIn("anchorFor: function(row) { return getChapterDomId(row.key); }", stats_source)
+        self.assertIn("{ facetGroup: 'loop_topology' }", stats_source)
         self.assertIn("renderStatsActiveDirections();", stats_source)
         self.assertIn("HAS_RENDERED_STATS = true;", stats_source)
         self.assertIn("if (!CATALOG_DATA_READY)", stats_source)
@@ -3284,11 +3275,12 @@ process.stdout.write(JSON.stringify({{
         self.assertIn("align-items: start;", dashboard_rule)
         self.assertIn(".stats-pulse-card {\n      grid-column: 1 / -1;", stats_css)
         self.assertIn(
-            ".stats-composition-card,\n    .stats-mechanism-card,\n    .stats-directions-card {\n      grid-column: span 4;",
+            ".stats-chapter-card,\n    .stats-topology-card,\n    .stats-directions-card {\n      grid-column: span 4;",
             stats_css,
         )
-        self.assertIn(".stats-category-stack", stats_css)
+        self.assertNotIn(".stats-category-stack", stats_css)
         self.assertNotIn(".stats-category-donut", stats_css)
+        self.assertNotIn(".stats-mechanism-card", stats_css)
         self.assertIn("grid-template-columns: repeat(2, minmax(0, 1fr));", stats_css)
         self.assertIn("a.stats-distribution-row {\n      min-height: 0;", stats_css)
         chart_scroll_css = stats_css[stats_css.index("    .stats-chart-scroll {"):]
@@ -3526,7 +3518,7 @@ process.stdout.write(JSON.stringify({{
         html = INDEX_HTML_PATH.read_text(encoding="utf-8")
         desk = READING_DESK_JS_PATH.read_text(encoding="utf-8")
         render_start = html.index("function renderCard(paper, query) {")
-        render_end = html.index("// ── State & Category Tree", render_start)
+        render_end = html.index("// ── State & Survey Taxonomy", render_start)
         render_snippet = html[render_start:render_end]
 
         self.assertIn('class="desk-card-date"', render_snippet)
@@ -3554,7 +3546,7 @@ process.stdout.write(JSON.stringify({{
         self.assertNotIn("showComfortablePaperDensity", html)
 
         render_start = html.index("function renderCard(paper, query) {")
-        render_end = html.index("// ── State & Category Tree", render_start)
+        render_end = html.index("// ── State & Survey Taxonomy", render_start)
         render_snippet = html[render_start:render_end]
         self.assertIn('<article class="paper-card"', render_snippet)
         self.assertIn('class="desk-paper-select"', render_snippet)
@@ -3568,8 +3560,9 @@ process.stdout.write(JSON.stringify({{
         self.assertIn("renderMetricsHtml(paper)", render_snippet)
         self.assertIn("renderPaperLinksHtml(paper)", render_snippet)
         self.assertIn('class="paper-links desk-list-links"', render_snippet)
-        self.assertIn("paper-tag-overflow", render_snippet)
-        self.assertIn("renderPaperTagHtml(entry, 'paper-tag-' + entry.group)", render_snippet)
+        self.assertIn("paper-chip-overflow", render_snippet)
+        self.assertIn("renderSectionBadgesHtml(paper)", render_snippet)
+        self.assertIn("axes.map(function(entry) { return renderAxisChipHtml(entry); })", render_snippet)
         self.assertIn('id="desk-show-details"', html)
         self.assertIn("const READING_DESK_COLLAPSE_WIDTH = 220;", desk)
         self.assertIn("wideList && readingDeskDetailCollapsed", desk)
@@ -3578,8 +3571,8 @@ process.stdout.write(JSON.stringify({{
         detail_start = desk.index("function renderReadingDeskDetail(paper) {")
         detail_end = desk.index("function syncReadingDeskSelection(papers) {", detail_start)
         detail = desk[detail_start:detail_end]
-        self.assertIn("['mechanism', 'focus', 'domain'].map", detail)
-        self.assertIn("entries.map(function(entry) { return renderPaperTagHtml", detail)
+        self.assertIn("<h3>Survey placement</h3>' + renderReadingDeskSurveyHtml(paper)", detail)
+        self.assertIn("renderSurveyCoreBadgeHtml(paper)", detail)
         self.assertIn('<h3 id="desk-sources-title">Sources</h3>', detail)
         self.assertIn("renderPaperLinksHtml(paper, false)", detail)
         self.assertIn('<h3 id="desk-discussion-title">Discussion</h3>', detail)
@@ -3595,7 +3588,8 @@ process.stdout.write(JSON.stringify({{
         self.assertIn("container: paper-list / inline-size;", style)
         self.assertIn("@container paper-list (max-width: 640px)", style)
         self.assertIn(".reading-desk #papers-panel .desk-list-links { display: flex; flex-wrap: wrap;", style)
-        self.assertIn(".reading-desk .paper-detail .paper-tags { display: flex; flex-wrap: wrap;", style)
+        self.assertIn(".reading-desk .paper-detail .paper-chips { display: flex; flex-wrap: wrap;", style)
+        self.assertNotIn("paper-tag", style)
         self.assertIn("@media (max-width: 1119px)", style)
         self.assertNotIn(".paper-density-toggle", style)
         self.assertNotIn(".paper-density-button", style)
@@ -3616,19 +3610,22 @@ process.stdout.write(JSON.stringify({{
         self.assertIn("'<td class=\"paper-table-links-cell\">' + compactLinksHtml + '</td>'", html)
         self.assertIn("'<div class=\"paper-table-links\">' + linksHtml + '</div>'", html)
 
-    def test_table_view_focus_and_domain_tags_use_drilldown_links(self):
+    def test_table_view_survey_sections_and_axes_use_filter_links(self):
         html = INDEX_HTML_PATH.read_text(encoding="utf-8")
-        helper_start = html.index("function renderTableTagLinksHtml(paper, group) {")
+        helper_start = html.index("function renderTableSectionHtml(paper) {")
         helper_end = html.index("function renderTableRow(paper, query) {", helper_start)
         helper = html[helper_start:helper_end]
         renderer_start = helper_end
         renderer_end = html.index("function renderTableView(query, papers) {", renderer_start)
         renderer = html[renderer_start:renderer_end]
 
-        self.assertIn("paper._tagEntries", helper)
-        self.assertIn("renderPaperTagHtml(entry, 'paper-tag-' + group)", helper)
-        self.assertIn("renderTableTagLinksHtml(paper, 'focus')", renderer)
-        self.assertIn("renderTableTagLinksHtml(paper, 'domain')", renderer)
+        self.assertIn("renderSectionBadgeHtml(sectionId, index === 0, index > 0)", helper)
+        self.assertIn("getVisibleAxisEntries(paper)", helper)
+        self.assertIn("renderAxisChipHtml(entry)", helper)
+        self.assertIn("renderTableSectionHtml(paper)", renderer)
+        self.assertIn("renderTableAxesHtml(paper)", renderer)
+        self.assertIn("paper._sectionLabel", renderer)
+        self.assertNotIn("renderTableTagLinksHtml", html)
 
     def test_table_view_rows_use_button_disclosure_markup(self):
         html = INDEX_HTML_PATH.read_text(encoding="utf-8")
@@ -3690,22 +3687,25 @@ process.stdout.write(JSON.stringify({{
     def test_mobile_directory_scroll_uses_window_when_main_is_not_scrollable(self):
         html = INDEX_HTML_PATH.read_text(encoding="utf-8")
         scroll_start = html.index("function scrollToSection(sectionId)")
-        scroll_end = html.index("function initTreeInteractions()", scroll_start)
+        scroll_end = html.index("initReadingDesk();", scroll_start)
         scroll_snippet = html[scroll_start:scroll_end]
 
         self.assertIn("window.innerWidth <= 768", scroll_snippet)
         self.assertIn("window.scrollTo", scroll_snippet)
         self.assertIn("scrollRoot.scrollTo", scroll_snippet)
 
-    def test_tree_links_use_top_level_paper_section_navigation(self):
-        """Tree links must route through the tab/hash state machine before scrolling."""
+    def test_survey_nav_links_use_top_level_survey_anchor_navigation(self):
+        """Chapter links must route through the tab/hash state machine before scrolling."""
         html = INDEX_HTML_PATH.read_text(encoding="utf-8")
-        init_start = html.index("function initTreeInteractions()")
-        init_end = html.index("function initScrollObserver()", init_start)
+        init_start = html.index("function initSurveyNavInteractions() {")
+        init_end = html.index("function observeSurveyChapters() {", init_start)
         init_source = html[init_start:init_end]
 
-        self.assertIn("navigateToPaperSection(sectionId);", init_source)
-        self.assertNotIn("scrollToSection(sectionId);", init_source)
+        self.assertIn("navigateToSurveyAnchor(getChapterDomId(link.dataset.chapter));", init_source)
+        self.assertIn("event.preventDefault();", init_source)
+        self.assertNotIn("scrollToSection(", init_source)
+        self.assertNotIn("initTreeInteractions", html)
+        self.assertNotIn("navigateToPaperSection", html)
 
     def test_search_count_is_not_table_view_only(self):
         html = INDEX_HTML_PATH.read_text(encoding="utf-8")
@@ -3767,82 +3767,31 @@ class CanonicalPaperMetadataTests(unittest.TestCase):
         data = yaml.safe_load(paper_path.read_text(encoding="utf-8")) or {}
 
         self.assertEqual(data.get("catalog_fit"), "adjacent")
-        self.assertEqual(data.get("mechanism_tags"), [])
+        self.assertEqual(data.get("survey_section", [])[0], "architecture/topology")
+        self.assertEqual(data.get("loop_topology"), "shifted-parallel")
 
-    def test_paper_2602_10520_is_classified_as_designs(self):
+    def test_paper_2602_10520_is_placed_in_post_training(self):
         paper_path = REPO_ROOT / "papers" / "2602.10520.yaml"
         data = yaml.safe_load(paper_path.read_text(encoding="utf-8")) or {}
 
-        self.assertEqual(data.get("category"), "designs")
-        self.assertNotIn("category_path", data)
+        self.assertEqual(data.get("survey_section"), ["training/post-training"])
+        for field in build.RETIRED_FIELDS:
+            self.assertNotIn(field, data)
 
-    def test_all_repo_paper_yaml_categories_are_canonical(self):
-        canonical_categories = {
-            "applications",
-            "analysis",
-            "designs",
-        }
-        legacy_categories = {
-            "foundation",
-            "slowrun",
-            "fastrun",
-            "algorithm",
-            "model_family",
-            "design",
-            "capability",
-            "methods",
-            "efficiency",
-            "optimization",
-            "training",
-            "architecture",
-        }
-        legacy_path_segments = {
-            "vision",
-            "robotics_vla",
-            "scientific_imaging",
-            "implicit_equilibrium",
-            "recursive_reasoning",
-            "adaptive_inference",
-            "routing_mixture",
-            "memory_compression",
-            "parallel_execution",
-            "capability-scaling",
-            "theory-mechanisms",
-            "empirical-limits",
-            "adaptive-budgeting",
-            "architecture-routing",
-            "training-recipes",
-            "architecture_capability",
-            "theory_mechanisms",
-            "empirical_limits",
-            "scaling_limits",
-            "adaptive_budgeting",
-            "routing_allocation",
-            "state_compression",
-            "training_objectives",
-        }
-
+    def test_all_repo_paper_yaml_files_use_the_survey_schema(self):
         violations = []
         for yaml_path in sorted((REPO_ROOT / "papers").glob("*.yaml")):
             if yaml_path.name.startswith("_"):
                 continue
             data = yaml.safe_load(yaml_path.read_text(encoding="utf-8")) or {}
-            category = data.get("category")
-            if category not in canonical_categories:
-                violations.append(f"{yaml_path.name}: non-canonical category {category}")
-            if category in legacy_categories:
-                violations.append(f"{yaml_path.name}: legacy category {category}")
-
-            raw_path = data.get("category_path") or []
-            if isinstance(raw_path, str):
-                path_segments = [segment.strip() for segment in raw_path.split("/") if segment.strip()]
-            else:
-                path_segments = [str(segment).strip() for segment in raw_path if str(segment).strip()]
-            if path_segments:
-                violations.append(f"{yaml_path.name}: canonical paper YAML should omit category_path")
-            for segment in path_segments:
-                if segment in legacy_path_segments:
-                    violations.append(f"{yaml_path.name}: legacy category_path segment {segment}")
+            retired = [field for field in (*build.RETIRED_FIELDS, "family_tags") if field in data]
+            if retired:
+                violations.append(f"{yaml_path.name}: retired fields {retired}")
+            try:
+                build.normalize_paper_taxonomy_fields({k: v for k, v in data.items() if k not in retired}, yaml_path.name)
+                build.normalize_survey_fields(data, yaml_path.name, build.REQUIRED_PAPER_SURVEY_FIELDS)
+            except ValueError as exc:
+                violations.append(str(exc))
 
         self.assertEqual(violations, [])
 
@@ -3877,7 +3826,7 @@ class CanonicalPaperMetadataTests(unittest.TestCase):
 
         self.assertEqual(violations, [])
 
-    def test_all_repo_blog_yaml_files_have_publication_dates_and_no_taxonomy_fields(self):
+    def test_all_repo_blog_yaml_files_have_publication_dates_and_only_survey_sections(self):
         violations = []
         for yaml_path in sorted((REPO_ROOT / "blogs").glob("*.yaml")):
             if yaml_path.name.startswith("_"):
@@ -3891,12 +3840,16 @@ class CanonicalPaperMetadataTests(unittest.TestCase):
                     build.normalize_optional_date_string(published_date, "published_date", yaml_path.name)
                 except ValueError as exc:
                     violations.append(str(exc))
-            if data.get("category") not in (None, ""):
-                violations.append(f"{yaml_path.name}: blogs must not set category")
-            if data.get("category_path") not in (None, "", []):
-                violations.append(f"{yaml_path.name}: blogs must not set category_path")
-            if data.get("foundation") not in (None, False, ""):
-                violations.append(f"{yaml_path.name}: blogs must not set foundation")
+            for field in (*build.RETIRED_FIELDS, "family_tags"):
+                if field in data:
+                    violations.append(f"{yaml_path.name}: blogs must not set {field}")
+            for field in build.SURVEY_FIELDS:
+                if field != "survey_section" and field in data:
+                    violations.append(f"{yaml_path.name}: blogs must not set {field}")
+            try:
+                build.normalize_survey_fields(data, yaml_path.name, ("survey_section",))
+            except ValueError as exc:
+                violations.append(str(exc))
             links = data.get("links") or {}
             if not links.get("blog"):
                 violations.append(f"{yaml_path.name}: blogs must set links.blog")
@@ -3938,14 +3891,13 @@ class ReadmeRenderingTests(unittest.TestCase):
     def test_build_readme_front_page_lists_anchors_latest_and_most_cited(self):
         papers = [
             {
-                "title": "Older Foundation Loop Paper",
+                "title": "Older Survey Core Loop Paper",
                 "venue": "ICLR",
                 "year": 2019,
                 "published_date": "2019-01-01",
                 "added_date": "2026-04-24",
-                "category": "designs",
-                "foundation": True,
-                "mechanism_tags": ["flat-loop"],
+                **survey_fields(survey_section=["foundations/depth-sharing", "architecture/topology"], loop_topology="whole-stack"),
+                "survey_core": True,
                 "citations": 500,
                 "links": {"arxiv": "https://arxiv.org/abs/1901.00001"},
             },
@@ -3955,7 +3907,7 @@ class ReadmeRenderingTests(unittest.TestCase):
                 "year": 2026,
                 "published_date": "2026-04-26",
                 "added_date": "2026-09-27",
-                "category": "analysis",
+                **survey_fields(survey_section=["scaling/test-time"]),
                 "github_stars": 1234,
                 "links": {
                     "arxiv": "https://arxiv.org/abs/2604.00002",
@@ -3963,12 +3915,13 @@ class ReadmeRenderingTests(unittest.TestCase):
                 },
             },
             {
-                "title": "Middle Loop Paper",
+                "title": "Middle Must-Read Loop Paper",
                 "venue": "ICLR",
                 "year": 2026,
                 "published_date": "2026-02-03",
                 "added_date": "2026-09-20",
-                "category": "applications",
+                **survey_fields(survey_section=["architecture/topology"], loop_topology="partial"),
+                "must_read": True,
                 "citations": 7,
                 "links": {"arxiv": "https://arxiv.org/abs/2602.00003"},
             },
@@ -3976,24 +3929,62 @@ class ReadmeRenderingTests(unittest.TestCase):
 
         readme = self._render_front_page(papers)
 
-        self.assertIn("<b>3 papers</b> · 1 analysis · 1 designs · 1 applications", readme)
-        self.assertIn("https://example.test/repo/index.html", readme)
+        self.assertIn(
+            f"<b>3 papers</b> · {len(build.SURVEY_SECTIONS)} survey sections · "
+            '<a href="https://example.test/repo/index.html">browse all →</a>',
+            readme,
+        )
+        for retired in ("analysis", "designs", "applications", "Foundation"):
+            self.assertNotIn(f" {retired} ", readme)
 
         start_here = readme[readme.index("## 🌟 Start here"):readme.index("## 🆕 Latest additions")]
-        self.assertIn("Older Foundation Loop Paper", start_here)
+        self.assertIn("| Paper | Venue | Loop | Links |", start_here)
+        self.assertLess(start_here.index("Older Survey Core Loop Paper"), start_here.index("Middle Must-Read Loop Paper"))
+        self.assertIn("| <b>Older Survey Core Loop Paper</b> | ICLR 2019 | whole-stack |", start_here)
+        self.assertIn("| 🌟 <b>Middle Must-Read Loop Paper</b> | ICLR 2026 | partial |", start_here)
         self.assertNotIn("Newest Loop Paper", start_here)
 
         latest = readme[readme.index("## 🆕 Latest additions"):readme.index("## 🔥 Most cited")]
-        self.assertLess(latest.index("Newest Loop Paper"), latest.index("Middle Loop Paper"))
-        self.assertLess(latest.index("Middle Loop Paper"), latest.index("Older Foundation Loop Paper"))
+        self.assertIn("| Added | Paper | § | Links |", latest)
+        self.assertLess(latest.index("Newest Loop Paper"), latest.index("Middle Must-Read Loop Paper"))
+        self.assertLess(latest.index("Middle Must-Read Loop Paper"), latest.index("Older Survey Core Loop Paper"))
+        self.assertIn("| 2026-09-27 | <b>Newest Loop Paper</b> | §6.2 |", latest)
+        self.assertIn("| 2026-04-24 | <b>Older Survey Core Loop Paper</b> | §2.2 |", latest)
         self.assertIn('<a href="https://github.com/example/newest">Code ★1,234</a>', latest)
 
         most_cited = readme[readme.index("## 🔥 Most cited"):]
-        self.assertLess(most_cited.index("Older Foundation Loop Paper"), most_cited.index("Middle Loop Paper"))
+        self.assertLess(most_cited.index("Older Survey Core Loop Paper"), most_cited.index("Middle Must-Read Loop Paper"))
         self.assertNotIn("Newest Loop Paper", most_cited)
 
-        self.assertNotIn("<details>", readme)
+        self.assertEqual(readme.count("<details>"), 1)
         self.assertNotIn("## Table of Contents", readme)
+
+    def test_build_readme_survey_map_counts_primary_and_any_placement(self):
+        papers = [
+            {"title": "A", "year": 2026, "links": {}, **survey_fields(survey_section=["architecture/topology", "scaling/test-time"])},
+            {"title": "B", "year": 2026, "links": {}, **survey_fields(survey_section=["scaling/test-time"])},
+            {"title": "C", "year": 2026, "links": {}, **survey_fields(survey_section=["architecture/topology"])},
+        ]
+        blogs = [
+            {
+                "title": "Blog", "entry_type": "blog", "venue": "Blog", "published_date": "2026-01-01",
+                "survey_section": ["understanding/why"], "links": {"blog": "https://example.com/post"},
+            }
+        ]
+        readme = self._render_front_page(papers, blogs)
+        survey_map = readme[readme.index("## 🗺️ Survey map"):readme.index("## 🌟 Start here") if "## 🌟 Start here" in readme else readme.index("## 🆕 Latest additions")]
+
+        self.assertLess(readme.index("## At a glance"), readme.index("## 🗺️ Survey map"))
+        self.assertIn("<summary>Papers per survey section</summary>", survey_map)
+        self.assertIn("| § | Section | Primary | Any |", survey_map)
+        self.assertIn("| §4.1 | Architecture and Design › Loop topology | 2 | 2 |", survey_map)
+        self.assertIn("| §6.2 | Scaling Laws › Test-time scaling | 1 | 2 |", survey_map)
+        self.assertIn("| §2.1 | From Recurrent Computation to Iterative Depth › Recurrent networks and weight sharing across computation | 0 | 0 |", survey_map)
+        self.assertIn("| §8.1 | Understanding Why Looped Models Work › Why looped models work | 0 | 0 |", survey_map)
+        rows = [line for line in survey_map.splitlines() if line.startswith("| §") and not line.startswith("| § |")]
+        self.assertEqual([row.split(" | ")[0][2:] for row in rows], [f"§{n}" for _, n, _ in build.SURVEY_SECTIONS])
+        self.assertIn("<b>1 blogs</b>", readme)
+        self.assertNotIn("## 🌟 Start here", readme)
 
     def test_build_readme_front_page_escapes_table_cells(self):
         readme = self._render_front_page(
@@ -4003,12 +3994,15 @@ class ReadmeRenderingTests(unittest.TestCase):
                     "year": 2026,
                     "published_date": "2026-01-01",
                     "added_date": "2026-01-02",
-                    "category": "designs",
+                    **survey_fields(survey_section=["architecture/hybrid"], loop_topology="partial"),
+                    "survey_core": True,
                     "links": {},
                 }
             ]
         )
         self.assertIn("<b>Pipes &#124; and &lt;tags&gt;</b>", readme)
+        self.assertIn("| 2026-01-02 | <b>Pipes &#124; and &lt;tags&gt;</b> | §4.6 |", readme)
+        self.assertIn("| §4.6 | Architecture and Design › Hybrid looped architectures | 1 | 1 |", readme)
 
     def test_readme_paper_entries_hide_summary_tags_and_use_badge_links(self):
         paper = {
@@ -4017,10 +4011,7 @@ class ReadmeRenderingTests(unittest.TestCase):
             "venue": "ICLR",
             "year": 2026,
             "desc": "Introduces a compact loop-model benchmark entry.",
-            "tags": ["LoopTest"],
-            "mechanism_tags": ["flat-loop"],
-            "focus_tags": ["architecture"],
-            "domain_tags": ["reasoning"],
+            **survey_fields(),
             "links": {
                 "arxiv": "https://arxiv.org/abs/2604.00000",
                 "alphaxiv": "https://www.alphaxiv.org/abs/2604.00000",
@@ -4042,7 +4033,8 @@ class ReadmeRenderingTests(unittest.TestCase):
         self.assertTrue(markdown.startswith("<details>"))
         self.assertNotIn("- <details>", markdown)
         self.assertIn("<summary><strong>Loop Test Paper</strong>", markdown)
-        self.assertNotIn("<code>LoopTest</code>", summary_html)
+        self.assertNotIn("<code>", summary_html)
+        self.assertNotIn("§", summary_html)
         self.assertNotIn("<summary>Expand details</summary>", markdown)
         self.assertNotIn("<summary>Expand details</summary>\n\n", markdown)
         self.assertNotIn("<br>\n  <details>", markdown)
@@ -4066,9 +4058,16 @@ class ReadmeRenderingTests(unittest.TestCase):
         self.assertGreater(markdown.index("Alice Example, Bob Example"), summary_end)
         self.assertGreater(markdown.index("Introduces a compact loop-model benchmark entry."), summary_end)
         self.assertIn("<div><strong>Authors:</strong> Alice Example, Bob Example · ICLR 2026</div>", markdown)
-        self.assertIn("<div><strong>Loop Mechanism:</strong> flat-loop</div>", markdown)
-        self.assertIn("<div><strong>Focus:</strong> architecture</div>", markdown)
-        self.assertIn("<div><strong>Domains:</strong> reasoning</div>", markdown)
+        self.assertIn(
+            "<div><strong>Survey sections:</strong> §4.1 Loop topology · §6.2 Test-time scaling</div>",
+            markdown,
+        )
+        self.assertIn(
+            "<div><strong>Design:</strong> Loop topology: prelude-core-coda · Sharing: full · Depth control: sampled-train</div>",
+            markdown,
+        )
+        for retired in ("Loop Mechanism:", "Focus:", "Domains:", "Foundation"):
+            self.assertNotIn(retired, markdown)
         self.assertIn("<div><strong>TL;DR:</strong> Introduces a compact loop-model benchmark entry.</div>", markdown)
 
     def test_readme_marks_adjacent_work_and_explains_the_scope_boundary(self):
@@ -4087,23 +4086,6 @@ class ReadmeRenderingTests(unittest.TestCase):
         self.assertIn("<strong>Catalog fit:</strong>", markdown)
         self.assertIn("outside the strict single-forward loop-model scope", markdown)
 
-    def test_foundation_paper_entries_hide_foundation_summary_chip(self):
-        paper = {
-            "title": "Foundation Loop Paper",
-            "authors": "Alice Example",
-            "venue": "NeurIPS",
-            "year": 2020,
-            "foundation": True,
-            "links": {
-                "paper": "https://example.com/foundation-paper",
-            },
-        }
-
-        markdown = build._paper_to_md(paper)
-
-        self.assertIn("<summary><strong>Foundation Loop Paper</strong>", markdown)
-        self.assertNotIn(f"<code>{build.FOUNDATION_LABEL}</code>", markdown)
-
     def test_must_read_paper_entries_prepend_star_in_summary(self):
         paper = {
             "title": "Must Read Loop Paper",
@@ -4120,7 +4102,7 @@ class ReadmeRenderingTests(unittest.TestCase):
 
         self.assertIn("<summary>🌟 <strong>Must Read Loop Paper</strong>", markdown)
 
-    def test_readme_blog_entries_hide_summary_tags(self):
+    def test_readme_blog_entries_list_survey_sections_without_design_axes(self):
         blog = {
             "title": "Loop Blog",
             "authors": "Alice Example",
@@ -4128,9 +4110,7 @@ class ReadmeRenderingTests(unittest.TestCase):
             "year": 2026,
             "entry_type": "blog",
             "desc": "Long-form note on loop-model training.",
-            "tags": ["BPTT", "checkpointing"],
-            "focus_tags": ["training-algorithm"],
-            "domain_tags": ["efficient-loop"],
+            "survey_section": ["training/supervision-optimization", "systems/kv-memory"],
             "links": {
                 "blog": "https://example.com/loop-blog",
             },
@@ -4142,10 +4122,13 @@ class ReadmeRenderingTests(unittest.TestCase):
         summary_html = markdown[summary_start:summary_end]
 
         self.assertIn("<summary><strong>Loop Blog</strong>", markdown)
-        self.assertNotIn("<code>BPTT</code>", summary_html)
-        self.assertNotIn("<code>checkpointing</code>", summary_html)
-        self.assertIn("<div><strong>Focus:</strong> training-algorithm</div>", markdown)
-        self.assertIn("<div><strong>Domains:</strong> efficient-loop</div>", markdown)
+        self.assertNotIn("§", summary_html)
+        self.assertIn(
+            "<div><strong>Survey sections:</strong> §5.1 Supervision, credit assignment, and loop-specific optimization"
+            " · §7.2 KV cache and memory</div>",
+            markdown,
+        )
+        self.assertNotIn("<strong>Design:</strong>", markdown)
         self.assertIn("<div><strong>TL;DR:</strong> Long-form note on loop-model training.</div>", markdown)
         self.assertIn(
             '<a href="https://example.com/loop-blog"><img alt="Blog" src="https://img.shields.io/badge/Blog-example.com-0ea5e9.svg"></a>',
@@ -4177,307 +4160,267 @@ class ReadmeRenderingTests(unittest.TestCase):
         )
 
 
+def write_yaml(path: Path, data: dict) -> None:
+    path.write_text(yaml.safe_dump(data, sort_keys=False), encoding="utf-8")
+
+
+def paper_yaml(**overrides) -> dict:
+    """Return a minimal valid paper YAML mapping using the survey schema."""
+    data = {
+        "title": "Loop Test Paper",
+        "authors": ["Test Author"],
+        "year": 2026,
+        "published_date": "2026-03-10",
+        "venue": "arXiv",
+        **survey_fields(),
+        "links": {"arxiv": "https://arxiv.org/abs/2603.08391"},
+    }
+    data.update(overrides)
+    return {key: value for key, value in data.items() if value is not ...}
+
+
+def blog_yaml(**overrides) -> dict:
+    """Return a minimal valid blog YAML mapping."""
+    data = {
+        "title": "Loop Blog",
+        "authors": ["Test Author"],
+        "year": 2026,
+        "published_date": "2026-04-21",
+        "venue": "X Article",
+        "survey_section": ["understanding/why", "architecture/topology"],
+        "links": {"blog": "https://example.com/loop-blog"},
+    }
+    data.update(overrides)
+    return {key: value for key, value in data.items() if value is not ...}
+
+
 class LoadPapersRegressionTests(unittest.TestCase):
-    def test_load_papers_rejects_legacy_family_tags(self):
+    def load(self, data: dict, name: str = "2603.08391.yaml") -> list[dict]:
         with TemporaryDirectory() as tmpdir:
             papers_dir = Path(tmpdir)
-            paper_path = papers_dir / "2603.08391.yaml"
-            paper_path.write_text(
-                yaml.safe_dump(
-                    {
-                        "title": "Deep Equilibrium Loop Test Paper",
-                        "authors": ["Test Author"],
-                        "year": 2026,
-                        "published_date": "2026-03-10",
-                        "venue": "arXiv",
-                        "category": "analysis",
-                        "mechanism_tags": ["implicit-layer"],
-                        "family_tags": ["deep-equilibrium", "hierarchical-recursion"],
-                        "tags": ["DEQ", "HRM"],
-                        "domain_tags": ["implicit-layers", "reasoning"],
-                        "links": {
-                            "arxiv": "https://arxiv.org/abs/2603.08391",
-                        },
-                    },
-                    sort_keys=False,
-                ),
-                encoding="utf-8",
-            )
-
+            write_yaml(papers_dir / name, data)
             with patch.object(build, "PAPERS_DIR", papers_dir):
-                with self.assertRaisesRegex(ValueError, "family_tags is no longer supported"):
-                    build.load_papers()
+                return build.load_papers()
 
-    def test_load_papers_requires_explicit_loop_mechanism_tags(self):
-        with TemporaryDirectory() as tmpdir:
-            papers_dir = Path(tmpdir)
-            paper_path = papers_dir / "2603.08391.yaml"
-            paper_path.write_text(
-                yaml.safe_dump(
-                    {
-                        "title": "Deep Equilibrium Loop Test Paper",
-                        "authors": ["Test Author"],
-                        "year": 2026,
-                        "published_date": "2026-03-10",
-                        "venue": "arXiv",
-                        "category": "analysis",
-                        "tags": ["DEQ", "HRM"],
-                        "domain_tags": ["implicit-layers", "reasoning"],
-                        "links": {
-                            "arxiv": "https://arxiv.org/abs/2603.08391",
-                        },
-                    },
-                    sort_keys=False,
-                ),
-                encoding="utf-8",
-            )
+    def test_load_papers_rejects_every_retired_taxonomy_field(self):
+        for field, value in (
+            ("category", "designs"),
+            ("category_path", ["x"]),
+            ("subcategory", "x"),
+            ("foundation", True),
+            ("mechanism_tags", ["flat-loop"]),
+            ("focus_tags", ["architecture"]),
+            ("domain_tags", ["reasoning"]),
+            ("tags", ["DEQ"]),
+            ("family_tags", ["deep-equilibrium"]),
+        ):
+            with self.subTest(field=field):
+                with self.assertRaisesRegex(ValueError, f"2603.08391.yaml: {field} no longer exist"):
+                    self.load(paper_yaml(**{field: value}))
 
-            with patch.object(build, "PAPERS_DIR", papers_dir):
-                with self.assertRaisesRegex(ValueError, "missing mechanism_tags"):
-                    build.load_papers()
+    def test_load_papers_requires_every_survey_field(self):
+        for field in build.REQUIRED_PAPER_SURVEY_FIELDS:
+            with self.subTest(field=field):
+                with self.assertRaisesRegex(ValueError, f"missing required {field}"):
+                    self.load(paper_yaml(**{field: ...}))
 
-    def test_load_papers_allows_empty_mechanism_only_for_adjacent_work(self):
-        with TemporaryDirectory() as tmpdir:
-            papers_dir = Path(tmpdir)
-            paper_path = papers_dir / "2603.08391.yaml"
-            paper_path.write_text(
-                yaml.safe_dump(
-                    {
-                        "title": "Adjacent Recurrent Paper",
-                        "authors": ["Test Author"],
-                        "year": 2026,
-                        "published_date": "2026-03-10",
-                        "venue": "arXiv",
-                        "category": "designs",
-                        "catalog_fit": "adjacent",
-                        "mechanism_tags": [],
-                        "domain_tags": ["language-modeling"],
-                        "focus_tags": ["architecture"],
-                        "links": {"arxiv": "https://arxiv.org/abs/2603.08391"},
-                    },
-                    sort_keys=False,
-                ),
-                encoding="utf-8",
-            )
+    def test_load_papers_rejects_values_outside_the_survey_vocabulary(self):
+        for overrides in (
+            {"survey_section": ["design/topology"]},
+            {"survey_section": []},
+            {"loop_topology": "flat-loop"},
+            {"sharing": "tied"},
+            {"depth_control": "dynamic"},
+            {"claims": ["speed"]},
+            {"comparison": ["iso-time"]},
+            {"survey_core": "yes"},
+        ):
+            with self.subTest(overrides=overrides), self.assertRaises(ValueError):
+                self.load(paper_yaml(**overrides))
 
-            with patch.object(build, "PAPERS_DIR", papers_dir):
-                papers = build.load_papers()
+    def test_load_papers_normalizes_survey_fields(self):
+        papers = self.load(paper_yaml(
+            survey_section=["scaling/test-time", "architecture/topology", "scaling/test-time"],
+            claims="stability",
+            comparison=[],
+            survey_core=True,
+        ))
+        paper = papers[0]
+        self.assertEqual(paper["survey_section"], ["scaling/test-time", "architecture/topology"])
+        self.assertEqual(paper["claims"], ["stability"])
+        self.assertEqual(paper["comparison"], [])
+        self.assertIs(paper["survey_core"], True)
+        self.assertEqual(paper["loop_topology"], "prelude-core-coda")
+        self.assertEqual(paper["entry_type"], "paper")
+        self.assertNotIn("catalog_fit", paper)
+        for field in build.RETIRED_FIELDS:
+            self.assertNotIn(field, paper)
+        self.assertNotIn("survey_core", self.load(paper_yaml())[0])
 
-            data = yaml.safe_load(paper_path.read_text(encoding="utf-8"))
-            data["mechanism_tags"] = ["flat-loop"]
-            paper_path.write_text(yaml.safe_dump(data, sort_keys=False), encoding="utf-8")
-            with patch.object(build, "PAPERS_DIR", papers_dir):
-                with self.assertRaisesRegex(ValueError, "adjacent papers must not set mechanism_tags"):
-                    build.load_papers()
-
+    def test_load_papers_keeps_adjacent_catalog_fit_with_full_survey_fields(self):
+        papers = self.load(paper_yaml(catalog_fit="adjacent", loop_topology="shifted-parallel"))
         self.assertEqual(papers[0]["catalog_fit"], "adjacent")
-        self.assertEqual(papers[0]["mechanism_tags"], [])
+        self.assertEqual(papers[0]["loop_topology"], "shifted-parallel")
+        with self.assertRaisesRegex(ValueError, "missing required loop_topology"):
+            self.load(paper_yaml(catalog_fit="adjacent", loop_topology=...))
+        with self.assertRaisesRegex(ValueError, "invalid catalog_fit"):
+            self.load(paper_yaml(catalog_fit="borderline"))
 
     def test_load_papers_derives_alphaxiv_from_arxiv_links(self):
-        with TemporaryDirectory() as tmpdir:
-            papers_dir = Path(tmpdir)
-            paper_path = papers_dir / "2603.08391.yaml"
-            paper_path.write_text(
-                yaml.safe_dump(
-                    {
-                        "title": "Loop Test Paper",
-                        "year": 2026,
-                        "published_date": "2026-03-10",
-                        "venue": "arXiv",
-                        "category": "analysis",
-                        "mechanism_tags": ["flat-loop"],
-                        "links": {
-                            "arxiv": "https://arxiv.org/abs/2603.08391",
-                        },
-                    },
-                    sort_keys=False,
-                ),
-                encoding="utf-8",
-            )
-
-            with patch.object(build, "PAPERS_DIR", papers_dir):
-                papers = build.load_papers()
+        papers = self.load(paper_yaml(authors=...))
 
         self.assertEqual(len(papers), 1)
         self.assertEqual(papers[0]["links"]["alphaxiv"], "https://www.alphaxiv.org/abs/2603.08391")
+        self.assertEqual(papers[0]["arxiv_id"], "2603.08391")
 
     def test_load_papers_requires_published_date(self):
-        with TemporaryDirectory() as tmpdir:
-            papers_dir = Path(tmpdir)
-            paper_path = papers_dir / "2603.08391.yaml"
-            paper_path.write_text(
-                yaml.safe_dump(
-                    {
-                        "title": "Loop Test Paper",
-                        "year": 2026,
-                        "venue": "arXiv",
-                        "category": "analysis",
-                        "mechanism_tags": ["flat-loop"],
-                        "links": {
-                            "arxiv": "https://arxiv.org/abs/2603.08391",
-                        },
-                    },
-                    sort_keys=False,
-                ),
-                encoding="utf-8",
-            )
+        with self.assertRaisesRegex(ValueError, "missing required published_date"):
+            self.load(paper_yaml(published_date=...))
 
-            with patch.object(build, "PAPERS_DIR", papers_dir):
-                with self.assertRaisesRegex(ValueError, "missing required published_date"):
-                    build.load_papers()
+    def test_load_papers_requires_a_primary_source_link(self):
+        with self.assertRaisesRegex(ValueError, "at least one of links.arxiv, links.paper, or links.openreview"):
+            self.load(paper_yaml(links={"github": "https://github.com/example/repo"}))
 
     def test_load_papers_preserves_must_read_flag(self):
-        with TemporaryDirectory() as tmpdir:
-            papers_dir = Path(tmpdir)
-            paper_path = papers_dir / "2603.08391.yaml"
-            paper_path.write_text(
-                yaml.safe_dump(
-                    {
-                        "title": "Must Read Loop Test Paper",
-                        "authors": ["Test Author"],
-                        "year": 2026,
-                        "published_date": "2026-03-10",
-                        "venue": "arXiv",
-                        "category": "analysis",
-                        "must_read": True,
-                        "mechanism_tags": ["flat-loop"],
-                        "links": {
-                            "arxiv": "https://arxiv.org/abs/2603.08391",
-                        },
-                    },
-                    sort_keys=False,
-                ),
-                encoding="utf-8",
-            )
-
-            with patch.object(build, "PAPERS_DIR", papers_dir):
-                papers = build.load_papers()
+        papers = self.load(paper_yaml(must_read=True))
 
         self.assertEqual(len(papers), 1)
         self.assertTrue(papers[0].get("must_read"))
+        self.assertNotIn("must_read", self.load(paper_yaml(must_read=False))[0])
+
+    def test_load_papers_normalizes_comment_links(self):
+        papers = self.load(paper_yaml(links={
+            "arxiv": "https://arxiv.org/abs/2603.08391",
+            "comment": [{"label": "Thread", "url": "https://x.com/a"}, "https://example.com/b"],
+        }))
+        self.assertEqual(
+            papers[0]["community_comments"],
+            [{"label": "Thread", "url": "https://x.com/a"}, {"label": "Comment 2", "url": "https://example.com/b"}],
+        )
+        self.assertNotIn("comment", papers[0]["links"])
 
 
 class LoadBlogsRegressionTests(unittest.TestCase):
+    def load(self, data: dict) -> list[dict]:
+        with TemporaryDirectory() as tmpdir:
+            blogs_dir = Path(tmpdir)
+            write_yaml(blogs_dir / "2026-04-21-loop-blog.yaml", data)
+            with patch.object(build, "BLOGS_DIR", blogs_dir):
+                return build.load_blogs()
+
     def test_load_blogs_requires_links_blog(self):
-        with TemporaryDirectory() as tmpdir:
-            blogs_dir = Path(tmpdir)
-            blog_path = blogs_dir / "loop-blog.yaml"
-            blog_path.write_text(
-                yaml.safe_dump(
-                    {
-                        "title": "Loop Blog",
-                        "year": 2026,
-                        "published_date": "2026-04-21",
-                        "venue": "Lab Blog",
-                        "focus_tags": ["architecture"],
-                        "links": {},
-                    },
-                    sort_keys=False,
-                ),
-                encoding="utf-8",
-            )
+        with self.assertRaisesRegex(ValueError, "blogs require links.blog"):
+            self.load(blog_yaml(links={}))
 
-            with patch.object(build, "BLOGS_DIR", blogs_dir):
-                with self.assertRaisesRegex(ValueError, "blogs require links.blog"):
-                    build.load_blogs()
+    def test_load_blogs_requires_survey_section(self):
+        with self.assertRaisesRegex(ValueError, "missing required survey_section"):
+            self.load(blog_yaml(survey_section=...))
+        with self.assertRaisesRegex(ValueError, "invalid survey_section"):
+            self.load(blog_yaml(survey_section=["design/topology"]))
 
-    def test_load_blogs_requires_explicit_loop_mechanism_tags(self):
-        with TemporaryDirectory() as tmpdir:
-            blogs_dir = Path(tmpdir)
-            blog_path = blogs_dir / "loop-blog.yaml"
-            blog_path.write_text(
-                yaml.safe_dump(
-                    {
-                        "title": "Loop Blog",
-                        "year": 2026,
-                        "published_date": "2026-04-21",
-                        "venue": "Lab Blog",
-                        "focus_tags": ["architecture"],
-                        "links": {
-                            "blog": "https://example.com/loop-blog",
-                        },
-                    },
-                    sort_keys=False,
-                ),
-                encoding="utf-8",
-            )
+    def test_load_blogs_reject_retired_fields(self):
+        for field in (*build.RETIRED_FIELDS, "family_tags"):
+            with self.subTest(field=field):
+                with self.assertRaisesRegex(ValueError, f"{field} no longer exist"):
+                    self.load(blog_yaml(**{field: ["x"]}))
 
-            with patch.object(build, "BLOGS_DIR", blogs_dir):
-                with self.assertRaisesRegex(ValueError, "missing mechanism_tags"):
-                    build.load_blogs()
+    def test_load_blogs_reject_paper_design_axes(self):
+        for field, value in (
+            ("loop_topology", "partial"),
+            ("sharing", "full"),
+            ("depth_control", "fixed"),
+            ("claims", ["stability"]),
+            ("comparison", []),
+            ("survey_core", True),
+        ):
+            with self.subTest(field=field):
+                with self.assertRaisesRegex(ValueError, f"blogs only use survey_section, not {field}"):
+                    self.load(blog_yaml(**{field: value}))
 
     def test_load_blogs_preserves_flat_blog_metadata(self):
-        with TemporaryDirectory() as tmpdir:
-            blogs_dir = Path(tmpdir)
-            blog_path = blogs_dir / "loop-blog.yaml"
-            blog_path.write_text(
-                yaml.safe_dump(
-                    {
-                        "title": "Loop Blog",
-                        "authors": ["Test Author"],
-                        "year": 2026,
-                        "published_date": "2026-04-21",
-                        "venue": "X Article",
-                        "focus_tags": ["architecture"],
-                        "mechanism_tags": ["flat-loop"],
-                        "domain_tags": ["language-modeling"],
-                        "links": {
-                            "blog": "https://example.com/loop-blog",
-                        },
-                    },
-                    sort_keys=False,
-                ),
-                encoding="utf-8",
-            )
-
-            with patch.object(build, "BLOGS_DIR", blogs_dir):
-                blogs = build.load_blogs()
+        blogs = self.load(blog_yaml())
 
         self.assertEqual(len(blogs), 1)
         self.assertEqual(blogs[0]["entry_type"], "blog")
         self.assertEqual(blogs[0]["links"]["blog"], "https://example.com/loop-blog")
         self.assertEqual(blogs[0]["venueClass"], build.BLOG_VENUE_CLASS)
-        self.assertNotIn("category", blogs[0])
+        self.assertEqual(blogs[0]["survey_section"], ["understanding/why", "architecture/topology"])
+        self.assertEqual(blogs[0]["source_path"], "blogs/2026-04-21-loop-blog.yaml")
+        for field in (*build.RETIRED_FIELDS, "loop_topology", "sharing", "depth_control", "claims", "comparison"):
+            self.assertNotIn(field, blogs[0])
 
 
 class TagsReferenceRegressionTests(unittest.TestCase):
-    def test_render_tags_reference_text_includes_sections_and_counts(self):
-        text = build.render_tags_reference_text(
-            [
-                {
-                    "mechanism_tags": ["flat-loop"],
-                    "focus_tags": ["architecture"],
-                    "domain_tags": ["reasoning"],
-                    "tags": ["LoopLM"],
-                }
-            ],
-            [
-                {
-                    "mechanism_tags": ["flat-loop", "implicit-layer"],
-                    "focus_tags": ["architecture", "data"],
-                    "domain_tags": ["reasoning", "vision"],
-                    "tags": ["LoopLM", "BlogAlias"],
-                }
-            ],
-        )
+    def render(self):
+        papers = [
+            {**survey_fields(survey_section=["architecture/topology", "scaling/test-time"]), "claims": ["stability", "expressivity"]},
+            {**survey_fields(survey_section=["scaling/test-time"], loop_topology="partial"), "comparison": []},
+        ]
+        blogs = [{"survey_section": ["architecture/topology"]}]
+        return build.render_tags_reference_text(papers, blogs)
 
-        self.assertIn("# TAGS", text)
-        self.assertIn("## Loop Mechanism (`mechanism_tags`)", text)
-        self.assertIn("`flat-loop` (2)", text)
-        self.assertIn("`implicit-layer` (1)", text)
-        self.assertNotIn("family_tags", text)
-        self.assertNotIn("universal-transformer", text)
-        self.assertIn("## focus_tags", text)
-        self.assertIn("`architecture` (2)", text)
-        self.assertIn("`data` (1)", text)
-        self.assertIn("## domain_tags", text)
-        self.assertIn("`reasoning` (2)", text)
-        self.assertIn("`vision` (1)", text)
-        self.assertIn("## tags", text)
-        self.assertIn("alias tags currently used across the repo", text)
-        self.assertNotIn("alias / mechanism", text)
-        self.assertIn("`LoopLM` (2)", text)
-        self.assertIn("`BlogAlias` (1)", text)
+    def test_render_tags_reference_lists_sections_by_part_and_chapter_with_counts(self):
+        text = self.render()
+
+        self.assertTrue(text.startswith("# Taxonomy vocabulary\n"))
+        self.assertIn("There are no free-form tags", text)
+        self.assertIn("## Survey sections (`survey_section`)", text)
+        self.assertIn("Counts are primary / any.", text)
+        self.assertIn("- `architecture/topology` — §4.1 Loop topology (2 / 2)", text)
+        self.assertIn("- `scaling/test-time` — §6.2 Test-time scaling (1 / 2)", text)
+        self.assertIn("- `foundations/recurrence` — §2.1 Recurrent networks and weight sharing across computation (0 / 0)", text)
+        for section_id, number, _ in build.SURVEY_SECTIONS:
+            self.assertEqual(text.count(f"- `{section_id}` — §{number} "), 1)
+
+        order = [
+            "### Part I. Foundations",
+            "**§2 From Recurrent Computation to Iterative Depth**",
+            "- `foundations/recurrence`",
+            "### Part II. What Looping Buys",
+            "**§3 Capabilities, Benefits and Trade-offs**",
+            "### Part III. Building, Training and Deploying",
+            "**§4 Architecture and Design**",
+            "- `architecture/topology`",
+            "**§5 Learning Algorithms**",
+            "**§6 Scaling Laws**",
+            "- `scaling/test-time`",
+            "**§7 Systems and Infrastructure**",
+            "### Part IV. Understanding and Applications",
+            "**§8 Understanding Why Looped Models Work**",
+            "**§9 Applications**",
+            "### Part V. Open Problems",
+            "**§10 Open Problems**",
+            "- `open-problems/monitorability-safety`",
+            "## Loop topology (`loop_topology`)",
+        ]
+        positions = [text.index(marker) for marker in order]
+        self.assertEqual(positions, sorted(positions))
+        self.assertEqual(text.count("### Part "), len(build.SURVEY_PARTS))
+        self.assertEqual(text.count("**§"), len(build.SURVEY_CHAPTERS))
+
+    def test_render_tags_reference_lists_every_axis_value_with_paper_counts(self):
+        text = self.render()
+        for field, label in build.AXIS_LABELS.items():
+            self.assertIn(f"## {label} (`{field}`)", text)
+        self.assertIn("- `prelude-core-coda` (1)", text)
+        self.assertIn("- `partial` (1)", text)
+        self.assertIn("- `implicit-fixed-point` (0)", text)
+        self.assertIn("- `full` (2)", text)
+        self.assertIn("- `sampled-train` (2)", text)
+        self.assertIn("- `stability` (1)", text)
+        self.assertIn("- `test-time-scaling` (1)", text)
+        self.assertIn("- `iso-param` (1)", text)
+        self.assertIn("- `unclear` (0)", text)
+        self.assertTrue(text.endswith("\n"))
+        self.assertFalse(text.endswith("\n\n"))
+
+    def test_render_tags_reference_has_no_free_form_tag_sections(self):
+        text = self.render()
+        for retired in (
+            "mechanism_tags", "focus_tags", "domain_tags", "family_tags", "## tags", "Loop Mechanism",
+            "alias tags", "category", "`foundation`",
+        ):
+            self.assertNotIn(retired, text)
 
     def test_repo_tags_reference_matches_current_yaml_inventory(self):
         expected = build.render_tags_reference_text(build.load_papers(), build.load_blogs())
@@ -4494,100 +4437,82 @@ class SourceFileMetadataTests(unittest.TestCase):
                 "desc": "forbidden paper description",
                 "metrics": {"citations": 99},
                 "links": {"arxiv": "https://example.com/forbidden-paper"},
-                "tags": ["forbidden-paper-alias"],
-                "mechanism_tags": ["flat-loop"],
-                "focus_tags": ["architecture"],
-                "domain_tags": ["vision"],
+                **survey_fields(survey_section=["scaling/test-time", "architecture/topology"], claims=["stability", "expressivity"]),
             },
             {
                 "source_path": "papers/a.yaml",
-                "mechanism_tags": ["flat-loop", "implicit-layer"],
-                "focus_tags": ["data"],
-                "domain_tags": ["reasoning", "vision"],
+                **survey_fields(survey_section=["architecture/topology"], loop_topology="partial", comparison=[]),
             },
         ]
         blogs = [
-            {
-                "source_path": "blogs/c.yaml",
-                "title": "forbidden blog title",
-                "mechanism_tags": [],
-                "focus_tags": [],
-                "domain_tags": [],
-            },
-            {
-                "source_path": "papers/a.yaml",
-                "mechanism_tags": [],
-                "focus_tags": [],
-                "domain_tags": [],
-            },
+            {"source_path": "blogs/c.yaml", "title": "forbidden blog title", "survey_section": ["understanding/why"]},
+            {"source_path": "papers/a.yaml", "survey_section": ["architecture/topology"]},
         ]
 
         payload = build.render_submission_metadata(papers, blogs)
         reversed_payload = build.render_submission_metadata(list(reversed(papers)), list(reversed(blogs)))
 
         self.assertEqual(payload, reversed_payload)
-        self.assertEqual(set(payload), {"existing_paths", "tag_inventories"})
+        self.assertEqual(set(payload), {"existing_paths", "survey_taxonomy", "inventories"})
+        self.assertEqual(payload["existing_paths"], ["blogs/c.yaml", "papers/a.yaml", "papers/b.yaml"])
+        self.assertEqual(payload["survey_taxonomy"], build.render_survey_taxonomy())
         self.assertEqual(
-            payload["existing_paths"],
-            ["blogs/c.yaml", "papers/a.yaml", "papers/b.yaml"],
+            list(payload["inventories"]),
+            ["survey_section", "loop_topology", "sharing", "depth_control", "claims", "comparison"],
         )
-        self.assertEqual(set(payload["tag_inventories"]), {"mechanism", "focus", "domain"})
+
+        sections = payload["inventories"]["survey_section"]
+        self.assertEqual(len(sections), len(build.VALID_SURVEY_SECTIONS))
+        self.assertEqual({row["label"] for row in sections}, set(build.VALID_SURVEY_SECTIONS))
         self.assertEqual(
-            payload["tag_inventories"]["mechanism"],
+            sections[:3],
             [
-                {"label": "flat-loop", "count": 2},
-                {"label": "implicit-layer", "count": 1},
-                {"label": "hierarchical-loop", "count": 0},
-                {"label": "parallel-loop", "count": 0},
+                {"label": "architecture/topology", "count": 3},
+                {"label": "scaling/test-time", "count": 1},
+                {"label": "understanding/why", "count": 1},
             ],
         )
+        zero_rows = [row["label"] for row in sections if row["count"] == 0]
+        self.assertEqual(zero_rows, sorted(zero_rows, key=str.lower))
+
         self.assertEqual(
-            payload["tag_inventories"]["focus"],
+            payload["inventories"]["loop_topology"][:2],
+            [{"label": "partial", "count": 1}, {"label": "prelude-core-coda", "count": 1}],
+        )
+        self.assertEqual(payload["inventories"]["sharing"][0], {"label": "full", "count": 2})
+        self.assertEqual(
+            payload["inventories"]["claims"][:4],
             [
-                {"label": "architecture", "count": 1},
-                {"label": "data", "count": 1},
-                {"label": "inference-algorithm", "count": 0},
-                {"label": "objective-loss", "count": 0},
-                {"label": "training-algorithm", "count": 0},
+                {"label": "expressivity", "count": 1},
+                {"label": "stability", "count": 1},
+                {"label": "test-time-scaling", "count": 1},
+                {"label": "compute-efficiency", "count": 0},
             ],
         )
-        self.assertEqual(
-            payload["tag_inventories"]["domain"],
-            [
-                {"label": "vision", "count": 2},
-                {"label": "reasoning", "count": 1},
-            ],
-        )
-        for inventory in payload["tag_inventories"].values():
-            for row in inventory:
+        self.assertEqual(payload["inventories"]["comparison"][0], {"label": "iso-param", "count": 1})
+        for field, values in (*build.SURVEY_SCALAR_FIELDS, *build.SURVEY_LIST_FIELDS):
+            self.assertEqual({row["label"] for row in payload["inventories"][field]}, set(values))
+            for row in payload["inventories"][field]:
                 self.assertEqual(set(row), {"label", "count"})
 
         serialized = json.dumps(payload)
+        entry_data = json.dumps({key: payload[key] for key in ("existing_paths", "inventories")})
         for forbidden_field in (
-            '"title"',
-            '"authors"',
-            '"desc"',
-            '"metrics"',
-            '"links"',
-            '"briefings"',
-            '"tags"',
-            '"papers"',
-            '"blogs"',
-            '"generated"',
+            '"title"', '"authors"', '"desc"', '"metrics"', '"links"', '"briefings"', '"tags"',
+            '"tag_inventories"', '"papers"', '"blogs"', '"generated"',
         ):
-            self.assertNotIn(forbidden_field, serialized)
+            self.assertNotIn(forbidden_field, entry_data)
         for forbidden_value in (
             "forbidden paper title",
             "forbidden paper authors",
             "forbidden paper description",
-            "forbidden-paper-alias",
             "forbidden blog title",
         ):
             self.assertNotIn(forbidden_value, serialized)
 
     def test_build_submission_metadata_writes_rendered_payload(self):
-        papers = [{"source_path": "papers/a.yaml", "mechanism_tags": ["flat-loop"]}]
-        blogs = [{"source_path": "blogs/b.yaml", "domain_tags": ["reasoning"]}]
+        papers = [{"source_path": "papers/a.yaml", **survey_fields()}]
+        blogs = [{"source_path": "blogs/b.yaml", "survey_section": ["understanding/why"]}]
 
         with TemporaryDirectory() as tmpdir:
             output_path = Path(tmpdir) / "submission-meta.json"
@@ -4596,6 +4521,11 @@ class SourceFileMetadataTests(unittest.TestCase):
             payload = json.loads(output_path.read_text(encoding="utf-8"))
 
         self.assertEqual(payload, build.render_submission_metadata(papers, blogs))
+
+    def test_repo_submission_metadata_matches_current_yaml_inventory(self):
+        expected = build.render_submission_metadata(build.load_papers(), build.load_blogs())
+        payload = json.loads((REPO_ROOT / "submission-meta.json").read_text(encoding="utf-8"))
+        self.assertEqual(payload, expected)
 
     def test_loaded_entries_expose_source_paths(self):
         paper = build.load_papers()[0]
@@ -4606,24 +4536,28 @@ class SourceFileMetadataTests(unittest.TestCase):
         self.assertTrue(blog["source_file"].endswith(".yaml"))
         self.assertTrue(blog["source_path"].startswith("blogs/"))
 
-    def test_generated_json_uses_loop_form_mechanism_allowlist(self):
+    def test_generated_json_uses_the_survey_taxonomy(self):
         payload = json.loads((REPO_ROOT / "papers.json").read_text(encoding="utf-8"))
-        payload["papers"] = [
+        papers = [
             paper
             for row in payload["paper_chunks"]
             for paper in json.loads((REPO_ROOT / row["path"]).read_text(encoding="utf-8"))["papers"]
         ]
-        self.assertEqual(len(payload["papers"]), payload["meta"]["paper_total"])
-        self.assertEqual(payload["mechanism_tags"], list(build.VALID_MECHANISM_TAGS))
-        allowed = set(build.VALID_MECHANISM_TAGS)
-        for entry in [*payload["papers"], *payload.get("blogs", [])]:
-            if entry.get("catalog_fit") == "adjacent":
-                self.assertEqual(entry.get("mechanism_tags"), [], entry.get("source_path"))
-            else:
-                self.assertTrue(entry.get("mechanism_tags"), entry.get("source_path"))
-            self.assertLessEqual(set(entry.get("mechanism_tags", [])), allowed, entry.get("source_path"))
-        for paper in payload["papers"]:
-            self.assertNotIn("category_path", paper, paper.get("source_path"))
+        self.assertEqual(len(papers), payload["meta"]["paper_total"])
+        self.assertEqual(payload["survey_taxonomy"], build.render_survey_taxonomy())
+        self.assertEqual(payload["meta"]["taxonomy_note"], build.TAXONOMY_NOTE)
+        self.assertNotIn("mechanism_tags", payload)
+        for paper in papers:
+            source = paper.get("id")
+            for field in build.REQUIRED_PAPER_SURVEY_FIELDS:
+                self.assertIn(field, paper, source)
+            build.normalize_survey_fields(paper, source, build.REQUIRED_PAPER_SURVEY_FIELDS)
+            for field in (*build.RETIRED_FIELDS, "family_tags"):
+                self.assertNotIn(field, paper, source)
+        for blog in payload.get("blogs", []):
+            self.assertTrue(blog.get("survey_section"), blog.get("id"))
+            for field in (*build.RETIRED_FIELDS, "loop_topology", "sharing", "depth_control", "claims", "comparison"):
+                self.assertNotIn(field, blog, blog.get("id"))
 
     def test_blog_yaml_files_use_published_date_prefix(self):
         blog_files = [path.name for path in (REPO_ROOT / "blogs").glob("*.yaml") if not path.name.startswith("_")]
@@ -4643,42 +4577,6 @@ class DocumentationConsistencyTests(unittest.TestCase):
             self.assertIn("catalog_fit", text)
             self.assertIn("adjacent", text.lower())
             self.assertIn("strict", text.lower())
-
-    def test_docs_explain_three_coarse_categories_and_foundation_badge(self):
-        texts = [
-            TAXONOMY_PATH.read_text(encoding="utf-8"),
-            CONTRIBUTING_PATH.read_text(encoding="utf-8"),
-            README_HEADER_PATH.read_text(encoding="utf-8"),
-            PAPER_TEMPLATE_PATH.read_text(encoding="utf-8"),
-        ]
-        for text in texts:
-            self.assertIn("Theoretical and Mechanical Analysis", text)
-            self.assertIn("Architecture and Algorithm Designs", text)
-            self.assertIn("Applications Focused", text)
-            self.assertIn("theoretical and mechanical analysis", text.lower())
-            self.assertIn("foundation", text.lower())
-            self.assertNotIn("Capability and Scaling Studies", text)
-            self.assertNotIn("Inference and Optimization Methods", text)
-            self.assertNotIn("For backward compatibility", text)
-            self.assertNotIn("old metadata is mapped", text)
-
-    def test_docs_explain_that_browser_tag_filters_use_mechanism_focus_and_domain_tags(self):
-        taxonomy = TAXONOMY_PATH.read_text(encoding="utf-8")
-        contributing = CONTRIBUTING_PATH.read_text(encoding="utf-8")
-        readme_header = README_HEADER_PATH.read_text(encoding="utf-8")
-        blog_template = BLOG_TEMPLATE_PATH.read_text(encoding="utf-8")
-
-        for text in (taxonomy, contributing, readme_header, blog_template):
-            self.assertIn("mechanism_tags", text)
-            self.assertIn("focus_tags", text)
-            self.assertIn("domain_tags", text)
-            self.assertIn("browser", text.lower())
-            self.assertIn("hierarchical-loop", text)
-            self.assertIn("flat-loop", text)
-            self.assertIn("parallel-loop", text)
-            self.assertIn("implicit-layer", text)
-            self.assertNotIn("family_tags", text)
-            self.assertNotIn("family tags", text.lower())
 
     def test_docs_explain_flat_blogs_section(self):
         for text in (
@@ -4715,13 +4613,127 @@ class DocumentationConsistencyTests(unittest.TestCase):
 
 
 class AddArxivYamlRegressionTests(unittest.TestCase):
-    def test_add_arxiv_helper_does_not_emit_category_path_and_requires_loop_mechanism(self):
+    ARXIV_DATA = {
+        "title": "Loop's Test Paper",
+        "authors": ["Test Author", "O'Brien"],
+        "year": 2026,
+        "published_date": "2026-04-20",
+        "summary": "Introduces a looped model. It works well.",
+        "id": "2604.11791",
+    }
+
+    def parse(self, *extra: str):
+        argv = ["add_arxiv_yaml.py", "2604.11791", *extra]
+        with patch.object(add_arxiv_yaml.sys, "argv", argv):
+            return add_arxiv_yaml.parse_args()
+
+    def required_args(self):
+        return (
+            "--section", "scaling/test-time",
+            "--loop-topology", "prelude-core-coda",
+            "--sharing", "full",
+            "--depth-control", "sampled-train",
+        )
+
+    def test_add_arxiv_helper_has_survey_flags_and_no_retired_options(self):
         text = ADD_ARXIV_YAML_PATH.read_text(encoding="utf-8")
-        self.assertNotIn("--category-path", text)
-        self.assertNotIn("category_path", text)
-        self.assertIn("required=True", text)
-        for tag in build.VALID_MECHANISM_TAGS:
-            self.assertIn(tag, text)
+        for retired in (
+            "--category", "category_path", "--mechanism", "mechanism_tags", "focus_tags", "domain_tags",
+            "--foundation", "--tag", "flat-loop",
+        ):
+            self.assertNotIn(retired, text)
+        for flag in (
+            "--section", "--loop-topology", "--sharing", "--depth-control", "--claim", "--comparison",
+            "--survey-core", "--catalog-fit",
+        ):
+            self.assertIn(f'"{flag}"', text)
+
+    def test_add_arxiv_helper_requires_section_and_scalar_axes(self):
+        required = list(self.required_args())
+        for index in range(0, len(required), 2):
+            missing = required[:index] + required[index + 2:]
+            with self.subTest(missing=required[index]):
+                with patch("sys.stderr"), self.assertRaises(SystemExit):
+                    self.parse(*missing)
+        for bad in (
+            ("--section", "design/topology"),
+            ("--loop-topology", "flat-loop"),
+            ("--claim", "speed"),
+            ("--comparison", "iso-time"),
+            ("--catalog-fit", "strict"),
+        ):
+            with self.subTest(bad=bad):
+                with patch("sys.stderr"), self.assertRaises(SystemExit):
+                    self.parse(*self.required_args(), *bad)
+
+    def test_add_arxiv_helper_renders_a_skeleton_the_build_accepts(self):
+        args = self.parse(
+            *self.required_args(),
+            "--section", "architecture/topology",
+            "--section", "scaling/test-time",
+            "--claim", "test-time-scaling",
+            "--claim", "stability",
+            "--claim", "test-time-scaling",
+            "--comparison", "iso-flop",
+            "--survey-core",
+            "--catalog-fit", "adjacent",
+            "--added-date", "2026-10-12",
+        )
+        text = add_arxiv_yaml.render_yaml(dict(self.ARXIV_DATA), args)
+        data = yaml.safe_load(text)
+
+        build.reject_retired_fields(data, "2604.11791.yaml")
+        build.validate_links(data["links"], "2604.11791.yaml")
+        self.assertEqual(build.normalize_paper_taxonomy_fields(data, "2604.11791.yaml"), {"catalog_fit": "adjacent"})
+        self.assertEqual(
+            build.normalize_survey_fields(data, "2604.11791.yaml", build.REQUIRED_PAPER_SURVEY_FIELDS),
+            {
+                "survey_section": ["scaling/test-time", "architecture/topology"],
+                "loop_topology": "prelude-core-coda",
+                "sharing": "full",
+                "depth_control": "sampled-train",
+                "claims": ["test-time-scaling", "stability"],
+                "comparison": ["iso-flop"],
+                "survey_core": True,
+            },
+        )
+        self.assertEqual(data["title"], "Loop's Test Paper")
+        self.assertEqual(data["authors"], ["Test Author", "O'Brien"])
+        self.assertEqual(data["published_date"], "2026-04-20")
+        self.assertEqual(data["added_date"], "2026-10-12")
+        self.assertEqual(data["desc"], "Introduces a looped model.")
+        self.assertEqual(data["links"], {"arxiv": "https://arxiv.org/abs/2604.11791"})
+        self.assertNotIn("must_read", data)
+        for field in build.RETIRED_FIELDS:
+            self.assertNotIn(f"{field}:", text)
+
+    def test_add_arxiv_helper_defaults_to_strict_scope_and_empty_lists(self):
+        args = self.parse(*self.required_args(), "--added-date", "2026-10-12")
+        text = add_arxiv_yaml.render_yaml(dict(self.ARXIV_DATA), args)
+        data = yaml.safe_load(text)
+
+        self.assertIn("claims: []\n", text)
+        self.assertIn("comparison: []\n", text)
+        self.assertNotIn("catalog_fit", data)
+        self.assertNotIn("survey_core", data)
+        self.assertEqual(build.normalize_paper_taxonomy_fields(data, "x.yaml"), {"catalog_fit": "strict"})
+        survey = build.normalize_survey_fields(data, "x.yaml", build.REQUIRED_PAPER_SURVEY_FIELDS)
+        self.assertEqual(survey["survey_section"], ["scaling/test-time"])
+        self.assertEqual(survey["claims"], [])
+        self.assertEqual(survey["comparison"], [])
+
+    def test_add_arxiv_helper_writes_a_loadable_paper_file(self):
+        args = self.parse(*self.required_args(), "--added-date", "2026-10-12")
+        with TemporaryDirectory() as tmpdir:
+            papers_dir = Path(tmpdir)
+            (papers_dir / "2604.11791.yaml").write_text(
+                add_arxiv_yaml.render_yaml(dict(self.ARXIV_DATA), args), encoding="utf-8"
+            )
+            with patch.object(build, "PAPERS_DIR", papers_dir):
+                papers = build.load_papers()
+        self.assertEqual(len(papers), 1)
+        self.assertEqual(papers[0]["survey_section"], ["scaling/test-time"])
+        self.assertEqual(papers[0]["links"]["alphaxiv"], "https://www.alphaxiv.org/abs/2604.11791")
 
     def test_fetch_arxiv_entry_requires_usable_published_date(self):
         payload = """<?xml version='1.0' encoding='UTF-8'?>
@@ -4761,15 +4773,32 @@ class ContributionWorkflowTests(unittest.TestCase):
         return yaml.safe_load(ISSUE_TEMPLATE_CONFIG_PATH.read_text(encoding="utf-8"))
 
     @staticmethod
-    def run_submission_inventory_helpers(expression: str):
-        """Evaluate the submission inventory pure helpers from submit.html in Node."""
+    def run_submit_script(expression: str):
+        """Evaluate submit.html's taxonomy, YAML and picker helpers in Node with a stub DOM.
+
+        ``expression`` may hold several statements; the value of the last one is returned.
+        """
         html = SUBMIT_PAGE_PATH.read_text(encoding="utf-8")
-        helper_start = html.index("function isValidCountedInventory(inventory) {")
-        helper_end = html.index("function getSortedSelected(group) {", helper_start)
-        helpers = html[helper_start:helper_end]
+
+        def between(start_marker: str, end_marker: str) -> str:
+            start = html.index(start_marker)
+            return html[start:html.index(end_marker, start)]
+
+        helpers = "\n".join((
+            between("const SCALAR_AXES = ", "function syncRequiredFieldStates() {"),
+            between("function renderPrimarySectionSelect() {", "function renderAllPickers() {"),
+            between("function computeShortname(values) {", "function setActionDisabled(disabled) {"),
+        ))
         script = f"""
+const elements = {{}};
+const document = {{
+  getElementById: function(id) {{
+    if (!elements[id]) elements[id] = {{ id: id, innerHTML: '', textContent: '', value: '', disabled: false }};
+    return elements[id];
+  }}
+}};
 {helpers}
-const result = {expression};
+const result = eval({json.dumps(expression)});
 process.stdout.write(JSON.stringify(result));
 """
         output = subprocess.check_output(["node", "-e", script], text=True)
@@ -4819,152 +4848,290 @@ process.stdout.write(JSON.stringify(result));
         self.assertIn("blogs/", template)
         self.assertIn("generated YAML", template)
         self.assertIn("taxonomy", template.lower())
-        self.assertIn("controlled tag-vocabulary", template.lower())
+        self.assertIn("controlled taxonomy-vocabulary", template.lower())
         self.assertNotIn("new category", template.lower())
         self.assertNotIn("new tags", template.lower())
 
-    def test_submit_page_contains_searchable_tag_picker_yaml_preview_and_fork_first_github_guidance(self):
+    def test_submit_page_contains_survey_pickers_yaml_preview_and_fork_first_github_guidance(self):
         html = SUBMIT_PAGE_PATH.read_text(encoding="utf-8")
-        self.assertIn("Searchable tag picker", html)
-        self.assertIn("fetch('submission-meta.json')", html)
-        self.assertNotIn("fetch('papers.json')", html)
+        script = html[html.index('<script src="assets/repo-meta.js?v=2"></script>'):]
+        self.assertIn("fetchJson('submission-meta.json')", script)
+        self.assertIn("fetchJson('papers.json')", script)
+        self.assertIn("catalog.survey_taxonomy", script)
+        self.assertNotIn("data.papers", script)
+        self.assertNotIn("data.blogs", script)
         self.assertNotIn("deriveFallbackSourcePath", html)
-        self.assertIn("existing_paths", html)
-        self.assertIn("tag_inventories", html)
-        self.assertIn("isValidCountedInventory(inventories.mechanism)", html)
-        self.assertIn("isValidCountedInventory(inventories.focus)", html)
-        self.assertIn("isValidCountedInventory(inventories.domain)", html)
-        self.assertIn(
-            "STATE.options.domain = mergeSuggestedCountedInventory(inventories.domain, SUGGESTED_DOMAIN_TAGS);",
-            html,
-        )
-        self.assertIn("submission-form", html)
-        self.assertIn("resource-kind-toggle", html)
-        self.assertIn("resource-title-input", html)
-        self.assertIn("authors-input", html)
-        self.assertIn("published-date-input", html)
-        self.assertIn("shortname-input", html)
-        self.assertIn("primary-link-input", html)
-        self.assertIn("category-select", html)
-        self.assertIn("yaml-preview-output", html)
-        self.assertIn("target-path-output", html)
-        self.assertIn("effective-shortname-output", html)
-        self.assertIn("extracted-arxiv-id-output", html)
-        self.assertIn("path-status-output", html)
-        self.assertIn("github-repo-url-output", html)
-        self.assertIn("copy-target-path-btn", html)
-        self.assertIn("Open GitHub repo (fork first)", html)
-        self.assertIn("GitHub fork / PR handoff", html)
-        self.assertIn("Manual GitHub step", html)
-        self.assertIn("Ready to copy into your fork", html)
-        self.assertIn("Step 1", html)
-        self.assertIn("Step 2", html)
-        self.assertIn("Step 3", html)
-        self.assertNotIn("What counts as a blog?", html)
-        self.assertNotIn("substantive public long-form technical post", html)
-        self.assertIn("copyTargetPath", html)
-        self.assertIn("openGitHubRepoForFork", html)
-        self.assertIn("buildYamlPreview", html)
-        self.assertIn("slugifyFilenamePart", html)
-        self.assertIn("extractArxivId", html)
-        self.assertIn("targetFileExists", html)
-        self.assertNotIn("data.papers", html)
-        self.assertNotIn("data.blogs", html)
-        self.assertIn("tag-picker-search", html)
-        self.assertIn("Paper Category", html)
-        self.assertIn("three flat paper categories", html)
-        self.assertIn("Browser-facing loop-form tags", html)
-        self.assertIn("hierarchical-loop", html)
-        self.assertIn("flat-loop", html)
-        self.assertIn("parallel-loop", html)
-        self.assertIn("implicit-layer", html)
-        self.assertIn("domain-tags-manual-input", html)
-        self.assertIn("alias-tags-manual-input", html)
-        self.assertNotIn("new-category-input", html)
-        self.assertNotIn("Custom Category / Path", html)
-        self.assertNotIn("mechanism-tags-manual-input", html)
-        self.assertNotIn("focus-tags-manual-input", html)
-        self.assertNotIn("category/subcategory", html)
-        self.assertNotIn("category_path", html)
+        self.assertIn("data.existing_paths", script)
+        self.assertIn("isValidSurveyTaxonomy(data.survey_taxonomy)", script)
+        self.assertIn("isValidCountedInventory(inventories[field])", script)
+        self.assertIn("const SCALAR_AXES = ['loop_topology', 'sharing', 'depth_control'];", script)
+        self.assertIn("const LIST_AXES = ['claims', 'comparison'];", script)
+        for marker in (
+            "submission-form",
+            "resource-kind-toggle",
+            "resource-title-input",
+            "authors-input",
+            "published-date-input",
+            "shortname-input",
+            "primary-link-input",
+            'id="primary-section-select"',
+            'id="extra-sections-list"',
+            'id="paper-axes-section"',
+            'id="loop_topology-picker"',
+            'id="sharing-picker"',
+            'id="depth_control-picker"',
+            'id="claims-picker"',
+            'id="comparison-picker"',
+            "yaml-preview-output",
+            "target-path-output",
+            "effective-shortname-output",
+            "extracted-arxiv-id-output",
+            "path-status-output",
+            "github-repo-url-output",
+            "copy-target-path-btn",
+            "Open GitHub repo (fork first)",
+            "GitHub fork / PR handoff",
+            "Manual GitHub step",
+            "Ready to copy into your fork",
+            "Step 1",
+            "Step 2",
+            "Step 3",
+            "copyTargetPath",
+            "openGitHubRepoForFork",
+            "buildYamlPreview",
+            "slugifyFilenamePart",
+            "extractArxivId",
+            "targetFileExists",
+            "Survey placement",
+            "Design axes",
+            "PR message",
+            "Open the vocabulary (TAGS.md)",
+            "How to choose values (TAXONOMY.md)",
+        ):
+            self.assertIn(marker, html)
+        for retired in (
+            "tag_inventories", "Searchable tag picker", "tag-picker-search", "category-select", "Paper Category",
+            "three flat paper categories", "Browser-facing loop-form tags", "hierarchical-loop", "flat-loop",
+            "parallel-loop", "implicit-layer", "domain-tags-manual-input", "alias-tags-manual-input",
+            "mergeSuggestedCountedInventory", "SUGGESTED_DOMAIN_TAGS", "efficient-loop", "new-category-input",
+            "Custom Category / Path", "category/subcategory", "category_path", "family_tags", "Family Tags",
+            "Open prefilled GitHub issue", "Open GitHub editor for PR", "buildGitHubNewFileUrl", "new/main?filename=",
+            "What counts as a blog?", "substantive public long-form technical post",
+        ):
+            self.assertNotIn(retired, html)
         self.assertNotIn("new category", html.lower())
         self.assertNotIn("new tags", html.lower())
-        self.assertIn("PR message", html)
-        self.assertLess(html.index("Generate YAML and prepare your fork / PR"), html.index("Searchable tag picker"))
-        self.assertLess(html.index("resource-title-input"), html.index("Searchable tag picker"))
-        self.assertLess(html.index("Searchable tag picker"), html.index("Generated target path"))
-        self.assertNotIn('id="alias-picker"', html)
-        self.assertNotIn("Open prefilled GitHub issue", html)
-        self.assertNotIn("Open GitHub editor for PR", html)
-        self.assertNotIn("buildGitHubNewFileUrl", html)
-        self.assertNotIn("new/main?filename=", html)
-        self.assertNotIn("focus-tags-output", html)
-        self.assertNotIn("domain-tags-output", html)
-        self.assertNotIn("alias-tags-output", html)
-        self.assertNotIn("family-tags-manual-input", html)
-        self.assertNotIn("Family Tags", html)
-        self.assertNotIn("family_tags", html)
-        self.assertNotIn("tag-snippet", html)
-        self.assertNotIn("Auto-filled from the searchable picker", html)
-        self.assertNotIn("Paper mode", html)
-        self.assertNotIn("Taxonomy category required", html)
-        self.assertNotIn("Automatic YAML generation is disabled for new paper category proposals", html)
-        self.assertIn("efficient-loop", html)
+        self.assertLess(html.index("Generate YAML and prepare your fork / PR"), html.index("Survey placement"))
+        self.assertLess(html.index("resource-title-input"), html.index('id="primary-section-select"'))
+        self.assertLess(html.index('id="primary-section-select"'), html.index('id="loop_topology-picker"'))
+        self.assertLess(html.index('id="comparison-picker"'), html.index("Generated target path"))
 
-    def test_submit_inventory_helpers_merge_observed_and_suggested_domain_tags(self):
-        result = self.run_submission_inventory_helpers("""({
-  missingSuggestion: mergeSuggestedCountedInventory(
-    [{label: 'vision', count: 4}, {label: 'reasoning', count: 2}],
-    ['efficient-loop', 'reasoning']
-  ),
-  observedSuggestion: mergeSuggestedCountedInventory(
-    [{label: 'vision', count: 2}, {label: 'efficient-loop', count: 2}],
-    ['efficient-loop']
-  )
-})""")
-
+    def test_submit_taxonomy_and_inventory_validators(self):
+        taxonomy = json.dumps(build.render_survey_taxonomy())
+        result = self.run_submit_script(f"""
+const taxonomy = {taxonomy};
+const withoutAxis = JSON.parse(JSON.stringify(taxonomy));
+delete withoutAxis.axes.comparison;
+const badSection = JSON.parse(JSON.stringify(taxonomy));
+badSection.sections[0].number = 2.1;
+const emptyChapters = Object.assign({{}}, taxonomy, {{ chapters: [] }});
+const counts = indexInventoryCounts({{
+  survey_section: [{{ label: 'architecture/topology', count: 3 }}],
+  claims: [{{ label: 'stability', count: 2 }}],
+  tags: [{{ label: 'LoopLM', count: 9 }}]
+}});
+({{
+  valid: isValidSurveyTaxonomy(taxonomy),
+  invalid: [isValidSurveyTaxonomy(withoutAxis), isValidSurveyTaxonomy(badSection), isValidSurveyTaxonomy(emptyChapters), isValidSurveyTaxonomy(null)],
+  countFields: Object.keys(counts),
+  sectionCount: counts.survey_section['architecture/topology'],
+  claimCount: counts.claims.stability,
+  emptyCounts: indexInventoryCounts(undefined)
+}})
+""")
+        self.assertTrue(result["valid"])
+        self.assertEqual(result["invalid"], [False, False, False, False])
         self.assertEqual(
-            result["missingSuggestion"],
-            [
-                {"label": "vision", "count": 4},
-                {"label": "reasoning", "count": 2},
-                {"label": "efficient-loop", "count": 0},
-            ],
+            result["countFields"],
+            ["survey_section", "loop_topology", "sharing", "depth_control", "claims", "comparison"],
         )
+        self.assertEqual(result["sectionCount"], 3)
+        self.assertEqual(result["claimCount"], 2)
         self.assertEqual(
-            result["observedSuggestion"],
-            [
-                {"label": "efficient-loop", "count": 2},
-                {"label": "vision", "count": 2},
-            ],
-        )
-        self.assertEqual(
-            sum(row["label"] == "efficient-loop" for row in result["observedSuggestion"]),
-            1,
+            result["emptyCounts"],
+            {field: {} for field in ("survey_section", "loop_topology", "sharing", "depth_control", "claims", "comparison")},
         )
 
     def test_submit_inventory_helper_rejects_malformed_rows(self):
-        result = self.run_submission_inventory_helpers("""({
-  valid: isValidCountedInventory([{label: 'flat-loop', count: 0}]),
+        result = self.run_submit_script("""({
+  valid: isValidCountedInventory([{label: 'architecture/topology', count: 0}]),
   malformed: [
     isValidCountedInventory([null]),
     isValidCountedInventory([[]]),
     isValidCountedInventory([{label: '', count: 0}]),
     isValidCountedInventory([{label: '   ', count: 0}]),
     isValidCountedInventory([{label: 3, count: 0}]),
-    isValidCountedInventory([{label: 'flat-loop', count: -1}]),
-    isValidCountedInventory([{label: 'flat-loop', count: 1.5}]),
-    isValidCountedInventory([{label: 'flat-loop', count: Infinity}]),
-    isValidCountedInventory([{label: 'flat-loop', count: NaN}]),
+    isValidCountedInventory([{label: 'partial', count: -1}]),
+    isValidCountedInventory([{label: 'partial', count: 1.5}]),
+    isValidCountedInventory([{label: 'partial', count: Infinity}]),
+    isValidCountedInventory([{label: 'partial', count: NaN}]),
     isValidCountedInventory([
-      Object.assign(Object.create(null), {label: 'flat-loop', count: 1})
-    ])
+      Object.assign(Object.create(null), {label: 'partial', count: 1})
+    ]),
+    isValidCountedInventory(undefined)
   ]
 })""")
 
         self.assertTrue(result["valid"])
-        self.assertEqual(result["malformed"], [False] * 10)
+        self.assertEqual(result["malformed"], [False] * 11)
 
-    def test_submit_page_marks_required_fields_and_gives_tag_actions_more_spacing(self):
+    def test_repo_submission_metadata_passes_the_submit_page_validators(self):
+        payload = json.loads((REPO_ROOT / "submission-meta.json").read_text(encoding="utf-8"))
+        result = self.run_submit_script(f"""
+const data = {json.dumps(payload)};
+({{
+  taxonomy: isValidSurveyTaxonomy(data.survey_taxonomy),
+  inventories: ['survey_section'].concat(SCALAR_AXES, LIST_AXES).map(function(field) {{
+    return isValidCountedInventory(data.inventories[field]);
+  }})
+}})
+""")
+        self.assertEqual(result, {"taxonomy": True, "inventories": [True] * 6})
+
+    def test_submit_generates_paper_yaml_that_the_build_accepts(self):
+        taxonomy = json.dumps(build.render_survey_taxonomy())
+        result = self.run_submit_script(f"""
+STATE.taxonomy = {taxonomy};
+STATE.metadataLoading = false;
+STATE.existingPaths = new Set(['papers/2604.11791.yaml']);
+const values = {{
+  kind: 'paper', title: 'Loop "Quoted" Paper', authors: ['A. Author', 'B. Author'], publishedDate: '2026-04-20',
+  venue: 'arXiv', shortname: '', primaryLink: 'https://arxiv.org/abs/2604.11792v2', code: 'https://github.com/x/y',
+  openreview: '', project: '', github: '', twitter: '', description: 'Loops.', addedDate: '2026-10-12'
+}};
+const missingSection = getValidationError(values);
+STATE.primarySection = 'scaling/test-time';
+STATE.extraSections = ['architecture/topology', 'scaling/test-time', 'architecture/depth-control'];
+const missingAxis = getValidationError(values);
+STATE.scalar = {{ loop_topology: 'prelude-core-coda', sharing: 'full', depth_control: 'unspecified' }};
+STATE.lists.claims = new Set(['stability', 'test-time-scaling']);
+({{
+  missingSection: missingSection,
+  missingAxis: missingAxis,
+  ready: getValidationError(values),
+  sections: getSurveySections(),
+  path: buildTargetPath(values),
+  duplicate: targetFileExists('papers/2604.11791.yaml'),
+  yaml: buildYamlPreview(values),
+  snippet: buildSnippet()
+}})
+""")
+        self.assertEqual(result["missingSection"], "Please choose the primary survey section.")
+        self.assertEqual(
+            result["missingAxis"],
+            "Please choose a loop topology value (use unspecified if the paper does not say).",
+        )
+        self.assertEqual(result["ready"], "")
+        self.assertEqual(result["sections"], ["scaling/test-time", "architecture/topology", "architecture/depth-control"])
+        self.assertEqual(result["path"], "papers/2604.11792.yaml")
+        self.assertTrue(result["duplicate"])
+
+        data = yaml.safe_load(result["yaml"])
+        build.reject_retired_fields(data, "generated.yaml")
+        build.validate_links(data["links"], "generated.yaml")
+        survey = build.normalize_survey_fields(data, "generated.yaml", build.REQUIRED_PAPER_SURVEY_FIELDS)
+        self.assertEqual(
+            survey,
+            {
+                "survey_section": ["scaling/test-time", "architecture/topology", "architecture/depth-control"],
+                "loop_topology": "prelude-core-coda",
+                "sharing": "full",
+                "depth_control": "unspecified",
+                "claims": ["test-time-scaling", "stability"],
+                "comparison": [],
+                "survey_core": False,
+            },
+        )
+        self.assertEqual(data["title"], 'Loop "Quoted" Paper')
+        self.assertEqual(data["published_date"], "2026-04-20")
+        self.assertEqual(data["added_date"], "2026-10-12")
+        self.assertEqual(data["links"], {"arxiv": "https://arxiv.org/abs/2604.11792v2", "github": "https://github.com/x/y"})
+        self.assertNotIn("must_read", data)
+        self.assertNotIn("catalog_fit", data)
+        self.assertTrue(result["yaml"].index("survey_section:") < result["yaml"].index("desc:"))
+        self.assertTrue(result["snippet"].startswith("survey_section:\n"))
+        self.assertTrue(result["snippet"].endswith("survey_core: false"))
+
+    def test_submit_generates_blog_yaml_with_only_survey_sections(self):
+        taxonomy = json.dumps(build.render_survey_taxonomy())
+        result = self.run_submit_script(f"""
+STATE.taxonomy = {taxonomy};
+STATE.metadataLoading = false;
+STATE.formKind = 'blog';
+STATE.primarySection = 'understanding/why';
+STATE.scalar = {{ loop_topology: 'partial', sharing: 'full', depth_control: 'fixed' }};
+STATE.lists.claims = new Set(['stability']);
+const values = {{
+  kind: 'blog', title: 'A Blog Post', authors: ['A. Author'], publishedDate: '2026-04-21', venue: 'Lab Blog',
+  shortname: 'Loop Notes!', primaryLink: 'https://example.com/post', code: '', openreview: '', project: '',
+  github: '', twitter: 'https://x.com/a/status/1', description: 'Notes.', addedDate: '2026-10-12'
+}};
+({{ error: getValidationError(values), path: buildTargetPath(Object.assign({{}}, values, {{ shortname: 'loop-notes' }})), yaml: buildYamlPreview(values) }})
+""")
+        self.assertEqual(result["error"], "")
+        self.assertEqual(result["path"], "blogs/2026-04-21-loop-notes.yaml")
+        data = yaml.safe_load(result["yaml"])
+        build.reject_retired_fields(data, "blog.yaml")
+        build.validate_blog_links(data["links"], "blog.yaml")
+        self.assertEqual(data["survey_section"], ["understanding/why"])
+        for field in build.SURVEY_FIELDS:
+            if field != "survey_section":
+                self.assertNotIn(field, data)
+        self.assertEqual(data["links"], {"blog": "https://example.com/post", "twitter": "https://x.com/a/status/1"})
+
+    def test_submit_pickers_render_chapter_groups_counts_and_axis_controls(self):
+        taxonomy = json.dumps(build.render_survey_taxonomy())
+        result = self.run_submit_script(f"""
+STATE.taxonomy = {taxonomy};
+STATE.counts = indexInventoryCounts({{
+  survey_section: [{{ label: 'architecture/topology', count: 7 }}],
+  loop_topology: [{{ label: 'partial', count: 4 }}],
+  claims: [{{ label: 'stability', count: 2 }}]
+}});
+STATE.primarySection = 'architecture/topology';
+STATE.extraSections = ['scaling/test-time'];
+STATE.scalar.loop_topology = 'partial';
+STATE.lists.claims.add('stability');
+renderPrimarySectionSelect();
+renderExtraSectionList();
+renderAxisPicker('loop_topology');
+renderAxisPicker('claims');
+({{
+  primary: elements['primary-section-select'].innerHTML,
+  primaryValue: elements['primary-section-select'].value,
+  extras: elements['extra-sections-list'].innerHTML,
+  extraCount: elements['extra-sections-count'].textContent,
+  topology: elements['loop_topology-picker'].innerHTML,
+  claims: elements['claims-picker'].innerHTML
+}})
+""")
+        self.assertEqual(result["primary"].count("<optgroup"), len(build.SURVEY_CHAPTERS))
+        self.assertIn('<optgroup label="§4 Architecture and Design">', result["primary"])
+        self.assertIn('<option value="architecture/topology">§4.1 Loop topology (7)</option>', result["primary"])
+        self.assertIn('<option value="scaling/test-time">§6.2 Test-time scaling (0)</option>', result["primary"])
+        self.assertEqual(result["primaryValue"], "architecture/topology")
+        self.assertIn("§4.1 Loop topology — primary", result["extras"])
+        self.assertIn("§6.2 Test-time scaling — #2", result["extras"])
+        self.assertIn('data-extra-section="architecture/topology" checked disabled', result["extras"])
+        self.assertEqual(result["extraCount"], "1 selected")
+        self.assertIn('<select class="field-select" id="loop_topology-select" data-scalar-axis="loop_topology">', result["topology"])
+        self.assertIn('<option value="partial" selected>partial (4)</option>', result["topology"])
+        self.assertIn('<label class="picker-title" for="loop_topology-select">Loop topology</label>', result["topology"])
+        self.assertIn('data-list-axis="claims" value="stability" checked', result["claims"])
+        self.assertIn('<span class="option-count">2</span>', result["claims"])
+        self.assertIn("1 selected", result["claims"])
+
+    def test_submit_page_marks_required_fields_and_gives_picker_actions_more_spacing(self):
         html = SUBMIT_PAGE_PATH.read_text(encoding="utf-8")
         self.assertIn(".panel {\n      background: transparent;\n      border: 0;\n      border-top: 1px solid var(--border);\n      border-radius: 0;\n      box-shadow: none;", html)
         self.assertIn('class="site-header"', html)
@@ -4975,36 +5142,45 @@ process.stdout.write(JSON.stringify(result));
         self.assertIn("content: ' *';", html)
         self.assertIn(".field.is-invalid .field-label", html)
         self.assertIn(".field.is-invalid .field-input", html)
-        self.assertIn(".tag-picker-actions {", html)
-        self.assertIn("margin-block: var(--space-4);", html)
+        self.assertIn(".picker.is-invalid .picker-title", html)
+        self.assertIn(".picker-actions {\n      margin-block: var(--space-4);", html)
         self.assertIn(".preview-box {\n      border: 0;\n      border-top: 1px solid var(--border);", html)
         self.assertIn(".github-branch-callout {\n      border: 0;\n      border-left: 3px solid rgba(9, 105, 218, 0.28);", html)
         self.assertIn("syncRequiredFieldStates()", html)
+        self.assertIn("syncPickerValidity()", html)
 
-    def test_submit_page_tag_search_updates_menu_without_replacing_input(self):
+    def test_submit_pickers_use_delegated_listeners_that_survive_rerendering(self):
         html = SUBMIT_PAGE_PATH.read_text(encoding="utf-8")
-        self.assertIn("function refreshPickerMenu(group) {", html)
-        self.assertIn("menu.innerHTML = renderPickerMenuHtml(group);", html)
-        self.assertIn("refreshPickerMenu(group);", html)
-        input_handler_start = html.index("searchInput.addEventListener('input', function(event) {")
-        input_handler_end = html.index("});", input_handler_start)
-        input_handler = html[input_handler_start:input_handler_end]
-        self.assertNotIn("renderPicker(group)", input_handler)
+        start = html.index("function wirePickers() {")
+        source = html[start:html.index("function setResourceKind(kind) {", start)]
+        self.assertIn("document.getElementById('primary-section-select').addEventListener('change'", source)
+        self.assertIn("document.getElementById('extra-sections-list').addEventListener('change'", source)
+        self.assertIn("document.getElementById('paper-axes-section').addEventListener('change'", source)
+        self.assertIn("event.target.dataset.scalarAxis", source)
+        self.assertIn("event.target.dataset.listAxis", source)
+        self.assertNotIn("renderAllPickers()", source)
 
-    def test_paper_template_mentions_must_read_but_submit_page_does_not_surface_it(self):
+    def test_paper_template_mentions_must_read_but_submit_page_does_not_generate_it(self):
         template = PAPER_TEMPLATE_PATH.read_text(encoding="utf-8")
         html = SUBMIT_PAGE_PATH.read_text(encoding="utf-8")
+        script = html[html.index('<script src="assets/repo-meta.js?v=2"></script>'):]
         self.assertIn("must_read", template)
         self.assertIn("maintainer-only", template.lower())
-        self.assertNotIn("must_read", html)
+        self.assertNotIn("must_read", script)
+        self.assertNotIn("catalog_fit", script)
+        self.assertIn("<code>must_read</code> and <code>catalog_fit</code> are maintainer-only and omitted.", html)
 
     def test_submit_page_uses_responsive_nested_layout_and_english_selectable_published_date_input(self):
         html = SUBMIT_PAGE_PATH.read_text(encoding="utf-8")
         self.assertIn(".grid {\n      display: grid;\n      gap: var(--space-4);\n      grid-template-columns: 1fr;", html)
         self.assertIn(".wizard-grid {\n      display: grid;\n      gap: var(--space-3);\n      grid-template-columns: repeat(3, minmax(0, 1fr));", html)
         self.assertIn(".form-grid {\n      display: grid;\n      gap: var(--space-3);\n      grid-template-columns: repeat(2, minmax(0, 1fr));", html)
-        self.assertIn(".tag-pickers {\n      display: grid;\n      gap: var(--space-3);\n      grid-template-columns: repeat(3, minmax(0, 1fr));", html)
+        self.assertIn(".axis-pickers {\n      display: grid;\n      gap: var(--space-3);\n      grid-template-columns: repeat(3, minmax(0, 1fr));", html)
+        self.assertIn(".survey-pickers {\n      display: grid;\n      gap: var(--space-3);\n      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);", html)
         self.assertIn("@media (max-width: 980px)", html)
+        narrow = html[html.index("@media (max-width: 980px)"):]
+        self.assertIn(".axis-pickers,\n      .survey-pickers,", narrow[:narrow.index("}")])
+        self.assertNotIn(".tag-pickers", html)
         self.assertIn("@media (max-width: 640px)", html)
         self.assertIn(".hero-link {\n        flex: 1 1 100%;", html)
         self.assertIn(".kind-toggle {\n        width: 100%;", html)
@@ -5105,7 +5281,7 @@ process.stdout.write(JSON.stringify(result));
         self.assertIn("pull request", contributing.lower())
         self.assertIn("branch in your fork", contributing.lower())
         self.assertIn("taxonomy change", contributing.lower())
-        self.assertIn("controlled tag-vocabulary change", contributing.lower())
+        self.assertIn("controlled taxonomy-vocabulary change", contributing.lower())
         self.assertNotIn("new category", contributing.lower())
         self.assertNotIn("new tags", contributing.lower())
         self.assertIn("generated YAML", readme_footer)

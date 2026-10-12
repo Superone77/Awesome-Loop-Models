@@ -7,22 +7,10 @@ year: 2026
 published_date: '2026-10-02'
 added_date: '2026-10-04'
 venue: arXiv
-category: analysis
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- alignment
-- language-modeling
-- reasoning
-tags:
-- Ouro
-- looped-llm
-focus_tags:
-- inference-algorithm
 survey_section:
-- interpretability
-- benefits/limits
+- understanding/interpretability
+- understanding/failure-modes
+- open-problems/monitorability-safety
 loop_topology: unspecified
 sharing: full
 depth_control: fixed

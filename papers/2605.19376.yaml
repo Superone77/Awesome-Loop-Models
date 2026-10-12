@@ -10,24 +10,9 @@ year: 2026
 published_date: '2026-05-19'
 added_date: '2026-05-21'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- hierarchical-loop
-- flat-loop
-domain_tags:
-- reasoning
-- algorithmic-reasoning
-tags:
-- GRAM
-focus_tags:
-- architecture
-- objective-loss
-- training-algorithm
-- inference-algorithm
 survey_section:
 - scaling/test-time
-- train/supervision
+- training/supervision-optimization
 loop_topology: hierarchical
 sharing: full
 depth_control: unspecified

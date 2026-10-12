@@ -10,18 +10,6 @@ year: 2026
 published_date: '2026-07-02'
 added_date: '2026-07-02'
 venue: arXiv
-category: applications
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- reasoning
-- algorithmic-reasoning
-focus_tags:
-- inference-algorithm
-tags:
-- G-RRM
-- SE-RRM
 survey_section:
 - applications/embodied-other
 loop_topology: unspecified

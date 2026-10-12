@@ -12,21 +12,19 @@ scope:
   evidence: "G-RRM uses an SE-RRM whose internal reasoning block is applied with shared parameters across recurrent steps before its proposal guides an external symbolic solver."
   locator: "Section 2.1; Appendix A.1"
 taxonomy:
-  category:
-    value: applications
-    rationale: "The paper applies a recurrent reasoning model to guide symbolic constraint solvers."
-  mechanism_tags:
-    values: [flat-loop]
-    rationale: "The SE-RRM internally repeats one shared reasoning block along a single trajectory."
-  focus_tags:
-    values: [inference-algorithm]
-    rationale: "The main contribution is using recurrent neural proposals as revisable hints during symbolic search."
-  domain_tags:
-    values: [reasoning, algorithmic-reasoning]
-    rationale: "The evaluated domains include Sudoku and SAT-style constraint reasoning."
-  tags:
-    values: [G-RRM, SE-RRM]
-    rationale: "These are the guiding system and recurrent model abbreviations used by the paper."
+  survey_section:
+    values:
+      - applications/embodied-other
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The SE-RRM internally repeats one shared reasoning block along a single trajectory."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The SE-RRM internally repeats one shared reasoning block along a single trajectory."
+  depth_control:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

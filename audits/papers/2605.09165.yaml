@@ -12,30 +12,21 @@ scope:
   evidence: "The model repeatedly applies shared transformer layers in one forward computation, while sparse MoE routing can select different experts on successive loops."
   locator: "Abstract"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces and evaluates a sparse-layer design for scaling looped language models."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "A shared transformer stack is repeated along one loop axis."
-  focus_tags:
-    values:
-      - architecture
-      - inference-algorithm
-    rationale: "The contribution is the sparse looped architecture and the use of loop boundaries for inference-time early exit."
-  domain_tags:
-    values:
-      - language-modeling
-      - scaling
-      - efficiency
-    rationale: "The experiments scale looped language models with sparse mixture-of-experts layers and parameter-efficient repeated computation."
-  tags:
-    values:
-      - looped-transformer
-      - looped-llm
-      - MoE
-    rationale: "The looped aliases name the recurrent language-model family, while MoE identifies the sparse-expert architecture."
+      - architecture/hybrid
+      - scaling/compute-optimal
+      - architecture/depth-control
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): A shared transformer stack is repeated along one loop axis."
+  sharing:
+    value: expert-routed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): A shared transformer stack is repeated along one loop axis."
+  depth_control:
+    value: adaptive-halting
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

@@ -11,25 +11,6 @@ scope:
   verdict: out-of-scope
   evidence: "The toy student is a sequence of independently parameterized MLP_l modules, and the analyzed language models likewise use ordinary untied layers; the paper does not reuse the same learned module within a forward pass."
   locator: "Section 2; Section 3, Equations 5-6; Figure 3"
-taxonomy:
-  category:
-    value: analysis
-    rationale: "Before removal, the entry described an analysis of depth scaling in residual and language models."
-  mechanism_tags:
-    values: []
-    rationale: "No loop mechanism applies because each depth position has distinct learned parameters."
-  focus_tags:
-    values:
-      - architecture
-    rationale: "The paper analyzes similarity and scaling across ordinary layered architectures."
-  domain_tags:
-    values:
-      - language-modeling
-      - theory
-    rationale: "The source develops a theoretical account and tests it on language models, although that subject is outside this recurrence catalog."
-  tags:
-    values: []
-    rationale: "The source provides no loop-model alias because its studied layers are not tied recurrently."
 content_checks:
   title_authors:
     status: verified

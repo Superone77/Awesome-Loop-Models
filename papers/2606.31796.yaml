@@ -6,25 +6,9 @@ year: 2026
 published_date: '2026-06-30'
 added_date: '2026-06-30'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- efficiency
-focus_tags:
-- architecture
-- objective-loss
-- training-algorithm
-tags:
-- depth-recurrent
-- shared-weight-recurrence
-- CHERRY
-- MoEE
 survey_section:
-- train/retrofitting
-- benefits/efficiency
+- training/retrofitting
+- capabilities/efficiency
 loop_topology: unspecified
 sharing: partial-adapter
 depth_control: fixed

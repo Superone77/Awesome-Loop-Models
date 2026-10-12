@@ -11,25 +11,9 @@ year: 2026
 published_date: '2026-07-17'
 added_date: '2026-07-20'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-- scaling
-- efficiency
-- memory-efficiency
-focus_tags:
-- architecture
-- training-algorithm
-tags:
-- Loopie
-- MoE
 survey_section:
 - scaling/compute-optimal
-- design/loop-x
+- architecture/hybrid
 - systems/batching-parallel
 loop_topology: unspecified
 sharing: unspecified

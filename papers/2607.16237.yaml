@@ -10,22 +10,9 @@ year: 2026
 published_date: '2026-06-25'
 added_date: '2026-10-01'
 venue: arXiv
-category: analysis
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- algorithmic-reasoning
-- efficiency
-- hardware-aware
-tags:
-- TRM
-- EqR
-focus_tags:
-- inference-algorithm
 survey_section:
 - systems/quantization-edge
-- benefits/limits
+- understanding/failure-modes
 loop_topology: hierarchical
 sharing: full
 depth_control: fixed

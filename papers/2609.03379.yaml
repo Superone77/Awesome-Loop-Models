@@ -10,22 +10,9 @@ year: 2026
 published_date: '2026-09-03'
 added_date: '2026-09-06'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-- adaptive-compute
-- efficiency
-focus_tags:
-- architecture
-- training-algorithm
-- inference-algorithm
 survey_section:
-- design/state-memory
-- design/depth-control
+- architecture/state-memory
+- architecture/depth-control
 loop_topology: prelude-core-coda
 sharing: full
 depth_control: adaptive-halting

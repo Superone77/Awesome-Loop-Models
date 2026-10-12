@@ -12,26 +12,19 @@ scope:
   evidence: "The construction first implements normalized gradient descent with transformer layers, then trains one self-attention layer and recurrently applies that same learned layer within one forward in-context computation."
   locator: "Abstract, paragraph 2"
 taxonomy:
-  category:
-    value: analysis
-    rationale: "The paper proves how transformers implement an optimization algorithm and analyzes convergence and out-of-distribution behavior."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "One learned self-attention layer is repeatedly applied along a single recurrence axis."
-  focus_tags:
-    values:
-      - architecture
-      - inference-algorithm
-      - training-algorithm
-    rationale: "The work gives a recurrent transformer construction, its normalized-gradient-descent inference interpretation, and training guarantees for the repeated layer."
-  domain_tags:
-    values:
-      - theory
-    rationale: "The principal contribution is a theoretical construction and convergence/OOD guarantee for in-context logistic regression."
-  tags:
-    values: []
-    rationale: "The canonical entry uses no optional alias tags."
+      - capabilities/expressivity
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One learned self-attention layer is repeatedly applied along a single recurrence axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One learned self-attention layer is repeatedly applied along a single recurrence axis."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

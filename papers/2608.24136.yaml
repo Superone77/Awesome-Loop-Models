@@ -12,16 +12,6 @@ year: 2026
 published_date: '2026-08-25'
 added_date: '2026-08-26'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- reasoning
-- algorithmic-reasoning
-- adaptive-compute
-focus_tags:
-- inference-algorithm
 survey_section:
 - scaling/test-time
 loop_topology: unspecified

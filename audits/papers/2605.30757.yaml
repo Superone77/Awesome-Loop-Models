@@ -12,29 +12,20 @@ scope:
   evidence: "The analyzed looped transformers repeatedly apply a shared transformer update within a forward computation while retaining either compressed recurrent state or full sequence state."
   locator: "Abstract, paragraphs 1-4"
 taxonomy:
-  category:
-    value: analysis
-    rationale: "The paper proves a memory-budget separation between chain-of-thought computation and two looped-transformer state regimes."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "The theoretical models repeat a shared transformer computation along one loop axis."
-  focus_tags:
-    values:
-      - architecture
-      - inference-algorithm
-    rationale: "The separation concerns recurrent-state architecture and the memory available during iterative inference."
-  domain_tags:
-    values:
-      - language-modeling
-      - reasoning
-      - theory
-      - memory-efficiency
-    rationale: "The work theoretically compares memory available to language-reasoning scratchpads and looped transformer states."
-  tags:
-    values:
-      - looped-transformer
-    rationale: "This alias directly names the recurrent transformer family analyzed."
+      - capabilities/expressivity
+      - understanding/failure-modes
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The theoretical models repeat a shared transformer computation along one loop axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The theoretical models repeat a shared transformer computation along one loop axis."
+  depth_control:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

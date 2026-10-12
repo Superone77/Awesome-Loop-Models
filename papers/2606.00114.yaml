@@ -11,24 +11,9 @@ year: 2026
 published_date: '2026-05-27'
 added_date: '2026-06-02'
 venue: arXiv
-category: applications
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- vision
-- efficiency
-- wireless-communications
-- adaptive-compute
-tags:
-- recursive-transformer
-- depth-scaling
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
 - applications/embodied-other
-- design/depth-control
+- architecture/depth-control
 loop_topology: whole-stack
 sharing: full
 depth_control: adaptive-halting

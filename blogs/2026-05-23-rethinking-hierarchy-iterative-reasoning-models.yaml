@@ -5,24 +5,9 @@ year: 2026
 published_date: "2026-05-23"
 added_date: "2026-06-06"
 venue: "X Article"
-mechanism_tags:
-  - "hierarchical-loop"
-  - "flat-loop"
-
-domain_tags:
-  - "reasoning"
-  - "algorithmic-reasoning"
-
-tags:
-  - "HRM"
-  - "TRM"
-  - "ACT"
-  - "halting"
-  - "weight-tying"
-
-focus_tags:
-  - "architecture"
-  - "inference-algorithm"
+survey_section:
+  - "understanding/why"
+  - "architecture/topology"
 
 desc: >
   Interprets HRM/TRM-style two-level iteration through value-policy-like coupled

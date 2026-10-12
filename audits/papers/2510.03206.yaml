@@ -16,32 +16,6 @@ scope:
   locator: >-
     Section 2; Section 4.1, Equation 15; Appendix C.2, Algorithm 2, lines 2-10;
     Appendix C.1, Figure 5
-taxonomy:
-  category:
-    value: designs
-    rationale: >-
-      The paper is a diffusion-model design, but the catalog category becomes
-      inapplicable because it fails the repository's inclusion rule.
-  mechanism_tags:
-    values: []
-    rationale: >-
-      Repeated full-denoiser diffusion steps are not a qualifying flat,
-      hierarchical, parallel, or implicit internal loop.
-  focus_tags:
-    values:
-      - architecture
-      - training-algorithm
-      - inference-algorithm
-    rationale: "These describe the diffusion paper itself but do not make it a loop-model paper."
-  domain_tags:
-    values:
-      - language-modeling
-      - reasoning
-    rationale: "The paper targets diffusion language modeling and latent reasoning."
-  tags:
-    values:
-      - CCDD
-    rationale: "CCDD is the method abbreviation and is retained only for removal provenance."
 content_checks:
   title_authors:
     status: verified

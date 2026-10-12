@@ -8,21 +8,10 @@ year: 2026
 published_date: '2026-09-16'
 added_date: '2026-09-17'
 venue: arXiv
-category: analysis
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- scaling
-- efficiency
-focus_tags:
-- architecture
-- training-algorithm
 survey_section:
 - scaling/compute-optimal
-- design/depth-control
-- design/residual-injection
+- architecture/depth-control
+- architecture/residual-init
 loop_topology: whole-stack
 sharing: full
 depth_control: sampled-train
@@ -46,7 +35,7 @@ citation_sources:
   opencitations: 0
   openalex: 0
 star_source_best: github_api
-github_stars: 20
+github_stars: 21
 star_sources:
-  github_api: 20
-metrics_updated: '2026-10-07'
+  github_api: 21
+metrics_updated: '2026-10-12'

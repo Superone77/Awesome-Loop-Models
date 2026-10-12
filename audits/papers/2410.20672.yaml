@@ -12,29 +12,21 @@ scope:
   evidence: "A learned block of K layers is repeatedly reused, with shared base weights and depth-specific LoRA deltas."
   locator: "Figure 1; Section 2.2"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces conversion, uptraining, and inference proposals for compact recursive Transformers."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "There is one outer repeated block rather than a nested or multilevel loop."
-  focus_tags:
-    values:
-      - architecture
-      - training-algorithm
-      - inference-algorithm
-    rationale: "The work covers parameter-sharing design, LoRA uptraining, and continuous depth-wise batching."
-  domain_tags:
-    values:
-      - language-modeling
-      - efficiency
-    rationale: "The converted LLMs target compact language modeling and potential inference efficiency."
-  tags:
-    values:
-      - recursive-transformer
-      - LoRA
-    rationale: "These identify the paper's model family and layer-wise adaptation method."
+      - training/retrofitting
+      - architecture/sharing
+      - capabilities/efficiency
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): There is one outer repeated block rather than a nested or multilevel loop."
+  sharing:
+    value: partial-adapter
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): There is one outer repeated block rather than a nested or multilevel loop."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

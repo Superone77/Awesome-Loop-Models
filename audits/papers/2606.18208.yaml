@@ -12,28 +12,20 @@ scope:
   evidence: "LoopWM reuses one learned dynamics Transformer block for multiple latent-state refinement steps within each prediction forward process."
   locator: "Section 3.1; Section 3.2, Equation 5; Section 3.4, Equation 12"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces LoopWM as a recurrent world-model architecture rather than only analyzing an existing model."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "The same dynamics block is iterated along a single latent-refinement axis."
-  focus_tags:
-    values:
-      - architecture
-      - inference-algorithm
-    rationale: "The work defines a parameter-shared architecture and adaptively varies its computation at prediction time."
-  domain_tags:
-    values:
-      - world-modeling
-      - efficiency
-      - scaling
-    rationale: "The experiments study world modeling, parameter efficiency, and scaling latent depth through repeated computation."
-  tags:
-    values:
-      - LoopWM
-    rationale: "LoopWM is the model name used by the paper."
+      - applications/embodied-other
+      - capabilities/efficiency
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The same dynamics block is iterated along a single latent-refinement axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The same dynamics block is iterated along a single latent-refinement axis."
+  depth_control:
+    value: adaptive-halting
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

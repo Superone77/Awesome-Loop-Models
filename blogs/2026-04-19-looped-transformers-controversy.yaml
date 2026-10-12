@@ -5,21 +5,9 @@ year: 2026
 published_date: "2026-04-19"
 added_date: "2026-04-22"
 venue: "X Article"
-mechanism_tags:
-- flat-loop
-
-domain_tags:
-  - "language-modeling"
-  - "reasoning"
-  - "scaling"
-
-tags:
-  - "looped-transformer"
-  - "weight-tying"
-  - "mythos"
-
-focus_tags:
-  - "architecture"
+survey_section:
+  - "scaling/compute-optimal"
+  - "systems/kv-memory"
 
 desc: >
   Argues that benchmark patterns and serving-compute constraints make deterministic

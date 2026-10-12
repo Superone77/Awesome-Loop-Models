@@ -15,31 +15,20 @@ scope:
     refinements inside solution updates and resets streams between calls.
   locator: "Figure 1; Section 3.2; Table 1"
 taxonomy:
-  category:
-    value: analysis
-    rationale: "The main artifact is a compute-matched decomposition and negative empirical analysis."
-  mechanism_tags:
+  survey_section:
     values:
-      - hierarchical-loop
-      - flat-loop
-    rationale: "The study covers both nested Autoregressive TRM refinement and flat recurrent baselines."
-  focus_tags:
-    values:
-      - architecture
-      - inference-algorithm
-    rationale: >-
-      It isolates architectural compute placement and within-forward recurrent
-      execution choices under a fixed objective and training protocol; analyzing
-      learning dynamics does not constitute a new training algorithm.
-  domain_tags:
-    values:
-      - algorithmic-reasoning
-      - language-modeling
-    rationale: "The experiments use causal language modeling on character-level algorithmic tasks."
-  tags:
-    values:
-      - TRM
-    rationale: "TRM is the recursive model family analyzed by the paper."
+      - understanding/failure-modes
+      - capabilities/efficiency
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: hierarchical
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: hierarchical-loop, flat-loop): The study covers both nested Autoregressive TRM refinement and flat recurrent baselines."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: hierarchical-loop, flat-loop): The study covers both nested Autoregressive TRM refinement and flat recurrent baselines."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

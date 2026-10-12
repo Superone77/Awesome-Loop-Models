@@ -16,21 +16,8 @@ year: 2026
 published_date: '2026-02-12'
 added_date: '2026-04-20'
 venue: arXiv
-category: designs
-mechanism_tags:
-- hierarchical-loop
-domain_tags:
-- language-modeling
-- reasoning
-- efficiency
-tags:
-- SpiralFormer
-- multi-resolution-recursion
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
-- design/topology
+- architecture/topology
 loop_topology: hierarchical
 sharing: full
 depth_control: fixed
@@ -45,10 +32,10 @@ desc: Introduces SpiralFormer, a looped transformer that applies shared layers u
   than fixed-resolution recurrent baselines.
 links:
   arxiv: https://arxiv.org/abs/2602.11698
-citations: 10
+citations: 11
 citation_sources:
-  semantic_scholar: 10
+  semantic_scholar: 11
   openalex: 0
   opencitations: 0
 citation_source_best: semantic_scholar
-metrics_updated: '2026-10-02'
+metrics_updated: '2026-10-12'

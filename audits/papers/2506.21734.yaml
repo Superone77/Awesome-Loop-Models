@@ -14,30 +14,22 @@ scope:
     and timesteps, with the full N-by-T recurrent process executed in one forward pass.
   locator: "Section 2, Figures 3-4 and the hierarchical convergence dynamics"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The main contribution is the two-timescale Hierarchical Reasoning Model architecture."
-  mechanism_tags:
+  survey_section:
     values:
-      - hierarchical-loop
-      - flat-loop
-    rationale: >-
-      High-level cycles contain multiple low-level timesteps, and each learned
-      module is itself reused across its respective recurrent updates.
-  focus_tags:
-    values:
-      - architecture
-      - training-algorithm
-    rationale: "The paper proposes both the recurrent architecture and its approximate-gradient training procedure."
-  domain_tags:
-    values:
-      - reasoning
-      - algorithmic-reasoning
-    rationale: "The model is evaluated on ARC-AGI, Sudoku, and maze reasoning tasks."
-  tags:
-    values:
-      - HRM
-    rationale: "HRM is the paper's official model abbreviation."
+      - architecture/topology
+      - capabilities/efficiency
+      - training/supervision-optimization
+      - architecture/residual-init
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: hierarchical
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: hierarchical-loop, flat-loop): High-level cycles contain multiple low-level timesteps, and each learned module is itself reused across its respective recurrent updates."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: hierarchical-loop, flat-loop): High-level cycles contain multiple low-level timesteps, and each learned module is itself reused across its respective recurrent updates."
+  depth_control:
+    value: adaptive-halting
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

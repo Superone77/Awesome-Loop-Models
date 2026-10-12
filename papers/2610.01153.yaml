@@ -10,23 +10,10 @@ year: 2026
 published_date: '2026-10-01'
 added_date: '2026-10-04'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- scaling
-tags:
-- LOOM
-- MoE
-- LoopMoE
-focus_tags:
-- architecture
 survey_section:
-- design/sharing-scheme
-- train/stability
-- design/residual-injection
+- architecture/sharing
+- training/supervision-optimization
+- architecture/residual-init
 loop_topology: whole-stack
 sharing: expert-routed
 depth_control: fixed

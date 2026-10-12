@@ -9,26 +9,9 @@ year: 2023
 published_date: '2023-10-11'
 added_date: '2026-09-06'
 venue: EMNLP
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- machine-translation
-- compositional-reasoning
-- adaptive-compute
-- efficiency
-tags:
-- UT
-- MoE
-- halting
-focus_tags:
-- architecture
-- objective-loss
-- inference-algorithm
 survey_section:
-- design/loop-x
-- design/depth-control
+- architecture/hybrid
+- architecture/depth-control
 loop_topology: whole-stack
 sharing: expert-routed
 depth_control: adaptive-halting
@@ -46,15 +29,15 @@ links:
   paper: https://aclanthology.org/2023.emnlp-main.12/
   github: https://github.com/shawntan/SUT
 citation_source_best: semantic_scholar
-citations: 37
+citations: 38
 citation_sources:
-  semantic_scholar: 37
+  semantic_scholar: 38
   openalex: 0
   opencitations: 0
 star_source_best: github_api
 github_stars: 20
 star_sources:
   github_api: 20
-metrics_updated: '2026-10-10'
+metrics_updated: '2026-10-12'
 peer_reviewed: true
 venue_source: https://aclanthology.org/2023.emnlp-main.12/

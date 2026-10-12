@@ -12,28 +12,20 @@ scope:
   evidence: "After its prelude, Huginn repeatedly executes the same four recurrent blocks r times before the coda."
   locator: "Section 2.1, page 2, Equation 1"
 taxonomy:
-  category:
-    value: analysis
-    rationale: "The paper probes whether latent chain-of-thought structure emerges across recurrent depth."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "The shared recurrent block group is repeated over one depth axis."
-  focus_tags:
-    values:
-      - inference-algorithm
-    rationale: "The analysis concerns hidden-state behavior across inference recurrences."
-  domain_tags:
-    values:
-      - language-modeling
-      - reasoning
-    rationale: "The work probes a recurrent language model for latent reasoning structure."
-  tags:
-    values:
-      - depth-recurrent
-      - latent-cot
-      - Huginn
-    rationale: "These identify the recurrent-depth setting, probe target, and audited model."
+      - understanding/interpretability
+      - capabilities/efficiency
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: prelude-core-coda
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The shared recurrent block group is repeated over one depth axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The shared recurrent block group is repeated over one depth axis."
+  depth_control:
+    value: sampled-train
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

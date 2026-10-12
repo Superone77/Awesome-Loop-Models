@@ -12,21 +12,20 @@ scope:
   evidence: "The model repeatedly applies the same Transformer block within one forward computation and can stop the recurrence at a selected depth."
   locator: "Section 3; Section 4.3"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces an adaptive-step looped Transformer and its training procedure."
-  mechanism_tags:
-    values: [flat-loop]
-    rationale: "One shared Transformer block is reused along a single recurrent-depth axis."
-  focus_tags:
-    values: [architecture, training-algorithm, inference-algorithm]
-    rationale: "The work covers the looped architecture, its curriculum, and confidence-based adaptive stopping."
-  domain_tags:
-    values: [algorithmic-reasoning, adaptive-compute]
-    rationale: "Evaluation targets algorithmic length generalization, while Section 4.3 varies inference depth through stopping rules."
-  tags:
-    values: []
-    rationale: "No optional alias is needed."
+  survey_section:
+    values:
+      - capabilities/generalization
+      - architecture/depth-control
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One shared Transformer block is reused along a single recurrent-depth axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One shared Transformer block is reused along a single recurrent-depth axis."
+  depth_control:
+    value: adaptive-halting
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

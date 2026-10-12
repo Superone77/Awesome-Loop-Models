@@ -6,21 +6,9 @@ year: 2026
 published_date: '2026-10-06'
 added_date: '2026-10-06'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- algorithmic-reasoning
-- vision
-tags:
-- NCA
-- aNCA
-focus_tags:
-- architecture
 survey_section:
 - foundations/algorithmic
-- benefits/generalization
+- capabilities/generalization
 loop_topology: whole-stack
 sharing: full
 depth_control: fixed

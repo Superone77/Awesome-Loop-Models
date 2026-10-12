@@ -12,26 +12,19 @@ scope:
   evidence: "The model defines a learned equilibrium h*=F(h*,z), and phantom gradients approximate training through that shared implicit computation."
   locator: "Section 2.1, Equation 1; Section 2.4, Equations 16-17"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces a training algorithm for implicit infinite-depth models."
-  mechanism_tags:
+  survey_section:
     values:
-      - implicit-layer
-    rationale: "The learned layer is defined by an equilibrium equation."
-  focus_tags:
-    values:
-      - training-algorithm
-    rationale: "Phantom gradient is a backward-pass estimator and training method."
-  domain_tags:
-    values:
-      - efficiency
-    rationale: "The contribution reduces the cost of training implicit models."
-  tags:
-    values:
-      - DEQ
-      - phantom-gradient
-    rationale: "These identify the model family and proposed gradient estimator."
+      - training/supervision-optimization
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: implicit-fixed-point
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: implicit-layer): The learned layer is defined by an equilibrium equation."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: implicit-layer): The learned layer is defined by an equilibrium equation."
+  depth_control:
+    value: convergence
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

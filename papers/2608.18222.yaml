@@ -11,22 +11,10 @@ year: 2026
 published_date: '2026-08-18'
 added_date: '2026-08-20'
 venue: arXiv
-category: analysis
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- reasoning
-- algorithmic-reasoning
-- theory
-- adaptive-compute
-focus_tags:
-- objective-loss
-- inference-algorithm
 survey_section:
-- benefits/limits
+- understanding/failure-modes
 - scaling/test-time
-- train/supervision
+- training/supervision-optimization
 loop_topology: whole-stack
 sharing: full
 depth_control: unspecified
@@ -42,10 +30,10 @@ desc: Characterizes recurrent operators as settling, marginal, or drifting, deri
 links:
   arxiv: https://arxiv.org/abs/2608.18222
   alphaxiv: https://www.alphaxiv.org/abs/2608.18222
-citations: 5
+citations: 6
 citation_sources:
-  semantic_scholar: 5
+  semantic_scholar: 6
   openalex: 0
   opencitations: 0
 citation_source_best: semantic_scholar
-metrics_updated: '2026-09-29'
+metrics_updated: '2026-10-12'

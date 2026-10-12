@@ -5,21 +5,9 @@ year: 2026
 published_date: "2026-04-29"
 added_date: "2026-05-03"
 venue: "Personal Blog"
-mechanism_tags:
-  - "flat-loop"
-
-domain_tags:
-  - "language-modeling"
-  - "theory"
-
-tags:
-  - "Parcae"
-  - "Exact-ZOH"
-  - "looped-transformer"
-
-focus_tags:
-  - "architecture"
-  - "training-algorithm"
+survey_section:
+  - "architecture/residual-init"
+  - "training/supervision-optimization"
 
 desc: >
   Proposes replacing Parcae's Euler input-write gain with the exact zero-order-hold

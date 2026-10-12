@@ -14,33 +14,22 @@ scope:
     and the forward computation directly solves for its equilibrium state.
   locator: "Section 3, page 3, Equations 3-4; Section 3.1.1, page 4, Equations 5-6"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces the deep-equilibrium architecture and its training method."
-  mechanism_tags:
+  survey_section:
     values:
-      - implicit-layer
-    rationale: "The forward pass solves the fixed-point equation rather than explicitly unrolling depth."
-  focus_tags:
-    values:
-      - architecture
-      - training-algorithm
-      - inference-algorithm
-    rationale: >-
-      The contribution covers the equilibrium architecture, implicit-gradient
-      training, and a root solver used in the forward pass.
-  domain_tags:
-    values:
-      - sequence-modeling
-      - language-modeling
-      - memory-efficiency
-    rationale: >-
-      Section 5 evaluates sequence and language tasks, while the implicit
-      differentiation method uses constant activation memory in effective depth.
-  tags:
-    values:
-      - DEQ
-    rationale: "DEQ is the model-family name used by the paper."
+      - foundations/implicit
+      - training/supervision-optimization
+      - systems/kv-memory
+      - architecture/residual-init
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: implicit-fixed-point
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: implicit-layer): The forward pass solves the fixed-point equation rather than explicitly unrolling depth."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: implicit-layer): The forward pass solves the fixed-point equation rather than explicitly unrolling depth."
+  depth_control:
+    value: convergence
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

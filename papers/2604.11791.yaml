@@ -11,19 +11,8 @@ year: 2026
 published_date: '2026-04-13'
 added_date: '2026-04-24'
 venue: arXiv
-category: analysis
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-tags:
-- mechanistic-analysis
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
-- interpretability
+- understanding/interpretability
 loop_topology: unspecified
 sharing: full
 depth_control: fixed

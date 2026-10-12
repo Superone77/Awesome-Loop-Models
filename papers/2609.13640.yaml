@@ -13,21 +13,9 @@ year: 2026
 published_date: '2026-09-12'
 added_date: '2026-09-15'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- sequence-modeling
-- efficiency
-- scientific-ml
-focus_tags:
-- objective-loss
-- architecture
-- training-algorithm
 survey_section:
 - applications/embodied-other
-- train/supervision
+- training/supervision-optimization
 loop_topology: whole-stack
 sharing: full
 depth_control: fixed

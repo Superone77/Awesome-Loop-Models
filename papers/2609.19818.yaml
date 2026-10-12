@@ -10,21 +10,9 @@ year: 2026
 published_date: '2026-09-17'
 added_date: '2026-09-20'
 venue: arXiv
-category: applications
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- sequence-modeling
-- efficiency
-- adaptive-compute
-focus_tags:
-- architecture
-- training-algorithm
-- inference-algorithm
 survey_section:
 - applications/language-speech-multimodal
-- train/retrofitting
+- training/retrofitting
 loop_topology: whole-stack
 sharing: partial-adapter
 depth_control: adaptive-halting

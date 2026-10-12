@@ -6,19 +6,8 @@ year: 2023
 published_date: '2021-04-13'
 added_date: '2026-09-06'
 venue: Fourth Workshop on Simple and Efficient Natural Language Processing (SustaiNLP)
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- sequence-modeling
-- machine-translation
-- efficiency
-tags:
-- weight-tying
-focus_tags:
-- architecture
 survey_section:
-- design/sharing-scheme
+- architecture/sharing
 - foundations/depth-sharing
 loop_topology: whole-stack
 sharing: full
@@ -36,15 +25,15 @@ links:
   paper: https://aclanthology.org/2023.sustainlp-1.5/
   github: https://github.com/takase/share_layer_params
 citation_source_best: semantic_scholar
-citations: 137
+citations: 138
 citation_sources:
-  semantic_scholar: 137
-  openalex: 24
+  semantic_scholar: 138
+  openalex: 54
   opencitations: 1
 star_source_best: github_api
 github_stars: 28
 star_sources:
   github_api: 28
-metrics_updated: '2026-10-02'
+metrics_updated: '2026-10-12'
 peer_reviewed: true
 venue_source: https://aclanthology.org/2023.sustainlp-1.5/

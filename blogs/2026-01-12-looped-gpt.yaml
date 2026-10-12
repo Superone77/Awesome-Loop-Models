@@ -5,22 +5,9 @@ year: 2026
 published_date: "2026-01-12"
 added_date: "2026-04-24"
 venue: "Personal Blog"
-mechanism_tags:
-  - "flat-loop"
-
-domain_tags:
-  - "language-modeling"
-  - "scaling"
-  - "efficiency"
-
-tags:
-  - "looped-gpt"
-  - "reverse-residual"
-  - "BPTD"
-
-focus_tags:
-  - "architecture"
-  - "training-algorithm"
+survey_section:
+  - "capabilities/generalization"
+  - "architecture/residual-init"
 
 desc: >
   Introduces Looped-GPT, a reverse-residual depth-recurrent GPT variant, and

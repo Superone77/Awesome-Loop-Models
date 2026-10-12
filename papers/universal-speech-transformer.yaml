@@ -10,19 +10,6 @@ year: 2020
 published_date: '2020-10-25'
 added_date: '2026-09-06'
 venue: Interspeech
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- speech-recognition
-- adaptive-compute
-- efficiency
-tags:
-- universal-transformer
-- halting
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
 - applications/language-speech-multimodal
 loop_topology: whole-stack

@@ -7,21 +7,9 @@ year: 2026
 published_date: '2026-01-15'
 added_date: '2026-10-01'
 venue: arXiv
-category: analysis
-foundation: false
-mechanism_tags:
-- hierarchical-loop
-domain_tags:
-- reasoning
-- algorithmic-reasoning
-tags:
-- HRM
-- mechanistic-analysis
-focus_tags:
-- inference-algorithm
 survey_section:
-- interpretability
-- benefits/limits
+- understanding/interpretability
+- understanding/failure-modes
 loop_topology: hierarchical
 sharing: full
 depth_control: adaptive-halting
