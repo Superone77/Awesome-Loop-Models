@@ -19,16 +19,6 @@ year: 2022
 published_date: '2022-09-22'
 added_date: '2026-04-24'
 venue: Learning on Graphs Conference
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- algorithmic-reasoning
-tags:
-- generalist-processor
-focus_tags:
-- architecture
-- data
 survey_section:
 - foundations/algorithmic
 - applications/graphs-science

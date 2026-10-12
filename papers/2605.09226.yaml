@@ -8,23 +8,9 @@ year: 2026
 published_date: '2026-05-09'
 added_date: '2026-05-12'
 venue: arXiv
-category: designs
-mechanism_tags:
-- implicit-layer
-domain_tags:
-- theory
-- efficiency
-- graph-data
-- quantum-machine-learning
-tags:
-- DEQ
-- QDEQ
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
 - applications/graphs-science
-- design/residual-injection
+- architecture/residual-init
 loop_topology: implicit-fixed-point
 sharing: full
 depth_control: convergence

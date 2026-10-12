@@ -12,31 +12,22 @@ scope:
   evidence: "The Universal Transformer repeatedly applies one learned block to the evolving state, while Adaptive Computation Time controls the number of recurrent steps."
   locator: "Section 2.1, Figure 1; Section 2.3"
 taxonomy:
-  category:
-    value: analysis
-    rationale: "The work analyzes depth-state trade-offs, learned memory, and ACT behavior in an existing recurrent architecture."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "One Universal Transformer block is reused along a single recurrent-depth axis."
-  focus_tags:
-    values:
-      - architecture
-      - training-algorithm
-      - inference-algorithm
-    rationale: "The paper studies memory-token design, ACT initialization/training dynamics, and adaptive recurrent execution."
-  domain_tags:
-    values:
-      - reasoning
-      - algorithmic-reasoning
-    rationale: "The empirical study targets recursive-depth reasoning on Sudoku-Extreme."
-  tags:
-    values:
-      - UT
-      - ACT
-      - memory-tokens
-      - adaptive-computation-time
-    rationale: "These aliases identify the Universal Transformer, its adaptive-halting mechanism, and the learned state studied in the paper."
+      - architecture/state-memory
+      - architecture/depth-control
+      - understanding/failure-modes
+      - understanding/why
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One Universal Transformer block is reused along a single recurrent-depth axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One Universal Transformer block is reused along a single recurrent-depth axis."
+  depth_control:
+    value: adaptive-halting
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

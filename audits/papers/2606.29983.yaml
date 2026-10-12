@@ -12,21 +12,21 @@ scope:
   evidence: "The model repeatedly applies one shared Transformer block, while stochastic loop-count training and a learned stopping policy control how many applications occur."
   locator: "Section 3.2; Section 4.3"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper proposes stochastic-depth training and a learned stopping mechanism for looped Transformers."
-  mechanism_tags:
-    values: [flat-loop]
-    rationale: "A single weight-shared block is repeated along one depth axis."
-  focus_tags:
-    values: [training-algorithm, inference-algorithm]
-    rationale: "The contributions are stochastic training depths and a learned inference-time stopping policy."
-  domain_tags:
-    values: [algorithmic-reasoning, scaling, adaptive-compute]
-    rationale: "The experiments study algorithmic sequence tasks, recurrent-depth extrapolation, and input-dependent stopping."
-  tags:
-    values: [looped-transformer, depth-scaling, halting]
-    rationale: "The aliases describe the architecture, evaluated depth extrapolation, and stopping mechanism."
+  survey_section:
+    values:
+      - architecture/depth-control
+      - scaling/test-time
+      - training/post-training
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): A single weight-shared block is repeated along one depth axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): A single weight-shared block is repeated along one depth axis."
+  depth_control:
+    value: adaptive-halting
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

@@ -7,19 +7,8 @@ year: 2019
 published_date: '2018-10-15'
 added_date: '2026-09-06'
 venue: ICLR
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- sequence-modeling
-- language-modeling
-- efficiency
-tags:
-- weight-tying
-focus_tags:
-- architecture
 survey_section:
-- design/loop-x
+- architecture/hybrid
 - foundations/recurrence
 loop_topology: whole-stack
 sharing: full

@@ -5,19 +5,8 @@ year: 2026
 published_date: '2026-04-10'
 added_date: '2026-04-24'
 venue: arXiv
-category: analysis
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- alignment
-tags:
-- Ouro
-- preference-probing
-focus_tags:
-- architecture
 survey_section:
-- interpretability
+- understanding/interpretability
 loop_topology: whole-stack
 sharing: full
 depth_control: unspecified

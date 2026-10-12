@@ -6,21 +6,8 @@ year: 2026
 published_date: '2026-05-20'
 added_date: '2026-05-21'
 venue: arXiv
-category: analysis
-foundation: false
-mechanism_tags:
-- hierarchical-loop
-- flat-loop
-domain_tags:
-- reasoning
-- algorithmic-reasoning
-tags:
-- HRM
-- TRM
-focus_tags:
-- architecture
 survey_section:
-- interpretability
+- understanding/interpretability
 loop_topology: hierarchical
 sharing: full
 depth_control: fixed

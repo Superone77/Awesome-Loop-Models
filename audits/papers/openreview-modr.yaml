@@ -12,30 +12,20 @@ scope:
   evidence: "MoDr repeatedly reuses a shared rumination module while hard routing selects among parallel learned low-rank update branches at each recurrent step."
   locator: "Introduction; Figure 1; MoDr method section"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces the Mixture-of-Depth-Recurrent Transformer architecture."
-  mechanism_tags:
+  survey_section:
     values:
-      - parallel-loop
-    rationale: "At each recurrent-depth step, hard routing selects one of several parallel LoRA update branches around the shared rumination module."
-  focus_tags:
-    values:
-      - architecture
-      - inference-algorithm
-      - training-algorithm
-    rationale: "The method changes recurrent architecture, trains routing branches, and allocates reasoning paths at test time."
-  domain_tags:
-    values:
-      - language-modeling
-      - reasoning
-      - efficiency
-    rationale: "MoDr applies sparse mixture routing to efficient recurrent language-model reasoning."
-  tags:
-    values:
-      - MoDr
-      - MoE
-    rationale: "MoDr is the official method name, while MoE identifies its sparse mixture architecture; the source does not name the model MoUT."
+      - architecture/sharing
+      - scaling/test-time
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: shifted-parallel
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: parallel-loop): At each recurrent-depth step, hard routing selects one of several parallel LoRA update branches around the shared rumination module."
+  sharing:
+    value: expert-routed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: parallel-loop): At each recurrent-depth step, hard routing selects one of several parallel LoRA update branches around the shared rumination module."
+  depth_control:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

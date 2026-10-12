@@ -12,29 +12,20 @@ scope:
   evidence: "Each searched CoLa candidate forward can reuse the same pretrained layer one or more times along its selected layer path."
   locator: "Section 3, page 3; Algorithm 1"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces Chain-of-Layers test-time depth adaptation."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "Candidate paths can repeat a learned layer within one forward computation."
-  focus_tags:
-    values:
-      - architecture
-      - inference-algorithm
-    rationale: "The method searches skip/repeat layer paths at inference."
-  domain_tags:
-    values:
-      - language-modeling
-      - reasoning
-      - efficiency
-      - adaptive-compute
-    rationale: "CoLa adapts language-model depth per sample for reasoning and efficiency."
-  tags:
-    values:
-      - CoLa
-    rationale: "CoLa is the official method abbreviation."
+      - training/retrofitting
+      - architecture/depth-control
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: partial
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): Candidate paths can repeat a learned layer within one forward computation."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): Candidate paths can repeat a learned layer within one forward computation."
+  depth_control:
+    value: adaptive-halting
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

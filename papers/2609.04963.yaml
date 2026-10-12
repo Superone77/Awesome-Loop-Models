@@ -8,22 +8,9 @@ year: 2026
 published_date: '2026-09-04'
 added_date: '2026-09-07'
 venue: arXiv
-category: analysis
-foundation: false
-mechanism_tags:
-- hierarchical-loop
-- flat-loop
-- implicit-layer
-domain_tags:
-- reasoning
-- algorithmic-reasoning
-- theory
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
-- benefits/limits
-- interpretability
+- understanding/failure-modes
+- understanding/interpretability
 loop_topology: unspecified
 sharing: unspecified
 depth_control: unspecified

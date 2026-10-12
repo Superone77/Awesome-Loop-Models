@@ -13,24 +13,11 @@ year: 2025
 published_date: '2025-06-26'
 added_date: '2026-04-24'
 venue: arXiv
-category: designs
-mechanism_tags:
-- hierarchical-loop
-- flat-loop
-domain_tags:
-- reasoning
-- algorithmic-reasoning
-tags:
-- HRM
-focus_tags:
-- architecture
-- training-algorithm
 survey_section:
-- design/topology
-- benefits/efficiency
-- train/gradients
-- train/supervision
-- design/residual-injection
+- architecture/topology
+- capabilities/efficiency
+- training/supervision-optimization
+- architecture/residual-init
 loop_topology: hierarchical
 sharing: full
 depth_control: adaptive-halting

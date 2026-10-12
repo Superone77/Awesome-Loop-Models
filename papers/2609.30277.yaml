@@ -8,21 +8,9 @@ year: 2026
 published_date: '2026-08-12'
 added_date: '2026-09-27'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- implicit-layer
-domain_tags:
-- graph-data
-- theory
-tags:
-- SheafDEQ
-- implicit GNN
-focus_tags:
-- architecture
 survey_section:
 - applications/graphs-science
-- train/stability
+- training/supervision-optimization
 loop_topology: implicit-fixed-point
 sharing: full
 depth_control: convergence

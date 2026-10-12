@@ -308,187 +308,582 @@
     "papers/towards-looped-models-done-right-part-ii.yaml",
     "papers/universal-speech-transformer.yaml"
   ],
-  "tag_inventories": {
-    "mechanism": [
+  "survey_taxonomy": {
+    "parts": [
       {
-        "label": "flat-loop",
-        "count": 259
+        "id": "foundations",
+        "title": "Part I. Foundations"
       },
       {
-        "label": "implicit-layer",
-        "count": 39
+        "id": "capabilities",
+        "title": "Part II. What Looping Buys"
       },
       {
-        "label": "hierarchical-loop",
-        "count": 29
+        "id": "building",
+        "title": "Part III. Building, Training and Deploying"
       },
       {
-        "label": "parallel-loop",
-        "count": 7
+        "id": "understanding",
+        "title": "Part IV. Understanding and Applications"
+      },
+      {
+        "id": "open-problems",
+        "title": "Part V. Open Problems"
       }
     ],
-    "focus": [
+    "chapters": [
       {
-        "label": "architecture",
-        "count": 240
+        "number": "2",
+        "part": "foundations",
+        "title": "From Recurrent Computation to Iterative Depth"
       },
       {
-        "label": "inference-algorithm",
-        "count": 187
+        "number": "3",
+        "part": "capabilities",
+        "title": "Capabilities, Benefits and Trade-offs"
       },
       {
-        "label": "training-algorithm",
-        "count": 125
+        "number": "4",
+        "part": "building",
+        "title": "Architecture and Design"
       },
       {
-        "label": "objective-loss",
-        "count": 35
+        "number": "5",
+        "part": "building",
+        "title": "Learning Algorithms"
       },
       {
-        "label": "data",
-        "count": 9
+        "number": "6",
+        "part": "building",
+        "title": "Scaling Laws"
+      },
+      {
+        "number": "7",
+        "part": "building",
+        "title": "Systems and Infrastructure"
+      },
+      {
+        "number": "8",
+        "part": "understanding",
+        "title": "Understanding Why Looped Models Work"
+      },
+      {
+        "number": "9",
+        "part": "understanding",
+        "title": "Applications"
+      },
+      {
+        "number": "10",
+        "part": "open-problems",
+        "title": "Open Problems"
       }
     ],
-    "domain": [
+    "sections": [
       {
-        "label": "efficiency",
-        "count": 141
+        "id": "foundations/recurrence",
+        "number": "2.1",
+        "chapter": "2",
+        "title": "Recurrent networks and weight sharing across computation"
       },
       {
-        "label": "language-modeling",
-        "count": 134
+        "id": "foundations/depth-sharing",
+        "number": "2.2",
+        "chapter": "2",
+        "title": "Weight sharing across network depth"
       },
       {
-        "label": "reasoning",
-        "count": 132
+        "id": "foundations/implicit",
+        "number": "2.3",
+        "chapter": "2",
+        "title": "Deep equilibrium and implicit models"
       },
       {
-        "label": "algorithmic-reasoning",
-        "count": 71
+        "id": "foundations/algorithmic",
+        "number": "2.4",
+        "chapter": "2",
+        "title": "Iterative and algorithmic computation"
       },
       {
-        "label": "adaptive-compute",
+        "id": "capabilities/efficiency",
+        "number": "3.1",
+        "chapter": "3",
+        "title": "Parameter, data, and compute efficiency"
+      },
+      {
+        "id": "capabilities/expressivity",
+        "number": "3.2",
+        "chapter": "3",
+        "title": "Expressivity and reasoning capacity"
+      },
+      {
+        "id": "capabilities/generalization",
+        "number": "3.3",
+        "chapter": "3",
+        "title": "Length, easy-to-hard, and compositional generalization"
+      },
+      {
+        "id": "architecture/topology",
+        "number": "4.1",
+        "chapter": "4",
+        "title": "Loop topology"
+      },
+      {
+        "id": "architecture/residual-init",
+        "number": "4.2",
+        "chapter": "4",
+        "title": "Residual manipulation and initialization"
+      },
+      {
+        "id": "architecture/state-memory",
+        "number": "4.3",
+        "chapter": "4",
+        "title": "Recurrent state and loop-time memory"
+      },
+      {
+        "id": "architecture/sharing",
+        "number": "4.4",
+        "chapter": "4",
+        "title": "Weight-sharing schemes and iteration-dependent computation"
+      },
+      {
+        "id": "architecture/depth-control",
+        "number": "4.5",
+        "chapter": "4",
+        "title": "Controlling recurrence depth"
+      },
+      {
+        "id": "architecture/hybrid",
+        "number": "4.6",
+        "chapter": "4",
+        "title": "Hybrid looped architectures"
+      },
+      {
+        "id": "training/supervision-optimization",
+        "number": "5.1",
+        "chapter": "5",
+        "title": "Supervision, credit assignment, and loop-specific optimization"
+      },
+      {
+        "id": "training/post-training",
+        "number": "5.2",
+        "chapter": "5",
+        "title": "Post-training and reinforcement learning"
+      },
+      {
+        "id": "training/retrofitting",
+        "number": "5.3",
+        "chapter": "5",
+        "title": "Retrofitting pretrained models into looped models"
+      },
+      {
+        "id": "scaling/compute-optimal",
+        "number": "6.1",
+        "chapter": "6",
+        "title": "Parameter, depth, and compute-optimal scaling"
+      },
+      {
+        "id": "scaling/test-time",
+        "number": "6.2",
+        "chapter": "6",
+        "title": "Test-time scaling"
+      },
+      {
+        "id": "systems/quantization-edge",
+        "number": "7.1",
+        "chapter": "7",
+        "title": "Quantization and edge deployment"
+      },
+      {
+        "id": "systems/kv-memory",
+        "number": "7.2",
+        "chapter": "7",
+        "title": "KV cache and memory"
+      },
+      {
+        "id": "systems/batching-parallel",
+        "number": "7.3",
+        "chapter": "7",
+        "title": "Loop-level batching, scheduling, and parallel execution"
+      },
+      {
+        "id": "understanding/why",
+        "number": "8.1",
+        "chapter": "8",
+        "title": "Why looped models work"
+      },
+      {
+        "id": "understanding/interpretability",
+        "number": "8.2",
+        "chapter": "8",
+        "title": "Mechanistic interpretability"
+      },
+      {
+        "id": "understanding/failure-modes",
+        "number": "8.3",
+        "chapter": "8",
+        "title": "When looping does not help: limits and failure modes"
+      },
+      {
+        "id": "applications/language-speech-multimodal",
+        "number": "9.1",
+        "chapter": "9",
+        "title": "Language, code, speech, and multimodal tasks"
+      },
+      {
+        "id": "applications/vision",
+        "number": "9.2",
+        "chapter": "9",
+        "title": "Visual recognition, restoration, and generation"
+      },
+      {
+        "id": "applications/flow-3d",
+        "number": "9.3",
+        "chapter": "9",
+        "title": "Flow, stereo, and 3D geometry"
+      },
+      {
+        "id": "applications/graphs-science",
+        "number": "9.4",
+        "chapter": "9",
+        "title": "Graphs, structured data, and scientific modeling"
+      },
+      {
+        "id": "applications/embodied-other",
+        "number": "9.5",
+        "chapter": "9",
+        "title": "Embodied AI and other domains"
+      },
+      {
+        "id": "open-problems/diffusion",
+        "number": "10.1",
+        "chapter": "10",
+        "title": "Unification with diffusion models"
+      },
+      {
+        "id": "open-problems/depth-into-time",
+        "number": "10.2",
+        "chapter": "10",
+        "title": "Folding depth into time"
+      },
+      {
+        "id": "open-problems/monitorability-safety",
+        "number": "10.3",
+        "chapter": "10",
+        "title": "Monitorability and safety"
+      }
+    ],
+    "axes": {
+      "loop_topology": {
+        "label": "Loop topology",
+        "values": [
+          "whole-stack",
+          "prelude-core-coda",
+          "partial",
+          "hierarchical",
+          "shifted-parallel",
+          "implicit-fixed-point",
+          "unspecified"
+        ]
+      },
+      "sharing": {
+        "label": "Sharing",
+        "values": [
+          "full",
+          "partial-adapter",
+          "expert-routed",
+          "unspecified"
+        ]
+      },
+      "depth_control": {
+        "label": "Depth control",
+        "values": [
+          "fixed",
+          "sampled-train",
+          "adaptive-halting",
+          "convergence",
+          "unspecified"
+        ]
+      },
+      "claims": {
+        "label": "Claims",
+        "values": [
+          "param-efficiency",
+          "compute-efficiency",
+          "memory-efficiency",
+          "data-efficiency",
+          "expressivity",
+          "length-generalization",
+          "test-time-scaling",
+          "stability",
+          "failure-mode"
+        ]
+      },
+      "comparison": {
+        "label": "Looped-vs-untied comparison",
+        "values": [
+          "iso-param",
+          "iso-flop",
+          "iso-depth",
+          "unclear"
+        ]
+      }
+    }
+  },
+  "inventories": {
+    "survey_section": [
+      {
+        "label": "training/supervision-optimization",
+        "count": 60
+      },
+      {
+        "label": "architecture/depth-control",
         "count": 52
       },
       {
-        "label": "vision",
-        "count": 47
-      },
-      {
-        "label": "theory",
-        "count": 40
-      },
-      {
-        "label": "scaling",
-        "count": 35
-      },
-      {
-        "label": "memory-efficiency",
+        "label": "scaling/test-time",
         "count": 34
       },
       {
-        "label": "graph-data",
-        "count": 18
+        "label": "capabilities/efficiency",
+        "count": 33
       },
       {
-        "label": "sequence-modeling",
+        "label": "architecture/residual-init",
+        "count": 32
+      },
+      {
+        "label": "understanding/failure-modes",
+        "count": 30
+      },
+      {
+        "label": "applications/language-speech-multimodal",
+        "count": 29
+      },
+      {
+        "label": "understanding/interpretability",
+        "count": 28
+      },
+      {
+        "label": "architecture/topology",
+        "count": 27
+      },
+      {
+        "label": "applications/vision",
+        "count": 26
+      },
+      {
+        "label": "applications/embodied-other",
+        "count": 23
+      },
+      {
+        "label": "architecture/hybrid",
+        "count": 23
+      },
+      {
+        "label": "applications/graphs-science",
+        "count": 22
+      },
+      {
+        "label": "architecture/sharing",
+        "count": 21
+      },
+      {
+        "label": "capabilities/expressivity",
+        "count": 21
+      },
+      {
+        "label": "capabilities/generalization",
+        "count": 19
+      },
+      {
+        "label": "scaling/compute-optimal",
+        "count": 17
+      },
+      {
+        "label": "systems/kv-memory",
+        "count": 17
+      },
+      {
+        "label": "training/retrofitting",
         "count": 16
       },
       {
-        "label": "multimodal",
+        "label": "architecture/state-memory",
+        "count": 15
+      },
+      {
+        "label": "systems/quantization-edge",
         "count": 12
       },
       {
-        "label": "scientific-ml",
+        "label": "foundations/implicit",
+        "count": 11
+      },
+      {
+        "label": "training/post-training",
+        "count": 10
+      },
+      {
+        "label": "understanding/why",
+        "count": 10
+      },
+      {
+        "label": "open-problems/diffusion",
         "count": 9
       },
       {
-        "label": "machine-translation",
+        "label": "systems/batching-parallel",
+        "count": 8
+      },
+      {
+        "label": "foundations/algorithmic",
+        "count": 7
+      },
+      {
+        "label": "foundations/depth-sharing",
         "count": 6
       },
       {
-        "label": "rl-control",
+        "label": "applications/flow-3d",
         "count": 5
       },
       {
-        "label": "compositional-reasoning",
+        "label": "open-problems/depth-into-time",
+        "count": 5
+      },
+      {
+        "label": "foundations/recurrence",
         "count": 4
       },
       {
-        "label": "hardware-aware",
-        "count": 4
-      },
-      {
-        "label": "speech-recognition",
-        "count": 4
-      },
-      {
-        "label": "tabular-data",
-        "count": 4
-      },
-      {
-        "label": "recommendation",
-        "count": 3
-      },
-      {
-        "label": "alignment",
-        "count": 2
-      },
-      {
-        "label": "biology",
-        "count": 2
-      },
-      {
-        "label": "robotics-vla",
-        "count": 2
-      },
-      {
-        "label": "wireless-communications",
-        "count": 2
-      },
-      {
-        "label": "world-modeling",
-        "count": 2
-      },
-      {
-        "label": "audio-classification",
+        "label": "open-problems/monitorability-safety",
         "count": 1
+      }
+    ],
+    "loop_topology": [
+      {
+        "label": "whole-stack",
+        "count": 128
       },
       {
-        "label": "electronic-structure",
-        "count": 1
+        "label": "unspecified",
+        "count": 37
       },
       {
-        "label": "FLOPs-efficiency",
-        "count": 1
+        "label": "implicit-fixed-point",
+        "count": 36
       },
       {
-        "label": "hyperspectral-imaging",
-        "count": 1
+        "label": "partial",
+        "count": 33
       },
       {
-        "label": "multilingual",
-        "count": 1
+        "label": "prelude-core-coda",
+        "count": 30
       },
       {
-        "label": "neuroscience",
-        "count": 1
+        "label": "hierarchical",
+        "count": 27
       },
       {
-        "label": "quantum-machine-learning",
-        "count": 1
+        "label": "shifted-parallel",
+        "count": 8
+      }
+    ],
+    "sharing": [
+      {
+        "label": "full",
+        "count": 264
       },
       {
-        "label": "retrieval",
-        "count": 1
+        "label": "partial-adapter",
+        "count": 15
       },
       {
-        "label": "speech-synthesis",
-        "count": 1
+        "label": "expert-routed",
+        "count": 10
       },
       {
-        "label": "summarization",
-        "count": 1
+        "label": "unspecified",
+        "count": 10
+      }
+    ],
+    "depth_control": [
+      {
+        "label": "fixed",
+        "count": 134
+      },
+      {
+        "label": "adaptive-halting",
+        "count": 59
+      },
+      {
+        "label": "unspecified",
+        "count": 50
+      },
+      {
+        "label": "convergence",
+        "count": 42
+      },
+      {
+        "label": "sampled-train",
+        "count": 14
+      }
+    ],
+    "claims": [
+      {
+        "label": "compute-efficiency",
+        "count": 99
+      },
+      {
+        "label": "param-efficiency",
+        "count": 88
+      },
+      {
+        "label": "test-time-scaling",
+        "count": 54
+      },
+      {
+        "label": "failure-mode",
+        "count": 43
+      },
+      {
+        "label": "memory-efficiency",
+        "count": 42
+      },
+      {
+        "label": "stability",
+        "count": 35
+      },
+      {
+        "label": "length-generalization",
+        "count": 28
+      },
+      {
+        "label": "expressivity",
+        "count": 27
+      },
+      {
+        "label": "data-efficiency",
+        "count": 17
+      }
+    ],
+    "comparison": [
+      {
+        "label": "unclear",
+        "count": 45
+      },
+      {
+        "label": "iso-param",
+        "count": 32
+      },
+      {
+        "label": "iso-flop",
+        "count": 23
+      },
+      {
+        "label": "iso-depth",
+        "count": 18
       }
     ]
   }

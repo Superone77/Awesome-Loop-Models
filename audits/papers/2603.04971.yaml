@@ -12,29 +12,20 @@ scope:
   evidence: "MOUE reuses a learned universal expert pool across multiple layer positions while routing tokens through that shared pool."
   locator: "Figure 3; Sections 3.1-3.2; appendix discussion of the reusable expert pool"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces the MOUE architecture for transforming depth into virtual expert width."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "The same universal expert pool is reused across the model's layer sequence."
-  focus_tags:
-    values:
-      - objective-loss
-      - architecture
-      - inference-algorithm
-    rationale: "The contribution covers the shared expert architecture, UELB objective, and routing procedure."
-  domain_tags:
-    values:
-      - language-modeling
-      - efficiency
-    rationale: "The experiments study language modeling under fixed expert-activation budgets."
-  tags:
-    values:
-      - MOUE
-      - MoE
-    rationale: "MOUE is the proposed model and MoE identifies its mixture-of-experts family."
+      - architecture/hybrid
+      - architecture/sharing
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The same universal expert pool is reused across the model's layer sequence."
+  sharing:
+    value: expert-routed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The same universal expert pool is reused across the model's layer sequence."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

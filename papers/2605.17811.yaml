@@ -7,23 +7,9 @@ year: 2026
 published_date: '2026-05-18'
 added_date: '2026-05-19'
 venue: arXiv
-category: analysis
-mechanism_tags:
-- flat-loop
-- hierarchical-loop
-domain_tags:
-- reasoning
-- algorithmic-reasoning
-tags:
-- looped-transformer
-- shared-weight-recurrence
-- mechanistic-analysis
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
-- interpretability
-- design/topology
+- understanding/interpretability
+- architecture/topology
 loop_topology: hierarchical
 sharing: full
 depth_control: unspecified

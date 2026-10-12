@@ -5,21 +5,10 @@ year: 2026
 published_date: '2026-04-15'
 added_date: '2026-04-21'
 venue: arXiv
-category: analysis
-mechanism_tags:
-- flat-loop
-- hierarchical-loop
-domain_tags:
-- language-modeling
-tags:
-- shared-weight-recurrence
-- hierarchical-recurrence
-- universal-transformer
-focus_tags:
-- architecture
 survey_section:
-- design/topology
-- benefits/limits
+- architecture/topology
+- understanding/failure-modes
+- understanding/why
 loop_topology: hierarchical
 sharing: full
 depth_control: fixed

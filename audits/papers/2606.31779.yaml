@@ -12,30 +12,20 @@ scope:
   evidence: "LOTUS explicitly reuses one base language model and prefix KV state over R sequential recurrent-depth iterations."
   locator: "Section 3.2, Equation 2"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces the LOTUS looped padded Transformer and its training objective."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "Loop iterations are sequential; parallel latent positions inside each iteration are not parallel loop execution."
-  focus_tags:
-    values:
-      - architecture
-      - objective-loss
-      - training-algorithm
-    rationale: "The contribution combines the padded recurrent architecture with step-aligned and answer losses used for training."
-  domain_tags:
-    values:
-      - language-modeling
-      - reasoning
-      - efficiency
-      - scaling
-    rationale: "The study compares latent and explicit reasoning, thought latency, and a 3B-scale model."
-  tags:
-    values:
-      - LOTUS
-    rationale: "LOTUS is the proposed model's official identifier."
+      - training/supervision-optimization
+      - capabilities/efficiency
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): Loop iterations are sequential; parallel latent positions inside each iteration are not parallel loop execution."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): Loop iterations are sequential; parallel latent positions inside each iteration are not parallel loop execution."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

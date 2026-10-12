@@ -10,22 +10,10 @@ year: 2021
 published_date: '2020-12-08'
 added_date: '2026-09-06'
 venue: ICLR
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- multimodal
-- vision
-- efficiency
-- memory-efficiency
-tags:
-- weight-tying
-focus_tags:
-- architecture
 survey_section:
 - applications/language-speech-multimodal
-- benefits/efficiency
-- design/sharing-scheme
+- capabilities/efficiency
+- architecture/sharing
 loop_topology: whole-stack
 sharing: partial-adapter
 depth_control: fixed

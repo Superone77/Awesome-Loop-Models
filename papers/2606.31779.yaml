@@ -7,24 +7,9 @@ year: 2026
 published_date: '2026-06-30'
 added_date: '2026-06-30'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-- efficiency
-- scaling
-focus_tags:
-- architecture
-- objective-loss
-- training-algorithm
-tags:
-- LOTUS
 survey_section:
-- train/supervision
-- benefits/efficiency
+- training/supervision-optimization
+- capabilities/efficiency
 loop_topology: whole-stack
 sharing: full
 depth_control: fixed

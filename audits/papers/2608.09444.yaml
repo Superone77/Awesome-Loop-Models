@@ -12,21 +12,20 @@ scope:
   evidence: "The target looped language model repeatedly applies a shared recurrent core within one forward process, while CDB schedules per-sequence loop counts."
   locator: "Abstract; Sections 2.1-2.3"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces continuous depth batching as a reusable inference scheduler."
-  mechanism_tags:
-    values: [flat-loop]
-    rationale: "The scheduled model reuses one recurrent core over a single depth axis."
-  focus_tags:
-    values: [inference-algorithm]
-    rationale: "The central contribution is an inference scheduler for depth-adaptive looped models."
-  domain_tags:
-    values: [language-modeling, efficiency, adaptive-compute]
-    rationale: "CDB realizes speedups from per-sequence adaptive loop depth in language-model inference."
-  tags:
-    values: []
-    rationale: "No optional alias is needed."
+  survey_section:
+    values:
+      - systems/batching-parallel
+      - architecture/topology
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The scheduled model reuses one recurrent core over a single depth axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The scheduled model reuses one recurrent core over a single depth axis."
+  depth_control:
+    value: adaptive-halting
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

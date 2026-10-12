@@ -7,23 +7,10 @@ year: 2026
 published_date: '2026-04-23'
 added_date: '2026-04-24'
 venue: arXiv
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- efficiency
-- memory-efficiency
-tags:
-- Hyperloop
-- looped-transformer
-- hyper-connections
-focus_tags:
-- architecture
 survey_section:
-- design/residual-injection
+- architecture/residual-init
 - systems/quantization-edge
-- design/topology
+- architecture/topology
 loop_topology: prelude-core-coda
 sharing: full
 depth_control: fixed

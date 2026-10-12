@@ -38,25 +38,9 @@ must_read: true
 published_date: '2025-10-29'
 added_date: '2026-04-24'
 venue: arXiv
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-- efficiency
-- adaptive-compute
-tags:
-- Ouro
-- LoopLM
-focus_tags:
-- objective-loss
-- architecture
-- training-algorithm
-- inference-algorithm
 survey_section:
-- benefits/efficiency
-- design/depth-control
+- capabilities/efficiency
+- architecture/depth-control
 loop_topology: whole-stack
 sharing: full
 depth_control: adaptive-halting

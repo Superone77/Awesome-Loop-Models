@@ -7,21 +7,8 @@ year: 2026
 published_date: '2026-08-15'
 added_date: '2026-08-17'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- efficiency
-- scaling
-- memory-efficiency
-focus_tags:
-- architecture
-- training-algorithm
-- inference-algorithm
 survey_section:
-- design/residual-injection
+- architecture/residual-init
 - scaling/compute-optimal
 loop_topology: prelude-core-coda
 sharing: full

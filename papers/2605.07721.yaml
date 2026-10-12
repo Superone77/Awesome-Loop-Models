@@ -11,22 +11,9 @@ year: 2026
 published_date: '2026-05-08'
 added_date: '2026-05-11'
 venue: arXiv
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-- efficiency
-- memory-efficiency
-tags:
-- MELT
-focus_tags:
-- architecture
-- training-algorithm
 survey_section:
 - systems/kv-memory
-- design/state-memory
+- architecture/state-memory
 loop_topology: whole-stack
 sharing: full
 depth_control: unspecified

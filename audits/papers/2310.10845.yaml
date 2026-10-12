@@ -12,27 +12,20 @@ scope:
   evidence: "CoTFormer repeatedly applies the same weight-tied Transformer blocks and exposes earlier intermediate states to later repeats."
   locator: "Section 3.1, Equation 3"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces the CoTFormer architecture and budget-adaptive routing."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "One shared block stack is reused over a single recurrent-depth axis."
-  focus_tags:
-    values:
-      - architecture
-      - inference-algorithm
-    rationale: "The contribution changes recurrent architecture and allocates repeated passes at inference."
-  domain_tags:
-    values:
-      - language-modeling
-      - reasoning
-    rationale: "The model is trained and evaluated as a language model with chain-of-thought-inspired recurrent computation."
-  tags:
-    values:
-      - CoTFormer
-    rationale: "CoTFormer is the official architecture name."
+      - architecture/depth-control
+      - architecture/state-memory
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One shared block stack is reused over a single recurrent-depth axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One shared block stack is reused over a single recurrent-depth axis."
+  depth_control:
+    value: adaptive-halting
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

@@ -6,21 +6,9 @@ year: 2026
 published_date: '2026-07-13'
 added_date: '2026-07-16'
 venue: arXiv
-category: analysis
-foundation: false
-mechanism_tags:
-- implicit-layer
-domain_tags:
-- graph-data
-- reasoning
-focus_tags:
-- architecture
-- inference-algorithm
-tags:
-- DEQ
 survey_section:
-- benefits/limits
-- train/gradients
+- understanding/failure-modes
+- training/supervision-optimization
 loop_topology: implicit-fixed-point
 sharing: full
 depth_control: convergence

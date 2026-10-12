@@ -10,18 +10,6 @@ year: 2026
 published_date: '2026-09-24'
 added_date: '2026-09-24'
 venue: arXiv
-category: applications
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- scientific-ml
-- biology
-tags:
-- NCA
-- LoRA
-focus_tags:
-- architecture
 survey_section:
 - applications/graphs-science
 loop_topology: whole-stack

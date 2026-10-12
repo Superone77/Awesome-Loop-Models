@@ -10,20 +10,6 @@ year: 2026
 published_date: '2026-10-07'
 added_date: '2026-10-08'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- efficiency
-- memory-efficiency
-tags:
-- Ouro
-- Huginn
-- ResidualQuant
-focus_tags:
-- inference-algorithm
 survey_section:
 - systems/kv-memory
 - systems/quantization-edge

@@ -12,27 +12,19 @@ scope:
   evidence: "The studied looped language models explicitly apply a fixed learned stack for multiple cycles within a forward reasoning computation."
   locator: "Section 2.1, Equations 6-7"
 taxonomy:
-  category:
-    value: analysis
-    rationale: "The paper mechanistically analyzes already-trained looped reasoning language models."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "The explicit fixed stack is repeated across one cycle axis; it is not an equilibrium-defined implicit layer."
-  focus_tags:
-    values:
-      - architecture
-      - inference-algorithm
-    rationale: "The study relates recurrent architecture to inference trajectories and convergence behavior."
-  domain_tags:
-    values:
-      - language-modeling
-      - reasoning
-    rationale: "The analyzed models perform language-model reasoning tasks."
-  tags:
-    values:
-      - mechanistic-analysis
-    rationale: "This alias names the paper's mechanistic study of recurrent inference."
+      - understanding/interpretability
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The explicit fixed stack is repeated across one cycle axis; it is not an equilibrium-defined implicit layer."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The explicit fixed stack is repeated across one cycle axis; it is not an equilibrium-defined implicit layer."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

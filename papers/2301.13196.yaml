@@ -10,19 +10,8 @@ year: 2023
 published_date: '2023-01-30'
 added_date: '2026-04-24'
 venue: ICML
-category: analysis
-mechanism_tags:
-- flat-loop
-domain_tags:
-- algorithmic-reasoning
-tags:
-- looped-transformer
-- programmable-computer
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
-- benefits/expressivity
+- capabilities/expressivity
 loop_topology: whole-stack
 sharing: full
 depth_control: fixed

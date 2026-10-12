@@ -7,22 +7,9 @@ year: 2025
 published_date: '2024-10-02'
 added_date: '2026-04-21'
 venue: ICML
-category: analysis
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-- theory
-tags:
-- looped-transformer
-- timestep-encoding
-- TMLT
-focus_tags:
-- architecture
 survey_section:
-- benefits/expressivity
-- design/sharing-scheme
+- capabilities/expressivity
+- architecture/sharing
 loop_topology: whole-stack
 sharing: partial-adapter
 depth_control: fixed

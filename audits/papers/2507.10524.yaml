@@ -12,29 +12,21 @@ scope:
   evidence: "Mixture-of-Recursions reuses a shared Transformer layer stack across recursive depth while routing individual tokens to learned recursion depths in one forward pass."
   locator: "Figure 1; Method section; official repository README architecture description"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces the MoR recursive Transformer architecture."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "A single shared stack is revisited along one recursion-depth axis; token routing changes participation but does not create a nested loop."
-  focus_tags:
-    values:
-      - architecture
-      - inference-algorithm
-      - training-algorithm
-    rationale: "MoR defines shared-depth architecture, learns token routing, and restricts active-token attention and caching during inference."
-  domain_tags:
-    values:
-      - language-modeling
-      - reasoning
-      - efficiency
-    rationale: "The work evaluates language modeling and reasoning while adapting token-level compute."
-  tags:
-    values:
-      - MoR
-    rationale: "MoR is the abbreviation used by the paper and official repository."
+      - architecture/depth-control
+      - scaling/compute-optimal
+      - systems/batching-parallel
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): A single shared stack is revisited along one recursion-depth axis; token routing changes participation but does not create a nested loop."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): A single shared stack is revisited along one recursion-depth axis; token routing changes participation but does not create a nested loop."
+  depth_control:
+    value: adaptive-halting
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

@@ -8,21 +8,9 @@ year: 2026
 published_date: '2026-09-17'
 added_date: '2026-09-20'
 venue: arXiv
-category: analysis
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-- theory
-- adaptive-compute
-focus_tags:
-- inference-algorithm
-- training-algorithm
 survey_section:
-- interpretability
-- benefits/limits
+- understanding/interpretability
+- understanding/failure-modes
 loop_topology: whole-stack
 sharing: full
 depth_control: unspecified

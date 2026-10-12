@@ -1,6 +1,11 @@
 # Save as: blogs/YYYY-MM-DD-shortname.yaml
 # Use this for substantive long-form technical posts about loop models.
-# Blogs are taggable, but they live in one flat section and do not use the paper taxonomy.
+# Blogs live in one flat Blogs section. They list the survey sections they discuss
+# (see TAXONOMY.md) and use no other taxonomy fields.
+#
+# `published_date` is required: the post's release date as a quoted
+# `YYYY-MM-DD` string, matching the filename. `added_date` (optional) is the
+# repo intake date in the same `YYYY-MM-DD` format.
 
 title: "Your Blog Title"
 authors:
@@ -8,37 +13,10 @@ authors:
 year: 2026
 published_date: "2026-04-21"
 added_date: "2026-04-21"
-venue: "X Article"
+venue: "X Article"   # e.g. X Article, Lab Blog, Substack, Personal Blog
 
-# Good venue examples:
-#   X Article
-#   Lab Blog
-#   Substack
-#   Personal Blog
-
-mechanism_tags:
-  - "flat-loop"
-
-domain_tags:
-  - "language-modeling"
-
-tags:
-  - "depth-scaling"
-
-# Loop Mechanism (`mechanism_tags`) uses only loop-form tags:
-#   hierarchical-loop, flat-loop, parallel-loop, implicit-layer.
-# `tags` are optional aliases / short identifiers kept in YAML / README metadata.
-# The interactive browser exposes Loop Mechanism (`mechanism_tags`), `focus_tags`, and `domain_tags` as tag filters.
-
-focus_tags:
-  - "architecture"
-
-# Valid focus_tags:
-#   objective-loss
-#   training-algorithm
-#   architecture
-#   data
-#   inference-algorithm
+survey_section:      # primary first
+  - "architecture/topology"
 
 desc: >
   One concise sentence describing the post's technical value.
@@ -48,15 +26,3 @@ links:
   github: ""
   project: ""
   twitter: ""
-  comment:
-    - label: "Follow-up discussion"
-      url: "https://x.com/..."
-
-# Notes:
-# - `links.blog` is required for blogs.
-# - `published_date` is required for all blogs. Use the original release date
-#   and keep it as a quoted `YYYY-MM-DD` string.
-# - `added_date` is the repo intake date used by the daily feed; blogs are
-#   excluded from `Newly Arrived`. When present, keep it as a quoted
-#   `YYYY-MM-DD` string.
-# - Blogs do not use `category`, `category_path`, or `foundation`.

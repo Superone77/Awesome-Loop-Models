@@ -7,16 +7,6 @@ year: 2026
 published_date: '2026-08-17'
 added_date: '2026-08-20'
 venue: arXiv
-category: applications
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-- compositional-reasoning
-focus_tags:
-- inference-algorithm
 survey_section:
 - applications/language-speech-multimodal
 - scaling/test-time

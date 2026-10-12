@@ -9,23 +9,11 @@ year: 2019
 published_date: '2018-07-10'
 added_date: '2026-04-24'
 venue: ICLR
-category: designs
-foundation: true
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- algorithmic-reasoning
-tags:
-- UT
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
 - foundations/depth-sharing
-- benefits/generalization
-- design/sharing-scheme
-- design/topology
+- capabilities/generalization
+- architecture/sharing
+- architecture/topology
 loop_topology: whole-stack
 sharing: full
 depth_control: adaptive-halting

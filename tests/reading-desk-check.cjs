@@ -151,12 +151,13 @@ assert.equal(splitUpdates, 2);
 rail.context.window.innerWidth = 390;
 rail.context.setReadingDeskSidebarWidth(200);
 assert.equal(railStyles['--desk-rail'], '409px');
-const card = html.slice(html.indexOf('function renderCard(paper, query)'), html.indexOf('// ── State & Category Tree'));
+const card = html.slice(html.indexOf('// ── Render a single paper card'), html.indexOf('// ── State & Survey Taxonomy'));
 assert.match(card, /class="desk-card-summary"/);
 assert.match(card, /highlightQuery\(escapeHtml\(paper\.desc\), query\)/);
 assert.match(card, /renderMetricsHtml\(paper\)/);
-assert.match(card, /renderPaperTagHtml\(entry, 'paper-tag-' \+ entry\.group\)/);
-assert.match(card, /aria-expanded="false" aria-controls="desk-card-tags-/);
+assert.match(card, /renderSectionBadgesHtml\(paper\)/);
+assert.match(card, /renderAxisChipHtml\(entry\)/);
+assert.match(card, /aria-expanded="false" aria-controls="desk-card-axes-/);
 assert.doesNotMatch(card + css, /desk-full-card|desk-paper-footer/);
 assert.doesNotMatch(css, /\.desk-detail-collapsed #papers-panel/);
 assert.match(css, /container: paper-list \/ inline-size/);
@@ -175,13 +176,15 @@ assert.match(css.slice(css.indexOf('@media (max-width: 768px)')), /\.desk-sideba
 assert.match(html, /--font-body: Charter, Georgia/);
 assert.doesNotMatch(html, /@media\s*\(prefers-color-scheme:\s*dark\)/);
 assert.doesNotMatch(html, /category-disclaimer|desk-scope|About the classification/);
+assert.doesNotMatch(html + source, /mechanism_tags|focus_tags|domain_tags|foundation|category/i, 'No trace of the retired taxonomy');
 assert.doesNotMatch(html, /A field guide to recurrent depth|class="desk-subtitle"/);
 assert.match(html, /<svg class="site-brand-mark"[^>]+aria-hidden="true">/);
 assert.match(html, /<span class="site-brand-name">Awesome Loop Models<\/span>/);
 assert.doesNotMatch(html, /id="sidebar-nav"|id="mobile-directory"/);
 const filterPanel = html.slice(html.indexOf('<aside class="filter-sidebar"'), html.indexOf('<div class="top-level-panel" id="papers-panel"'));
-assert.match(filterPanel, /<label for="category-filter"/);
-assert.match(filterPanel, /id="category-filter" onchange="setCategoryFilter\(this.value\)"/);
+assert.match(filterPanel, /<label for="section-filter"/);
+assert.match(filterPanel, /id="section-filter" onchange="setSectionFilter\(this.value\)"/);
+assert.match(filterPanel, /id="facet-filter-toggle"[\s\S]*Design axes/);
 assert.match(css, /\.reading-desk \.site-brand-name \{[^}]*max-width: none;/);
 const watch = html.slice(html.indexOf('<section class="desk-watch"'), html.indexOf('<div class="desk-sidebar-bottom">'));
 assert.match(watch, /aria-label="Catalog watch"/);
@@ -208,7 +211,17 @@ const rendering = vm.createContext({
     arxiv: { cls: 'link-arxiv', icon: '', label: 'arXiv' },
     github: { cls: 'link-github', icon: '', label: 'Code' },
   },
-  TAG_GROUP_LABELS: {},
+  SECTION_BY_ID: {
+    'architecture/depth-control': { id: 'architecture/depth-control', number: '4.5', chapter: '4', title: 'Controlling recurrence depth' },
+    'scaling/test-time': { id: 'scaling/test-time', number: '6.2', chapter: '6', title: 'Test-time scaling' },
+  },
+  ACTIVE_SECTION_FILTER: '',
+  FACET_GROUPS: ['loop_topology', 'sharing', 'depth_control', 'claims', 'comparison'],
+  formatSectionLabel: section => '§' + section.number + ' ' + section.title,
+  getFacetDrilldownHref: (group, value) => '?' + group + '=' + encodeURIComponent(value) + '#papers',
+  getFacetGroupLabel: group => ({ loop_topology: 'Loop topology', sharing: 'Sharing', depth_control: 'Depth control', claims: 'Claims', comparison: 'Looped-vs-untied comparison' })[group] || group,
+  isFacetActive: () => false,
+  getVisibleAxisEntries: paper => (paper._axisEntries || []).filter(entry => entry.value !== 'unspecified'),
   getReadingDeskThumbnailUrl: thumbnail,
   getPaperDisplayDate: paper => paper.published_date,
   renderCatalogFitBadgeHtml: () => '',
@@ -218,7 +231,7 @@ vm.runInContext(html.slice(html.indexOf('function parseIsoDate(value) {'), html.
 vm.runInContext(html.slice(html.indexOf('function escapeHtml(str) {'), html.indexOf('function formatMetricCount(')), rendering);
 vm.runInContext(html.slice(html.indexOf('function formatMetricCount('), html.indexOf('function getCurrentDailyWatchDateString(')), rendering);
 vm.runInContext(card, rendering);
-vm.runInContext(source.slice(source.indexOf('function renderReadingDeskDetail(paper) {'), source.indexOf('function syncReadingDeskSelection(')), rendering);
+vm.runInContext(source.slice(source.indexOf('/** Describe every survey placement'), source.indexOf('function syncReadingDeskSelection(')), rendering);
 assert.match(rendering.renderMetricsHtml({ published_date: '2026-01-01', citations: 1000 }), /High influence/);
 const influence = rendering.renderInfluenceBadgeHtml;
 const influenceNow = new Date('2026-09-17T23:59:59Z');
@@ -268,17 +281,37 @@ assert.match(influence({ venue: 'arXiv', peer_reviewed: false, published_date: '
 assert.equal(influence({ published_date: '2026-04-17', citations: 1000 }, new Date(NaN)), '');
 Object.assign(rendering, { EXPANDED_TABLE_ROWS: new Set() });
 vm.runInContext(html.slice(html.indexOf('function formatTableText('), html.indexOf('function getPaperDisplayDate(')), rendering);
-vm.runInContext(html.slice(html.indexOf('function renderTableTagLinksHtml('), html.indexOf('function renderTableView(')), rendering);
+vm.runInContext(html.slice(html.indexOf('function renderTableSectionHtml('), html.indexOf('function renderTableView(')), rendering);
 const example = {
   id: '2301.13196', title: 'A paper', _authorsText: 'Author One, Author Two',
   venue: 'ICML', year: 2026, published_date: '2026-09-16', desc: 'A complete summary.',
   citations: 3, github_stars: 7,
   links: { arxiv: 'https://arxiv.org/abs/2301.13196', github: 'https://github.com/example/code' },
   community_comments: [{ label: 'A <reading> note', url: 'https://example.test/note?a=1&b=2' }],
+  survey_core: true,
+  _sections: ['architecture/depth-control', 'scaling/test-time'],
+  _sectionLabel: '§4.5 Controlling recurrence depth',
+  _axisEntries: [
+    { group: 'loop_topology', value: 'whole-stack' }, { group: 'sharing', value: 'full' },
+    { group: 'depth_control', value: 'unspecified' }, { group: 'claims', value: 'test-time-scaling' },
+  ],
 };
 rendering.readingDeskDetailCollapsed = false;
 const openCard = rendering.renderCard(example, '');
 assert.match(openCard, />ICML 2026<\/span>/);
+const cardSections = openCard.split('<div class="paper-sections">')[1].split('</div>')[0];
+assert.match(cardSections, /class="paper-section-badge is-primary"[^>]*data-facet-value="architecture\/depth-control"[^>]*>.*§4\.5.*Controlling recurrence depth/);
+assert.match(cardSections, /class="paper-section-badge is-secondary"[^>]*>.*§6\.2.*Test-time scaling/);
+assert.ok(cardSections.indexOf('§4.5') < cardSections.indexOf('§6.2'), 'Primary section first');
+assert.match(openCard, /data-facet-group="loop_topology" data-facet-value="whole-stack"/);
+assert.match(openCard, /data-facet-group="claims" data-facet-value="test-time-scaling"/);
+assert.doesNotMatch(openCard, /data-facet-value="unspecified"/, 'Cards omit unspecified axes');
+assert.match(openCard, /class="survey-core-badge"[^>]*>Survey core</);
+assert.doesNotMatch(rendering.renderCard({ ...example, survey_core: false }, ''), /survey-core-badge/);
+const exampleRow = rendering.renderTableRow(example, '');
+assert.match(exampleRow, /§4\.5 Controlling recurrence depth/);
+assert.match(exampleRow, /data-facet-value="whole-stack"/);
+assert.equal((exampleRow.match(/<td/g) || []).length, 9, 'Eight summary cells plus the detail cell');
 assert.match(rendering.renderTableRow(example, ''), />ICML 2026<\/span>/);
 assert.match(rendering.renderTableRow(example, ''), /ICML 2026 · 2026-09-16/);
 rendering.renderReadingDeskDetail(example);
@@ -342,7 +375,13 @@ assert.match(fixedHeader, /Author One, Author Two/);
 assert.match(fixedHeader, /Open paper/);
 assert.doesNotMatch(fixedHeader, /<h3>Summary/);
 assert.match(scrollableBody, /^<div class="desk-detail-body" tabindex="0" role="region" aria-label="Resource details"><section class="desk-detail-section"><h3>Summary/);
-for (const title of ['Classification', 'Sources', 'Discussion']) assert.ok(scrollableBody.includes(title));
+for (const title of ['Survey placement', 'Sources', 'Discussion']) assert.ok(scrollableBody.includes(title));
+const placement = scrollableBody.split('<h3>Survey placement</h3>')[1].split('</section>')[0];
+assert.match(placement, /paper-section-badge is-primary/);
+for (const label of ['Loop topology', 'Sharing', 'Depth control', 'Claims', 'Looped-vs-untied comparison']) assert.ok(placement.includes('<dt>' + label + '</dt>'), label);
+assert.match(placement, /<dt>Depth control<\/dt><dd><span class="desk-axis-unspecified">unspecified/);
+assert.match(placement, /<dt>Looped-vs-untied comparison<\/dt><dd><span class="desk-axis-unspecified">none recorded/);
+assert.match(fixedHeader, /Survey core/);
 const primaryActions = detailContent.innerHTML.split('<div class="desk-primary-actions">')[1].split('</div>')[0];
 assert.match(primaryActions, /Open paper/);
 assert.doesNotMatch(primaryActions, /github|Code/);
@@ -377,80 +416,101 @@ assert.match(css, /\.desk-detail-body \{[^}]*min-height: 0;[^}]*overflow-y: auto
 rendering.renderReadingDeskDetail(null);
 assert.match(detailContent.innerHTML, /class="desk-detail-header"/);
 assert.match(detailContent.innerHTML, /class="desk-detail-body"/);
-const activeTags = new Set(['mechanism::implicit-layer', 'focus::architecture']);
-const filters = vm.createContext({
-  ACTIVE_TAG_FILTERS: activeTags,
-  URL_TAG_FILTER_KEYS: new Set(['mechanism::implicit-layer']),
-  TAG_FILTER_LOOKUP: {
-    'mechanism::implicit-layer': { group: 'mechanism', displayLabel: 'implicit-layer', count: 31 },
-    'focus::architecture': { group: 'focus', displayLabel: 'architecture <tag>', count: 186 },
-  },
-  getPaperCountForTagKey: () => 30,
-  getTagDrilldownGroupLabel: group => (group === 'mechanism' ? 'Mechanism' : 'Focus'),
+// Design-axis filters: OR inside one axis, AND across axes, each removable on its own.
+const axes = { loop_topology: { label: 'Loop topology', values: ['whole-stack', 'implicit-fixed-point', 'unspecified'] }, claims: { label: 'Claims', values: ['expressivity', 'stability'] } };
+const facets = vm.createContext({
+  SURVEY: { axes }, ACTIVE_FACET_FILTERS: {}, AXIS_CHIP_PREFIXES: { loop_topology: 'Topology', claims: 'Claim' },
   document: { getElementById: () => ({ value: 'recurrent' }) },
-  updateTagFilterUI() {},
+  syncFiltersToUrl(mode) { assert.equal(mode, 'replace'); }, updateFacetFilterUI() {},
   doSearch(query) { assert.equal(query, 'recurrent'); },
 });
-vm.runInContext(html.slice(html.indexOf('function escapeHtml(str) {'), html.indexOf('function highlightQuery(')), filters);
-vm.runInContext(html.slice(html.indexOf('function removeTagFilter(tagKey) {'), html.indexOf('function renderTagFilterGroups() {')), filters);
-const tagSummary = filters.renderActiveTagFiltersHtml();
-assert.equal((tagSummary.match(/class="tag-filter-active-remove"/g) || []).length, 2);
-assert.match(tagSummary, /implicit-layer<\/span><span class="tag-filter-chip-count">30</);
-assert.match(tagSummary, /architecture &lt;tag&gt;<\/span><span class="tag-filter-chip-count">186</);
-assert.match(tagSummary, /aria-label="Remove Mechanism filter: implicit-layer"/);
-assert.match(tagSummary, /<span aria-hidden="true">×<\/span><\/button>/);
-filters.toggleTagFilter('focus::architecture');
-assert.deepEqual([...activeTags], ['mechanism::implicit-layer']);
-assert.equal((filters.renderActiveTagFiltersHtml().match(/class="tag-filter-active-remove"/g) || []).length, 1);
-const filterHeading = html.slice(html.indexOf('<div class="tag-filter-header">'), html.indexOf('<div class="tag-filter-panel"'));
-assert.ok(filterHeading.indexOf('</button>') < filterHeading.indexOf('id="tag-filter-summary"'));
+vm.runInContext(html.slice(html.indexOf('function escapeHtml(str) {'), html.indexOf('function highlightQuery(')), facets);
+vm.runInContext(html.slice(html.indexOf('const FACET_GROUPS ='), html.indexOf('/** Serialize section, design-axis')), facets);
+vm.runInContext(html.slice(html.indexOf('function getPaperAxisValues(paper, group) {'), html.indexOf('/** Return design-axis entries worth')), facets);
+vm.runInContext(html.slice(html.indexOf('/** Match any selected value within an axis'), html.indexOf('function renderFacetFilterGroups() {')), facets);
+const implicitPaper = { loop_topology: 'implicit-fixed-point', claims: ['stability'] };
+const stackPaper = { loop_topology: 'whole-stack', claims: ['expressivity', 'stability'] };
+facets.toggleFacetFilter('loop_topology', 'whole-stack');
+facets.toggleFacetFilter('loop_topology', 'implicit-fixed-point');
+assert.equal(facets.paperMatchesFacetFilters(implicitPaper) && facets.paperMatchesFacetFilters(stackPaper), true, 'OR within an axis');
+facets.toggleFacetFilter('claims', 'expressivity');
+assert.equal(facets.paperMatchesFacetFilters(implicitPaper), false, 'AND across axes');
+assert.equal(facets.paperMatchesFacetFilters(stackPaper), true);
+assert.equal(facets.getActiveFacetCount(), 3);
+facets.toggleFacetFilter('claims', 'not-a-value');
+assert.equal(facets.getActiveFacetCount(), 3, 'Unknown values are ignored');
+const facetSummary = facets.renderActiveFacetFiltersHtml();
+assert.equal((facetSummary.match(/class="facet-filter-active-remove"/g) || []).length, 3);
+assert.match(facetSummary, /aria-label="Remove Loop topology filter: whole-stack"/);
+assert.match(facetSummary, /<span aria-hidden="true">×<\/span><\/button>/);
+facets.toggleFacetFilter('claims', 'expressivity');
+assert.equal(facets.paperMatchesFacetFilters(implicitPaper), true);
+assert.equal((facets.renderActiveFacetFiltersHtml().match(/class="facet-filter-active-remove"/g) || []).length, 2);
+const filterHeading = html.slice(html.indexOf('<div class="facet-filter-header">'), html.indexOf('<div class="facet-filter-panel"'));
+assert.ok(filterHeading.indexOf('</button>') < filterHeading.indexOf('id="facet-filter-summary"'));
 assert.match(css, /\.reading-desk \.filter-sidebar-header \{[^}]*text-align: left;/);
-const categorySelect = { value: '', innerHTML: '' };
-const categories = vm.createContext({
-  ACTIVE_CATEGORY_FILTER: '',
-  CATEGORIES: { theory: { title: 'Theory & analysis' }, designs: { title: 'Architecture' } },
-  getNodeCount: parts => parts[0] === 'theory' ? 2 : 3,
-  document: { getElementById: () => categorySelect },
-  rerenderCurrentResults() {},
+
+// Survey-section filter: chapter-grouped options, membership matching, chapter-wide values.
+const sectionSelect = { value: '', innerHTML: '' };
+const surveyTaxonomy = {
+  parts: [{ id: 'foundations', title: 'Part I. Foundations' }, { id: 'building', title: 'Part III. Building, Training and Deploying' }],
+  chapters: [{ number: '2', part: 'foundations', title: 'From Recurrent Computation to Iterative Depth' }, { number: '4', part: 'building', title: 'Architecture & Design' }],
+  sections: [
+    { id: 'foundations/implicit', number: '2.3', chapter: '2', title: 'Deep equilibrium and implicit models' },
+    { id: 'architecture/topology', number: '4.1', chapter: '4', title: 'Loop topology' },
+    { id: 'architecture/depth-control', number: '4.5', chapter: '4', title: 'Controlling recurrence depth' },
+  ],
+  axes: {},
+};
+const sections = vm.createContext({
+  ACTIVE_SECTION_FILTER: '', ACTIVE_TOP_LEVEL_TAB: 'papers', FACET_GROUPS: [],
+  document: { getElementById: () => sectionSelect },
+  syncFiltersToUrl() {}, rerenderCurrentResults() {},
+  CATALOG_ADJACENT_NOTE: '',
 });
-vm.runInContext(html.slice(html.indexOf('function escapeHtml(str) {'), html.indexOf('function highlightQuery(')), categories);
-vm.runInContext(html.slice(html.indexOf('function renderCategoryFilter() {'), html.indexOf('function paperMatchesActiveFilters(')), categories);
-categories.renderCategoryFilter();
-assert.match(categorySelect.innerHTML, /All categories/);
-assert.match(categorySelect.innerHTML, /Theory &amp; analysis · 2/);
-assert.equal(categories.matchCategoryFilter({ entry_type: 'blog' }), true);
-categories.setCategoryFilter('theory');
-assert.equal(categorySelect.value, 'theory');
-assert.equal(categories.matchCategoryFilter({ category: 'theory' }), true);
-assert.equal(categories.matchCategoryFilter({ category: 'designs' }), false);
-assert.equal(categories.matchCategoryFilter({ category: 'theory', entry_type: 'blog' }), false);
-categories.setCategoryFilter('designs');
-assert.equal(categories.matchCategoryFilter({}), true);
-categories.setCategoryFilter('invalid');
-assert.equal(categorySelect.value, '');
-assert.equal(categories.matchCategoryFilter({ entry_type: 'blog' }), true);
-categories.CATALOG_DATA_READY = true;
-categories.CURRENT_VIEW = 'category';
-categories.window = { requestAnimationFrame() {} };
-vm.runInContext(html.slice(html.indexOf('function restoreCategoryHashPosition(hash) {'), html.indexOf('function navigateToPaperSection(sectionId) {')), categories);
-categories.setCategoryFilter('theory');
-categories.restoreCategoryHashPosition('#section-theory');
-assert.equal(categorySelect.value, 'theory');
-categories.restoreCategoryHashPosition('#section-blogs');
-assert.equal(categorySelect.value, 'theory');
-categories.setCategoryFilter('theory');
-categories.restoreCategoryHashPosition('#section-designs');
-assert.equal(categorySelect.value, 'designs');
-categories.restoreCategoryHashPosition('#section-missing');
-assert.equal(categorySelect.value, 'designs');
-assert.match(html, /if \(!isBlogs && ACTIVE_CATEGORY_FILTER\) count \+= 1;/);
+vm.runInContext(html.slice(html.indexOf('function escapeHtml(str) {'), html.indexOf('function highlightQuery(')), sections);
+vm.runInContext(html.slice(html.indexOf('/** Index the survey parts, chapters and sections'), html.indexOf('/** Return a record\'s controlled values')), sections);
+vm.runInContext(html.slice(html.indexOf('/** Return whether a section-filter value names'), html.indexOf('/** Return whether a design-axis value is currently selected.')), sections);
+vm.runInContext(html.slice(html.indexOf('/** Return the DOM id of a survey chapter heading'), html.indexOf('/**\n * Scroll the list view')), sections);
+vm.runInContext(html.slice(html.indexOf('function getPaperAxisValues(paper, group) {'), html.indexOf('/** Return design-axis entries worth')), sections);
+vm.runInContext(html.slice(html.indexOf('function preparePaperRecord(paper) {'), html.indexOf('/** Count each design-axis value')), sections);
+vm.runInContext(html.slice(html.indexOf('/** Populate chapter-grouped survey-section choices'), html.indexOf('/** Blogs carry survey sections only')), sections);
+sections.setSurveyTaxonomy(surveyTaxonomy);
+sections.restoreDerivedLinks = links => links;
+const deqPaper = sections.preparePaperRecord({ id: 'deq', title: 'DEQ', survey_section: ['foundations/implicit', 'architecture/depth-control', 'retired/value'] });
+assert.deepEqual([...deqPaper._sections], ['foundations/implicit', 'architecture/depth-control'], 'Unknown sections are dropped, order kept');
+assert.equal(deqPaper._primarySection, 'foundations/implicit');
+assert.equal(deqPaper._primaryChapter, '2');
+assert.equal(deqPaper._sectionLabel, '§2.3 Deep equilibrium and implicit models');
+assert.match(deqPaper._searchText, /§4\.5 controlling recurrence depth/);
+const topoPaper = sections.preparePaperRecord({ id: 'topo', survey_section: ['architecture/topology'] });
+sections.ALL_PAPERS = [deqPaper, topoPaper];
+sections.ALL_BLOGS = [];
+sections.renderSectionFilter();
+assert.match(sectionSelect.innerHTML, /All survey sections/);
+assert.match(sectionSelect.innerHTML, /<optgroup label="§4 Architecture &amp; Design"><option value="4">All of §4 · 2<\/option>/);
+assert.match(sectionSelect.innerHTML, /§4\.5 Controlling recurrence depth · 1/);
+sections.setSectionFilter('architecture/depth-control');
+assert.equal(sectionSelect.value, 'architecture/depth-control');
+assert.equal(sections.matchSectionFilter(deqPaper), true, 'Secondary placements match');
+assert.equal(sections.matchSectionFilter(topoPaper), false);
+sections.setSectionFilter('2');
+assert.equal(sections.matchSectionFilter(deqPaper) && !sections.matchSectionFilter(topoPaper), true, 'Chapter values match any section in the chapter');
+assert.equal(sections.getSectionFilterLabel(), '§2 From Recurrent Computation to Iterative Depth');
+sections.setSectionFilter('analysis');
+assert.equal(sectionSelect.value, '', 'Retired values are ignored');
+assert.equal(sections.matchSectionFilter(topoPaper), true);
+assert.equal(sections.getSectionDomId({ number: '4.5' }), 'section-4-5');
+assert.match(html, /if \(!isBlogs\) count \+= getActiveFacetCount\(\);/);
 
 // Exercise the actual scope/filter pipeline: paper-only filters cannot hide Blogs.
+const categories = sections;
 Object.assign(categories, {
-  ACTIVE_TOP_LEVEL_TAB: 'papers',
-  ALL_PAPERS: [{ id: 'p', category: 'theory', venue: 'ICML', peer_reviewed: true, added_date: '2026-09-16' }],
-  ALL_BLOGS: [{ id: 'b', entry_type: 'blog' }],
-  ACTIVE_TAG_FILTERS: new Set(),
+  ACTIVE_SECTION_FILTER: '',
+  ALL_PAPERS: [{ id: 'p', _primarySection: 'foundations/implicit', _sectionSet: new Set(['foundations/implicit']), _chapterSet: new Set(['2']), venue: 'ICML', peer_reviewed: true, added_date: '2026-09-16' }],
+  ALL_BLOGS: [{ id: 'b', entry_type: 'blog', _sectionSet: new Set(['architecture/topology']), _chapterSet: new Set(['4']) }],
+  ACTIVE_FACET_FILTERS: {},
+  getActiveFacetCount: () => 0,
   ACCEPTED_ONLY: true,
   HIGH_INFLUENCE_ONLY: false,
   getHighInfluenceMonths: paper => rendering.getHighInfluenceMonths(paper, influenceNow),
@@ -459,16 +519,16 @@ Object.assign(categories, {
   HAS_CODE_ONLY: false,
   HAS_COMMENTS_ONLY: false,
   CURRENT_SORT: 'date',
-  CURRENT_VIEW: 'category',
+  CURRENT_VIEW: 'list',
   normalizeDateInputValue: value => value || null,
   matchPublicationDate: () => true,
-  paperMatchesTagFilters: () => true,
+  paperMatchesFacetFilters: () => true,
   paperMatchesQuery: (record, query) => !query || record.id === query,
   getPublicationDateFilter: () => ({ active: false }),
 });
-vm.runInContext(html.slice(html.indexOf('function matchAcceptedOnly(paper) {'), html.indexOf('function renderCategoryFilter() {')), categories);
-vm.runInContext(html.slice(html.indexOf('function paperMatchesActiveFilters('), html.indexOf('function setFilterSidebarOpen(')), categories);
-vm.runInContext(html.slice(html.indexOf('function normalizeTopLevelTab(tab) {'), html.indexOf('function getTagDrilldownKeysFromUrl() {')), categories);
+vm.runInContext(html.slice(html.indexOf('function matchAcceptedOnly(paper) {'), html.indexOf('/** Populate chapter-grouped survey-section choices')), categories);
+vm.runInContext(html.slice(html.indexOf('/** Blogs carry survey sections only'), html.indexOf('function setFilterSidebarOpen(')), categories);
+vm.runInContext(html.slice(html.indexOf('function normalizeTopLevelTab(tab) {'), html.indexOf('/** Design-axis filter groups in survey order')), categories);
 assert.match(filterPanel, /id="accepted-only-toggle"[^>]*>Peer-reviewed<\/button>/);
 assert.match(filterPanel, /id="high-influence-only-toggle"[^>]*aria-pressed="false"[^>]*onclick="toggleHighInfluenceOnly\(\)"[^>]*>High influence<\/button>/);
 assert.match(css, /\.blogs-mode #high-influence-only-toggle/);
@@ -484,41 +544,48 @@ for (const [paper, expected] of [
   [{ entry_type: 'blog', venue: 'ICML' }, false],
   [{ venue: 'arXiv', peer_reviewed: false }, false], [{ entry_type: 'blog', peer_reviewed: true }, false],
 ]) assert.equal(categories.matchAcceptedOnly(paper), expected);
-const catalogPapers = JSON.parse(fs.readFileSync(path.join(root, 'papers.json'), 'utf8')).papers;
+const manifest = JSON.parse(fs.readFileSync(path.join(root, 'papers.json'), 'utf8'));
+const catalogPapers = manifest.paper_chunks.flatMap(chunk => JSON.parse(fs.readFileSync(path.join(root, chunk.path), 'utf8')).papers);
+assert.equal(catalogPapers.length, manifest.meta.paper_total);
+for (const paper of catalogPapers) {
+  assert.ok(Array.isArray(paper.survey_section) && paper.survey_section.length, paper.id + ': survey_section');
+  for (const retired of ['category', 'foundation', 'mechanism_tags', 'focus_tags', 'domain_tags', 'tags']) assert.ok(!(retired in paper), paper.id + ': ' + retired);
+}
 const eqr = catalogPapers.find(paper => paper.id === '2605.21488');
 assert.ok(eqr, 'EqR must be present in the canonical catalog');
 assert.equal(categories.matchAcceptedOnly(eqr), true, 'EqR must not need a successful metadata refresh to retain its ICML status');
 for (const paper of catalogPapers.filter(paper => paper.venue && paper.venue !== 'arXiv' && paper.peer_reviewed !== false)) {
   assert.equal(categories.matchAcceptedOnly(paper), true, paper.id + ': retain the curated publication venue');
 }
-categories.setCategoryFilter('theory');
+categories.ACTIVE_SECTION_FILTER = '2';
 assert.equal(categories.getFilteredPapers('', {}).map(record => record.id).join(','), 'p');
 assert.equal(categories.getFilterSidebarActiveCount(), 3);
 categories.ACTIVE_TOP_LEVEL_TAB = 'blogs';
+assert.equal(categories.getFilteredPapers('', {}).length, 0, 'The section filter also applies to Blogs');
+categories.ACTIVE_SECTION_FILTER = '';
 assert.equal(categories.getFilteredPapers('', {}).map(record => record.id).join(','), 'b');
 assert.equal(categories.getFilteredPapers('p', {}).length, 0);
 assert.equal(categories.getFilterSidebarActiveCount(), 0);
 categories.ACTIVE_TOP_LEVEL_TAB = 'papers';
 assert.equal(categories.getFilteredPapers('', {}).map(record => record.id).join(','), 'p');
-assert.equal(categories.ACTIVE_CATEGORY_FILTER, 'theory');
 
 // The filter and badge share one rule, including zero completed months.
-const highPaper = { id: 'high', category: 'theory', venue: 'ICML', published_date: '2026-04-17', citations: 6 };
+const highPaper = { id: 'high', _sectionSet: new Set(), _chapterSet: new Set(), venue: 'ICML', published_date: '2026-04-17', citations: 6 };
 categories.ALL_PAPERS = [highPaper,
   { ...highPaper, id: 'equal', citations: 5 },
   { ...highPaper, id: 'preprint', venue: 'arXiv' },
-  { ...highPaper, id: 'other-category', category: 'designs' },
 ];
 categories.NEWLY_ARRIVED_ONLY = false;
 const quickFilterStates = {};
 categories.setToggleButtonState = (id, active) => { quickFilterStates[id] = active; };
+categories.updateFilterSidebarSummary = () => {};
 vm.runInContext(html.slice(html.indexOf('function updateQuickFilterButtons() {'), html.indexOf('function updateViewToggleButtons() {')), categories);
 vm.runInContext(html.slice(html.indexOf('function toggleAcceptedOnly() {'), html.indexOf('function setView(view) {')), categories);
 vm.runInContext(html.slice(html.indexOf('function getActiveFilterLabel('), html.indexOf('function sortPapers(')), categories);
 categories.toggleHighInfluenceOnly();
 assert.equal(quickFilterStates['high-influence-only-toggle'], true);
 assert.equal(categories.getFilteredPapers('', {}).map(record => record.id).join(','), 'high');
-assert.equal(categories.getFilterSidebarActiveCount(), 3);
+assert.equal(categories.getFilterSidebarActiveCount(), 2);
 assert.match(categories.getActiveFilterLabel('', {}), /high influence/);
 categories.toggleAcceptedOnly();
 assert.equal(categories.getFilteredPapers('', {}).map(record => record.id).join(','), 'high,preprint');
@@ -537,54 +604,68 @@ assert.equal(categories.getFilteredPapers('', {}).length, 3);
 for (const hash of ['#blogs', '#section-blogs']) {
   assert.equal(categories.getTopLevelTabFromHash(hash), 'blogs');
 }
-assert.equal(categories.getTopLevelTabFromHash('#section-designs'), 'papers');
+for (const hash of ['#section-4-5', '#chapter-4', '#section-designs']) assert.equal(categories.getTopLevelTabFromHash(hash), 'papers');
 assert.equal(categories.normalizeTopLevelTab('blogs'), 'blogs');
 assert.match(html, /id="blogs-tab" role="tab" aria-controls="papers-panel"/);
 assert.doesNotMatch(html, /class="desk-blogs-link"/);
-assert.doesNotMatch(html, /Category view|function createCategorySection/);
-assert.match(html, /id="view-category-toggle"[^>]*>List view<\/button>/);
-const grids = html.slice(html.indexOf('function renderAllGrids(q) {'), html.indexOf('function createTreeNode('));
-assert.doesNotMatch(grids, /if \(!hasActiveFilter\)/);
-assert.match(grids, /syncSectionVisibility\(\);/);
+assert.match(html, /id="view-list-toggle"[^>]*>List view<\/button>/);
+assert.match(html, /<nav class="survey-nav" id="survey-nav" aria-label="Survey chapters"/);
+const grids = html.slice(html.indexOf('/** Count filtered papers by primary chapter'), html.indexOf('function updateDailyBriefingNotice('));
 
-// Render the same globally sorted results in list and table views, across categories.
+// The list groups by Part → Chapter → primary Section and keeps the sort inside each section; the table is one global order.
 const listElements = {
-  'papers-grid': { innerHTML: '' }, 'blogs-grid': { innerHTML: '' },
+  'papers-grid': { innerHTML: '' }, 'blogs-grid': { innerHTML: '' }, 'blogs-count': {},
   'papers-table-body': { children: [], textContent: '' },
   'search-count': {}, 'no-results': { style: {} }, 'no-results-query': {},
-  'search': { value: '' }, 'category-filter': categorySelect,
+  'search': { value: '' }, 'section-filter': sectionSelect,
 };
 let tableOrder = '';
+const placed = (id, section, extra) => ({ id, _primarySection: section, _primaryChapter: section.startsWith('foundations') ? '2' : '4', _sectionSet: new Set([section]), _chapterSet: new Set(), ...extra });
 Object.assign(categories, {
-  ACTIVE_CATEGORY_FILTER: '', SORT_DIRECTIONS: {},
+  ACTIVE_SECTION_FILTER: '', SORT_DIRECTIONS: {}, ACCEPTED_ONLY: false,
   ALL_PAPERS: [
-    { id: 'a', category: 'theory', published_date: '2026-09-17', citations: 2, github_stars: 10 },
-    { id: 'b', category: 'designs', published_date: '2026-09-15', citations: 5, github_stars: 30, foundation: true },
-    { id: 'c', category: 'theory', published_date: '2026-09-16', citations: 1, github_stars: 20 },
-    { id: 'd', category: 'designs' },
+    placed('a', 'architecture/depth-control', { published_date: '2026-09-17', citations: 2, github_stars: 10 }),
+    placed('b', 'foundations/implicit', { published_date: '2026-09-15', citations: 5, github_stars: 30, survey_core: true }),
+    placed('c', 'architecture/depth-control', { published_date: '2026-09-16', citations: 1, github_stars: 20 }),
+    placed('d', 'architecture/topology', {}),
   ],
   document: { getElementById: id => listElements[id] || null, querySelectorAll: () => [] },
-  updateSortButtons() {}, syncDynamicCounts() {}, syncReadingDeskSelection() {},
-  syncSectionVisibility() {}, syncTreeVisibility() {}, updateFilterSidebarSummary() {}, applyViewMode() {},
+  updateSortButtons() {}, syncReadingDeskSelection() {}, observeSurveyChapters() {},
+  updateFilterSidebarSummary() {}, applyViewMode() {},
   renderCard: paper => paper.id + ';',
   renderTableView: (query, papers) => { tableOrder = papers.map(paper => paper.id + ';').join(''); },
 });
 vm.runInContext(html.slice(html.indexOf('function getPaperSortDateValue('), html.indexOf('function updateSortButtons(')), categories);
 vm.runInContext(html.slice(html.indexOf('function sortPapers('), html.indexOf('function setSort(')), categories);
+vm.runInContext(html.slice(html.indexOf('/** Split "Part III.'), html.indexOf('/** Return a record\'s controlled values')), categories);
 vm.runInContext(grids, categories);
-for (const [sort, order] of [['date', 'a;c;b;d;'], ['stars', 'b;c;a;d;'], ['citations', 'b;a;c;d;'], ['default', 'b;a;c;d;']]) {
+const listOrder = () => listElements['papers-grid'].innerHTML.match(/\b[a-d];/g).join('');
+for (const [sort, order, grouped] of [
+  ['date', 'a;c;b;d;', 'b;d;a;c;'], ['stars', 'b;c;a;d;', 'b;d;c;a;'],
+  ['citations', 'b;a;c;d;', 'b;d;a;c;'], ['default', 'b;a;c;d;', 'b;d;a;c;'],
+]) {
   categories.CURRENT_SORT = sort;
-  categories.CURRENT_VIEW = 'category';
+  categories.CURRENT_VIEW = 'list';
   categories.renderAllGrids('');
-  assert.equal(listElements['papers-grid'].innerHTML, order, sort + ': list must sort across category boundaries');
+  assert.equal(listOrder(), grouped, sort + ': list follows survey order, then the sort inside each section');
   categories.CURRENT_VIEW = 'table';
   categories.renderAllGrids('');
-  assert.equal(tableOrder, order, sort + ': list and table must agree');
+  assert.equal(tableOrder, order, sort + ': table sorts globally');
 }
-categories.CURRENT_SORT = 'stars';
-categories.setCategoryFilter('theory');
+categories.CURRENT_VIEW = 'list';
 categories.renderAllGrids('');
-assert.equal(listElements['papers-grid'].innerHTML, 'c;a;', 'Category remains a filter on the unified list');
+const listHtml = listElements['papers-grid'].innerHTML;
+for (const fragment of ['id="part-foundations"', 'Part I</span>', 'id="chapter-4"', '§4</span>', 'id="section-4-5"', 'Controlling recurrence depth']) {
+  assert.ok(listHtml.includes(fragment), fragment);
+}
+assert.ok(listHtml.indexOf('id="section-4-1"') < listHtml.indexOf('id="section-4-5"'), 'Sections follow survey order');
+assert.match(listHtml, /id="chapter-4"[\s\S]*?<span class="survey-count"[^>]*>3<\/span>/, 'Chapter count is filtered primary count');
+assert.doesNotMatch(listHtml, /id="section-2-3"[\s\S]*id="part-foundations"/);
+categories.ACTIVE_SECTION_FILTER = 'architecture/depth-control';
+categories.renderAllGrids('');
+assert.equal(listOrder(), 'a;c;');
+assert.doesNotMatch(listElements['papers-grid'].innerHTML, /part-foundations|section-4-1/, 'Empty groups are not rendered');
+categories.ACTIVE_SECTION_FILTER = '';
 categories.ACTIVE_TOP_LEVEL_TAB = 'blogs';
 categories.renderAllGrids('');
 assert.equal(listElements['papers-grid'].innerHTML, '');
@@ -594,4 +675,4 @@ categories.renderAllGrids('missing');
 assert.equal(listElements['papers-grid'].innerHTML, '');
 assert.equal(listElements['blogs-grid'].innerHTML, '');
 assert.equal(listElements['no-results'].style.display, 'block');
-console.log('Reading desk: theme, selection, resizing, thumbnails, tags, category, isolated Blogs, peer-review and influence checks passed.');
+console.log('Reading desk: theme, selection, resizing, thumbnails, survey sections, design axes, isolated Blogs, peer-review and influence checks passed.');

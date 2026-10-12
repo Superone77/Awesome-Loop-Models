@@ -12,31 +12,20 @@ scope:
   evidence: "The Fully Looped Transformer reuses the same learned Transformer stack across recurrent depth while routing the signal and injecting attention between loop iterations."
   locator: "Section 4.1, Equation 1; Section 4.2, Equations 2-3"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces fully looped signal routing and attention injection to stabilize looped Transformers."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "The learned stack is repeatedly applied along one recurrent-depth axis."
-  focus_tags:
-    values:
-      - architecture
-      - training-algorithm
-      - inference-algorithm
-    rationale: "The paper diagnoses training instability, changes recurrent signal flow, and retains inference-time loop-depth control."
-  domain_tags:
-    values:
-      - language-modeling
-      - reasoning
-      - scaling
-      - efficiency
-    rationale: "The experiments cover language modeling and reasoning while studying stable loop-depth and parameter-efficient scaling."
-  tags:
-    values:
-      - looped-transformer
-      - fully-looped-transformer
-    rationale: "These aliases identify the general model family and the proposed fully looped variant."
+      - architecture/residual-init
+      - training/supervision-optimization
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The learned stack is repeatedly applied along one recurrent-depth axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The learned stack is repeatedly applied along one recurrent-depth axis."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

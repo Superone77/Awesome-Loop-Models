@@ -12,30 +12,21 @@ scope:
   evidence: "LoopFormer sequentially iterates one shared learned stack within a complete model forward process."
   locator: "Sections 3.1-3.2, pages 4-5; Appendix B.4, Algorithm 3, page 17"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces an elastic-depth looped architecture and shortcut training method."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "The same stack is repeatedly applied over a single loop-depth axis."
-  focus_tags:
-    values:
-      - architecture
-      - training-algorithm
-      - inference-algorithm
-    rationale: "The work covers the architecture, variable-depth/shortcut training, and user-selected global loop budgets."
-  domain_tags:
-    values:
-      - language-modeling
-      - reasoning
-      - efficiency
-      - adaptive-compute
-    rationale: "LoopFormer adapts global recurrent compute for efficient latent language reasoning."
-  tags:
-    values:
-      - LoopFormer
-    rationale: "LoopFormer is the official model name; it does not use per-token ACT halting."
+      - architecture/depth-control
+      - architecture/sharing
+      - training/supervision-optimization
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The same stack is repeatedly applied over a single loop-depth axis."
+  sharing:
+    value: partial-adapter
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The same stack is repeatedly applied over a single loop-depth axis."
+  depth_control:
+    value: sampled-train
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

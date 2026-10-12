@@ -26,6 +26,31 @@ from zoneinfo import ZoneInfo
 
 import yaml
 
+import sys as _sys
+
+_sys.path.insert(0, str(Path(__file__).resolve().parent))
+from taxonomy import (  # noqa: E402
+    AXIS_LABELS,
+    REQUIRED_PAPER_SURVEY_FIELDS,
+    RETIRED_FIELDS,
+    SURVEY_CHAPTERS,
+    SURVEY_FIELDS,
+    SURVEY_LIST_FIELDS,
+    SURVEY_PARTS,
+    SURVEY_SCALAR_FIELDS,
+    SURVEY_SECTION_NUMBERS,
+    SURVEY_SECTION_TITLES,
+    SURVEY_SECTIONS,
+    VALID_CATALOG_FITS,
+    VALID_CLAIMS,
+    VALID_COMPARISONS,
+    VALID_DEPTH_CONTROLS,
+    VALID_LOOP_TOPOLOGIES,
+    VALID_SHARING_SCHEMES,
+    VALID_SURVEY_SECTIONS,
+    chapter_of,
+)
+
 REPO_ROOT = Path(__file__).parent.parent
 PAPERS_DIR = REPO_ROOT / "papers"
 BLOGS_DIR = REPO_ROOT / "blogs"
@@ -46,115 +71,15 @@ ISSUE_TEMPLATE_CONFIG_TEMPLATE_FILE = REPO_ROOT / ".github" / "ISSUE_TEMPLATE" /
 ISSUE_TEMPLATE_CONFIG_OUT = REPO_ROOT / ".github" / "ISSUE_TEMPLATE" / "config.yml"
 CATALOG_TIME_ZONE = ZoneInfo("America/New_York")
 
-VALID_FOCUS_TAGS = (
-    "objective-loss",
-    "training-algorithm",
-    "architecture",
-    "data",
-    "inference-algorithm",
-)
-
-VALID_MECHANISM_TAGS = (
-    "hierarchical-loop",
-    "flat-loop",
-    "parallel-loop",
-    "implicit-layer",
-)
-
-VALID_CATALOG_FITS = ("strict", "adjacent")
-
-# Survey-aligned taxonomy (Looped Models Survey outline). These axes are optional
-# per paper for now; when present they must use the controlled values below.
-SURVEY_SECTIONS = (
-    ("foundations/recurrence", "Foundations", "Recurrent networks and weight sharing across computation"),
-    ("foundations/depth-sharing", "Foundations", "Weight sharing across network depth"),
-    ("foundations/implicit", "Foundations", "Deep equilibrium and implicit models"),
-    ("foundations/algorithmic", "Foundations", "Iterative and algorithmic computation"),
-    ("benefits/efficiency", "What Looping Buys", "Parameter, data, and compute efficiency"),
-    ("benefits/expressivity", "What Looping Buys", "Expressivity and reasoning capacity"),
-    ("benefits/generalization", "What Looping Buys", "Length, easy-to-hard, and compositional generalization"),
-    ("benefits/limits", "What Looping Buys", "Limits and failure modes"),
-    ("design/topology", "Architecture", "Loop topology"),
-    ("design/residual-injection", "Architecture", "Residual manipulation, input injection, and initialization"),
-    ("design/state-memory", "Architecture", "Recurrent state and loop-time memory"),
-    ("design/sharing-scheme", "Architecture", "Weight-sharing schemes and iteration-dependent computation"),
-    ("design/depth-control", "Architecture", "Controlling recurrence depth"),
-    ("design/loop-x", "Architecture", "Loop x MoE, efficient mixers, and diffusion"),
-    ("train/supervision", "Training", "Supervision and credit assignment"),
-    ("train/gradients", "Training", "BPTT, truncated BPTT, and implicit gradients"),
-    ("train/stability", "Training", "Loop-specific optimization and stability"),
-    ("train/post-training", "Training", "Post-training and reinforcement learning"),
-    ("train/retrofitting", "Training", "Retrofitting pretrained models into looped models"),
-    ("scaling/compute-optimal", "Scaling", "Parameter, depth, and compute-optimal scaling"),
-    ("scaling/test-time", "Scaling", "Test-time scaling"),
-    ("systems/quantization-edge", "Systems", "Quantization and edge deployment"),
-    ("systems/kv-memory", "Systems", "KV cache and memory"),
-    ("systems/batching-parallel", "Systems", "Loop-level batching, scheduling, and parallel execution"),
-    ("interpretability", "Interpretability", "Mechanistic interpretability of looped models"),
-    ("applications/language-speech-multimodal", "Applications", "Language, code, speech, and multimodal tasks"),
-    ("applications/vision", "Applications", "Visual recognition, restoration, and generation"),
-    ("applications/flow-3d", "Applications", "Flow, stereo, and 3D geometry"),
-    ("applications/graphs-science", "Applications", "Graphs, structured data, and scientific modeling"),
-    ("applications/embodied-other", "Applications", "Embodied AI and other domains"),
-    ("outlook/diffusion", "Outlook", "Unification with diffusion models"),
-)
-VALID_SURVEY_SECTIONS = tuple(section_id for section_id, _, _ in SURVEY_SECTIONS)
-VALID_LOOP_TOPOLOGIES = (
-    "whole-stack",
-    "prelude-core-coda",
-    "partial",
-    "hierarchical",
-    "shifted-parallel",
-    "implicit-fixed-point",
-    "unspecified",
-)
-VALID_SHARING_SCHEMES = ("full", "partial-adapter", "expert-routed", "unspecified")
-VALID_DEPTH_CONTROLS = ("fixed", "sampled-train", "adaptive-halting", "convergence", "unspecified")
-VALID_CLAIMS = (
-    "param-efficiency",
-    "compute-efficiency",
-    "memory-efficiency",
-    "data-efficiency",
-    "expressivity",
-    "length-generalization",
-    "test-time-scaling",
-    "stability",
-    "failure-mode",
-)
-VALID_COMPARISONS = ("iso-param", "iso-flop", "iso-depth", "unclear")
-SURVEY_SCALAR_FIELDS = (
-    ("loop_topology", VALID_LOOP_TOPOLOGIES),
-    ("sharing", VALID_SHARING_SCHEMES),
-    ("depth_control", VALID_DEPTH_CONTROLS),
-)
-SURVEY_LIST_FIELDS = (
-    ("survey_section", VALID_SURVEY_SECTIONS),
-    ("claims", VALID_CLAIMS),
-    ("comparison", VALID_COMPARISONS),
-)
-SURVEY_FIELDS = (
-    "survey_section",
-    "loop_topology",
-    "sharing",
-    "depth_control",
-    "claims",
-    "comparison",
-    "survey_core",
-)
 ADJACENT_SCOPE_NOTE = (
     "Retained as adjacent work; its recurrence is outside the strict single-forward loop-model scope."
 )
 
-# Loop Mechanism is a strict browser-facing controlled vocabulary. Legacy paper
-# acronyms and fine-grained mechanism labels are metadata aliases only; they are
-# not mapped into mechanism_tags by the build.
-
-CATEGORY_DISCLAIMER = (
-    "The paper shelves are intentionally coarse: Theoretical and Mechanical Analysis, Architecture and Algorithm Designs, "
-    "and Applications Focused. Foundation status plus Loop Mechanism / focus / domain tags carry secondary structure without "
-    "introducing lineage buckets. Rare adjacent works are explicitly marked outside strict scope."
+TAXONOMY_NOTE = (
+    "Papers are organized by the chapters of the Looped Models Survey. Each paper lists every survey section it "
+    "belongs to, primary first, and records where its loop sits, how weights are shared, how depth is controlled, "
+    "and what it claims looping buys. Every value is controlled; there are no free-form tags."
 )
-FOUNDATION_LABEL = "Foundation"
 BLOG_SECTION_TITLE = "Blogs"
 DAILY_BRIEFING_SECTION_TITLE = "Daily Briefing"
 DAILY_BRIEFING_SECTION_DESC = (
@@ -162,8 +87,8 @@ DAILY_BRIEFING_SECTION_DESC = (
     "and concise inclusion rationale."
 )
 BLOG_SECTION_DESC = (
-    "Long-form technical posts, essays, and deep-dives about loop models. Blogs can carry Loop Mechanism / focus / domain tags but stay in a "
-    "single flat section rather than the paper taxonomy."
+    "Long-form technical posts, essays, and deep-dives about loop models. Blogs list the survey sections they "
+    "discuss but stay in a single flat section."
 )
 BLOG_VENUE_CLASS = "venue-other"
 BADGE_STYLE = "flat-square"
@@ -246,47 +171,6 @@ VENUE_CLASSES = {
     "arXiv": "venue-arxiv",
 }
 
-def category_node(title: str, desc: str | None = None, children: dict | None = None) -> dict:
-    node = {"title": title, "children": children or {}}
-    if desc:
-        node["desc"] = desc
-    return node
-
-
-CATEGORIES = {
-    "analysis": {
-        "id": "analysis",
-        "title": "Theoretical and Mechanical Analysis",
-        "icon": "🔬",
-        "desc": "Analytical papers whose main artifact is understanding loop models: theory, mechanism analysis, diagnostics, formal properties, or interpretability.",
-        "readme_intro": (
-            "Theoretical and Mechanical Analysis collects papers whose primary contribution is analysis: why loop models work, what formal properties they have, and what mechanisms they exhibit."
-        ),
-        "children": {},
-    },
-    "designs": {
-        "id": "designs",
-        "title": "Architecture and Algorithm Designs",
-        "icon": "🏗️",
-        "desc": "Papers that propose loop-model architectures or algorithms, often to improve performance, efficiency, training, inference, or memory use.",
-        "readme_intro": (
-            "Architecture and Algorithm Designs collects the constructive side of the field: new looped architectures, algorithms, recurrent computation graphs, and efficiency or memory-compression methods."
-        ),
-        "children": {},
-    },
-    "applications": {
-        "id": "applications",
-        "title": "Applications Focused",
-        "icon": "🧪",
-        "desc": "Papers whose main reader takeaway is evidence that loop models work in a specific external domain or task, such as robotics, VLA, multimodal, tabular, or graph data.",
-        "readme_intro": (
-            "Applications Focused collects papers centered on applying loop models to concrete domains or tasks, including robotics, VLA, multimodal settings, tabular data, graph data, and other non-core benchmarks."
-        ),
-        "children": {},
-    },
-}
-
-
 def normalize_str_list(value: object) -> list[str]:
     if value is None:
         return []
@@ -311,61 +195,6 @@ def normalize_str_list(value: object) -> list[str]:
     return out
 
 
-def normalize_tag_slug(raw_tag: str) -> str:
-    tag = re.sub(r"[^a-z0-9-]+", "-", raw_tag.strip().lower().replace("_", "-").replace(" ", "-"))
-    return re.sub(r"-+", "-", tag).strip("-")
-
-
-def normalize_mechanism_tags(raw_mechanism_tags: object, source: str) -> list[str]:
-    raw_tags = normalize_str_list(raw_mechanism_tags)
-    out: list[str] = []
-    seen: set[str] = set()
-    invalid: list[str] = []
-    for raw_tag in raw_tags:
-        tag = normalize_tag_slug(raw_tag)
-        if not tag:
-            continue
-        if tag not in VALID_MECHANISM_TAGS:
-            invalid.append(raw_tag)
-            continue
-        if tag in seen:
-            continue
-        seen.add(tag)
-        out.append(tag)
-    if invalid:
-        raise ValueError(
-            f"{source}: invalid mechanism_tags {invalid!r}; valid values are {list(VALID_MECHANISM_TAGS)!r}"
-        )
-    return out
-
-
-def merge_mechanism_tags(*groups: object) -> list[str]:
-    merged: list[str] = []
-    seen: set[str] = set()
-    for group in groups:
-        for raw_tag in normalize_str_list(group):
-            tag = normalize_tag_slug(raw_tag)
-            # Only canonical Loop Mechanism values are merged. Older acronyms or
-            # fine-grained labels stay in alias/domain metadata and are not mapped.
-            if tag not in VALID_MECHANISM_TAGS or tag in seen:
-                continue
-            seen.add(tag)
-            merged.append(tag)
-    return merged
-
-
-def split_domain_and_mechanism_tags(raw_domain_tags: object) -> tuple[list[str], list[str]]:
-    return normalize_str_list(raw_domain_tags), []
-
-
-def normalize_category_segment(segment: object) -> str:
-    value = str(segment or "").strip().lower()
-    if not value:
-        return ""
-    return value.replace("-", "_")
-
-
-
 def has_non_empty_metadata_value(raw_value: object) -> bool:
     if raw_value is None:
         return False
@@ -386,67 +215,38 @@ def normalize_bool_flag(raw_value: object) -> bool:
     return str(raw_value).strip().lower() in {"1", "true", "yes", "y"}
 
 
-def normalize_foundation_flag(raw_foundation: object) -> bool:
-    return normalize_bool_flag(raw_foundation)
-
-
 def normalize_must_read_flag(raw_must_read: object) -> bool:
     return normalize_bool_flag(raw_must_read)
 
 
-def normalize_paper_taxonomy_fields(paper: dict, source: str = "<paper>") -> dict:
-    raw_category = normalize_category_segment(paper.get("category"))
-    if not raw_category:
-        raise ValueError(f"{source}: missing category")
-    if raw_category not in CATEGORIES:
+def reject_retired_fields(data: dict, source: str) -> None:
+    """Fail on fields retired by the survey taxonomy (categories and free-form tags)."""
+    retired = [field for field in (*RETIRED_FIELDS, "family_tags") if field in data]
+    if retired:
         raise ValueError(
-            f"{source}: invalid category '{raw_category}'; valid values are {list(CATEGORIES.keys())!r}"
+            f"{source}: {', '.join(retired)} no longer exist; classify the entry with survey_section and the "
+            "survey design axes (see TAXONOMY.md)"
         )
-    if has_non_empty_metadata_value(paper.get("category_path")):
-        raise ValueError(f"{source}: category_path is no longer supported; use the flat category field only")
-    if has_non_empty_metadata_value(paper.get("subcategory")):
-        raise ValueError(f"{source}: subcategory is no longer supported; use the flat category field only")
 
+
+def normalize_paper_taxonomy_fields(paper: dict, source: str = "<paper>") -> dict:
+    reject_retired_fields(paper, source)
     raw_catalog_fit = paper.get("catalog_fit")
     catalog_fit = "strict" if raw_catalog_fit is None else str(raw_catalog_fit).strip().lower()
     if catalog_fit not in VALID_CATALOG_FITS:
         raise ValueError(
             f"{source}: invalid catalog_fit '{catalog_fit}'; valid values are {list(VALID_CATALOG_FITS)!r}"
         )
-
-    return {
-        "category": raw_category,
-        "foundation": normalize_foundation_flag(paper.get("foundation")),
-        "catalog_fit": catalog_fit,
-    }
+    return {"catalog_fit": catalog_fit}
 
 
-
-def canonicalize_paper_category_fields(paper: dict) -> tuple[str, list[str]]:
-    normalized = normalize_paper_taxonomy_fields(paper)
-    return normalized["category"], []
-
+def primary_section(entry: dict) -> str | None:
+    sections = entry.get("survey_section") or []
+    return sections[0] if sections else None
 
 
-def validate_paper_category_fields(paper: dict, source: str = "<paper>") -> list[str]:
-    normalize_paper_taxonomy_fields(paper, source)
-    return []
-
-
-
-def paper_full_category_path(paper: dict) -> tuple[str, ...]:
-    normalized = normalize_paper_taxonomy_fields(paper)
-    return (normalized["category"],)
-
-
-def iter_category_tree():
-    for category_id, category in CATEGORIES.items():
-        yield category_id, category
-
-
-def iter_child_nodes(node: dict):
-    for child_id, child in node.get("children", {}).items():
-        yield child_id, child
+def section_label(section_id: str) -> str:
+    return f"§{SURVEY_SECTION_NUMBERS[section_id]} {SURVEY_SECTION_TITLES[section_id]}"
 
 
 def heading_anchor(text: str) -> str:
@@ -618,26 +418,19 @@ def validate_publication_metadata(data: dict, source: str) -> None:
             raise ValueError(f"{source}: peer_reviewed requires a publication venue and venue_source")
 
 
-def normalize_focus_tags(raw_focus_tags: object, source: str) -> list[str]:
-    focus_tags = normalize_str_list(raw_focus_tags)
-    invalid = [tag for tag in focus_tags if tag not in VALID_FOCUS_TAGS]
-    if invalid:
-        raise ValueError(
-            f"{source}: invalid focus_tags {invalid!r}; valid values are {list(VALID_FOCUS_TAGS)!r}"
-        )
-    return focus_tags
+def normalize_survey_fields(data: dict, source: str, required: tuple[str, ...] = ()) -> dict:
+    """Validate the survey taxonomy fields and return their normalized values.
 
-
-def split_focus_and_mechanism_tags(raw_focus_tags: object, source: str) -> tuple[list[str], list[str]]:
-    return normalize_focus_tags(raw_focus_tags, source), []
-
-
-def normalize_survey_fields(data: dict, source: str) -> dict:
-    """Validate the optional survey-aligned taxonomy fields and return their normalized values.
-
-    ``survey_section`` lists where the survey cites the paper (first entry is the
-    primary section). Missing fields are omitted from the result.
+    ``survey_section`` lists every survey section the entry belongs to, primary
+    first. Fields named in ``required`` must be present; other missing fields
+    are omitted from the result.
     """
+    missing = [
+        field for field in required
+        if data.get(field) is None or (isinstance(data.get(field), str) and not data[field].strip())
+    ]
+    if missing:
+        raise ValueError(f"{source}: missing required {', '.join(missing)}")
     result: dict = {}
     for field, allowed in SURVEY_SCALAR_FIELDS:
         raw = data.get(field)
@@ -707,8 +500,6 @@ def load_papers() -> list[dict]:
         data = yaml.safe_load(yaml_file.read_text(encoding="utf-8")) or {}
         validate_publication_metadata(data, yaml_file.name)
         taxonomy = normalize_paper_taxonomy_fields(data, yaml_file.name)
-        category_id = taxonomy["category"]
-        foundation = taxonomy["foundation"]
         catalog_fit = taxonomy["catalog_fit"]
 
         links = dict(data.get("links") or {})
@@ -721,46 +512,24 @@ def load_papers() -> list[dict]:
             links["alphaxiv"] = f"https://www.alphaxiv.org/abs/{arxiv_id_from_link}"
 
         authors_list, authors_text = normalize_authors(data.get("authors", []))
-        if has_non_empty_metadata_value(data.get("family_tags")):
-            raise ValueError(f"{yaml_file.name}: family_tags is no longer supported; use tags or mechanism_tags")
-        focus_tags, _ = split_focus_and_mechanism_tags(data.get("focus_tags", []), yaml_file.name)
-        tags = normalize_str_list(data.get("tags", []))
-        domain_tags, _ = split_domain_and_mechanism_tags(data.get("domain_tags", []))
-        explicit_mechanism_tags = normalize_mechanism_tags(data.get("mechanism_tags", []), yaml_file.name)
-        if catalog_fit == "adjacent" and explicit_mechanism_tags:
-            raise ValueError(
-                f"{yaml_file.name}: adjacent papers must not set mechanism_tags"
-            )
-        if catalog_fit == "strict" and not explicit_mechanism_tags:
-            raise ValueError(
-                f"{yaml_file.name}: missing mechanism_tags; choose at least one of {list(VALID_MECHANISM_TAGS)!r}"
-            )
-        mechanism_tags = merge_mechanism_tags(explicit_mechanism_tags)
         published_date = normalize_required_date_string(data.get("published_date"), "published_date", yaml_file.name)
         added_date = normalize_optional_date_string(data.get("added_date"), "added_date", yaml_file.name)
         must_read = normalize_must_read_flag(data.get("must_read"))
-        survey_fields = normalize_survey_fields(data, yaml_file.name)
+        survey_fields = normalize_survey_fields(data, yaml_file.name, REQUIRED_PAPER_SURVEY_FIELDS)
 
         paper = dict(data)
         for field in SURVEY_FIELDS:
             paper.pop(field, None)
         paper.update(survey_fields)
-        paper.pop("family_tags", None)
         paper["id"] = yaml_file.stem
         paper["source_file"] = yaml_file.name
         paper["source_path"] = f"papers/{yaml_file.name}"
         paper["entry_type"] = "paper"
-        paper["category"] = category_id
-        paper["foundation"] = foundation
         if catalog_fit == "adjacent":
             paper["catalog_fit"] = catalog_fit
         else:
             paper.pop("catalog_fit", None)
         paper["links"] = links
-        paper["tags"] = tags
-        paper["mechanism_tags"] = mechanism_tags
-        paper["domain_tags"] = domain_tags
-        paper["focus_tags"] = focus_tags
         paper["authors_list"] = authors_list
         paper["authors"] = authors_text
         paper["published_date"] = published_date
@@ -788,8 +557,8 @@ def load_papers() -> list[dict]:
     return papers
 
 
-# Blogs live in a separate flat section. They share tag/date/link metadata with papers
-# but intentionally skip category/category_path/foundation classification.
+# Blogs live in a separate flat section. They list the survey sections they discuss
+# but carry none of the paper-only design axes.
 def load_blogs() -> list[dict]:
     if not BLOGS_DIR.exists():
         return []
@@ -806,32 +575,22 @@ def load_blogs() -> list[dict]:
         links = {k: v for k, v in links.items() if v and k not in {"comment", "comments"}}
 
         authors_list, authors_text = normalize_authors(data.get("authors", []))
-        if has_non_empty_metadata_value(data.get("family_tags")):
-            raise ValueError(f"{yaml_file.name}: family_tags is no longer supported; use tags or mechanism_tags")
-        focus_tags, _ = split_focus_and_mechanism_tags(data.get("focus_tags", []), yaml_file.name)
-        tags = normalize_str_list(data.get("tags", []))
-        domain_tags, _ = split_domain_and_mechanism_tags(data.get("domain_tags", []))
-        explicit_mechanism_tags = normalize_mechanism_tags(data.get("mechanism_tags", []), yaml_file.name)
-        if not explicit_mechanism_tags:
-            raise ValueError(
-                f"{yaml_file.name}: missing mechanism_tags; choose at least one of {list(VALID_MECHANISM_TAGS)!r}"
-            )
-        mechanism_tags = merge_mechanism_tags(explicit_mechanism_tags)
+        reject_retired_fields(data, yaml_file.name)
+        extra_axes = [field for field in SURVEY_FIELDS if field != "survey_section" and field in data]
+        if extra_axes:
+            raise ValueError(f"{yaml_file.name}: blogs only use survey_section, not {', '.join(extra_axes)}")
+        survey_fields = normalize_survey_fields(data, yaml_file.name, ("survey_section",))
         published_date = normalize_required_date_string(data.get("published_date"), "published_date", yaml_file.name)
         added_date = normalize_optional_date_string(data.get("added_date"), "added_date", yaml_file.name)
         must_read = normalize_must_read_flag(data.get("must_read"))
 
         blog = dict(data)
-        blog.pop("family_tags", None)
+        blog.update(survey_fields)
         blog["id"] = yaml_file.stem
         blog["source_file"] = yaml_file.name
         blog["source_path"] = f"blogs/{yaml_file.name}"
         blog["entry_type"] = "blog"
         blog["links"] = links
-        blog["tags"] = tags
-        blog["mechanism_tags"] = mechanism_tags
-        blog["domain_tags"] = domain_tags
-        blog["focus_tags"] = focus_tags
         blog["authors_list"] = authors_list
         blog["authors"] = authors_text
         blog["published_date"] = published_date
@@ -988,12 +747,7 @@ def serialize_browser_entry(entry: dict) -> dict:
         "added_date",
         "desc",
         "links",
-        "category",
-        "foundation",
         "catalog_fit",
-        "mechanism_tags",
-        "focus_tags",
-        "domain_tags",
         "survey_section",
         "loop_topology",
         "sharing",
@@ -1064,27 +818,13 @@ def build_json(papers: list[dict], blogs: list[dict], briefings: list[dict] | No
             "latest_briefing_date": briefings[0]["date"] if briefings else None,
             "generated": generated_at.isoformat(),
             "generated_local_date": generated_at.astimezone(CATALOG_TIME_ZONE).date().isoformat(),
-            "category_disclaimer": CATEGORY_DISCLAIMER,
-            "foundation_label": FOUNDATION_LABEL,
+            "taxonomy_note": TAXONOMY_NOTE,
             "blog_section_title": BLOG_SECTION_TITLE,
             "blog_section_desc": BLOG_SECTION_DESC,
             "briefing_section_title": DAILY_BRIEFING_SECTION_TITLE,
             "briefing_section_desc": DAILY_BRIEFING_SECTION_DESC,
         },
-        "categories": CATEGORIES,
-        "mechanism_tags": list(VALID_MECHANISM_TAGS),
-        "focus_tags": list(VALID_FOCUS_TAGS),
-        "survey_taxonomy": {
-            "sections": [
-                {"id": section_id, "part": part, "title": title}
-                for section_id, part, title in SURVEY_SECTIONS
-            ],
-            "loop_topology": list(VALID_LOOP_TOPOLOGIES),
-            "sharing": list(VALID_SHARING_SCHEMES),
-            "depth_control": list(VALID_DEPTH_CONTROLS),
-            "claims": list(VALID_CLAIMS),
-            "comparison": list(VALID_COMPARISONS),
-        },
+        "survey_taxonomy": render_survey_taxonomy(),
         "paper_chunks": write_paper_chunks([serialize_browser_entry(paper) for paper in papers]),
         "blogs": [serialize_browser_entry(blog) for blog in blogs],
         "briefings": serialize_browser_briefings(briefings),
@@ -1094,6 +834,42 @@ def build_json(papers: list[dict], blogs: list[dict], briefings: list[dict] | No
         f"✓ papers.json  — {len(papers)} papers in {len(payload['paper_chunks'])} chunks, "
         f"{len(blogs)} blogs, {len(briefings)} briefings"
     )
+
+
+def render_survey_taxonomy() -> dict:
+    """Return the controlled survey vocabulary consumed by index.html and submit.html."""
+    return {
+        "parts": [{"id": part_id, "title": title} for part_id, title in SURVEY_PARTS],
+        "chapters": [
+            {"number": number, "part": part_id, "title": title}
+            for number, part_id, title in SURVEY_CHAPTERS
+        ],
+        "sections": [
+            {"id": section_id, "number": number, "chapter": number.split(".")[0], "title": title}
+            for section_id, number, title in SURVEY_SECTIONS
+        ],
+        "axes": {
+            field: {"label": AXIS_LABELS[field], "values": list(values)}
+            for field, values in (
+                ("loop_topology", VALID_LOOP_TOPOLOGIES),
+                ("sharing", VALID_SHARING_SCHEMES),
+                ("depth_control", VALID_DEPTH_CONTROLS),
+                ("claims", VALID_CLAIMS),
+                ("comparison", VALID_COMPARISONS),
+            )
+        },
+    }
+
+
+def count_field_values(entries: list[dict], field: str) -> Counter[str]:
+    counts: Counter[str] = Counter()
+    for entry in entries:
+        value = entry.get(field)
+        if isinstance(value, list):
+            counts.update(value)
+        elif value:
+            counts[value] += 1
+    return counts
 
 
 def write_paper_chunks(entries: list[dict]) -> list[dict]:
@@ -1139,21 +915,13 @@ def render_submission_metadata(papers: list[dict], blogs: list[dict]) -> dict:
             )
         ]
 
-    mechanism_counts: Counter[str] = Counter()
-    focus_counts: Counter[str] = Counter()
-    domain_counts: Counter[str] = Counter()
-    for entry in entries:
-        mechanism_counts.update(entry.get("mechanism_tags", []))
-        focus_counts.update(entry.get("focus_tags", []))
-        domain_counts.update(entry.get("domain_tags", []))
-
+    inventories = {"survey_section": counted_inventory(count_field_values(entries, "survey_section"), VALID_SURVEY_SECTIONS)}
+    for field, values in (*SURVEY_SCALAR_FIELDS, *SURVEY_LIST_FIELDS[1:]):
+        inventories[field] = counted_inventory(count_field_values(papers, field), values)
     return {
         "existing_paths": existing_paths,
-        "tag_inventories": {
-            "mechanism": counted_inventory(mechanism_counts, VALID_MECHANISM_TAGS),
-            "focus": counted_inventory(focus_counts, VALID_FOCUS_TAGS),
-            "domain": counted_inventory(domain_counts),
-        },
+        "survey_taxonomy": render_survey_taxonomy(),
+        "inventories": inventories,
     }
 
 
@@ -1165,113 +933,64 @@ def build_submission_metadata(papers: list[dict], blogs: list[dict]) -> None:
 
 
 def render_tags_reference_text(papers: list[dict], blogs: list[dict]) -> str:
-    mechanism_counts: Counter[str] = Counter()
-    focus_counts: Counter[str] = Counter()
-    domain_counts: Counter[str] = Counter()
-    alias_counts: Counter[str] = Counter()
-
-    for entry in [*papers, *blogs]:
-        mechanism_counts.update(entry.get("mechanism_tags", []))
-        focus_counts.update(entry.get("focus_tags", []))
-        domain_counts.update(entry.get("domain_tags", []))
-        alias_counts.update(entry.get("tags", []))
-
-    def sort_counted_tags(counter: Counter[str]) -> list[tuple[str, int]]:
-        return sorted(counter.items(), key=lambda item: (-item[1], item[0].lower(), item[0]))
-
+    """Render TAGS.md: the survey taxonomy vocabulary with current usage counts."""
+    entries = [*papers, *blogs]
+    section_counts = count_field_values(entries, "survey_section")
+    primary_counts: Counter[str] = Counter(
+        section for section in (primary_section(entry) for entry in entries) if section
+    )
     lines = [
-        "# TAGS",
+        "# Taxonomy vocabulary",
         "",
-        "Prefer existing tags from this file when adding a paper or blog. Only propose a new tag when no current option fits.",
+        "Every paper and blog is classified with the controlled vocabulary below, which follows the chapters of the "
+        "Looped Models Survey. There are no free-form tags; a value that is not listed here is a taxonomy change and "
+        "needs the maintainer. See [TAXONOMY.md](TAXONOMY.md) for how to choose values.",
         "",
         "This file is auto-generated from `papers/*.yaml` and `blogs/*.yaml` by `scripts/build.py`.",
         "",
-        "## Selection Policy",
-        "",
-        "- Reuse an existing tag whenever possible.",
-        "- Reuse the existing spelling and case exactly.",
-        "- Loop Mechanism (`mechanism_tags`) describes the loop form and must be one of `hierarchical-loop`, `flat-loop`, `parallel-loop`, or `implicit-layer`; do not use paper acronyms or lineage labels such as `DEQ` as browser-facing tags.",
-        "- `focus_tags` are controlled vocabulary and must come from the allowlist below.",
-        "- `domain_tags` are browser-facing domain labels; prefer an existing one before proposing a new domain tag.",
-        "- `tags` are optional alias metadata for short model or paper identifiers; prefer existing spellings before proposing a new alias tag.",
-        "",
-    ]
-
-    def append_section(title: str, intro: str, items: list[tuple[str, int]]) -> None:
-        lines.extend([f"## {title}", "", intro, ""])
-        if items:
-            for tag, count in items:
-                lines.append(f"- `{tag}` ({count})")
-        else:
-            lines.append("- _None yet_")
-        lines.append("")
-
-    append_section(
-        "Loop Mechanism (`mechanism_tags`)",
-        "Loop Mechanism is a controlled loop-form tag set. Use only `hierarchical-loop`, `flat-loop`, `parallel-loop`, or `implicit-layer`.",
-        [(tag, mechanism_counts.get(tag, 0)) for tag in VALID_MECHANISM_TAGS],
-    )
-    append_section(
-        "focus_tags",
-        "Controlled vocabulary. The build validates these values, and the interactive browser uses them as filter chips.",
-        [(tag, focus_counts.get(tag, 0)) for tag in VALID_FOCUS_TAGS],
-    )
-    survey_counts: Counter[str] = Counter()
-    primary_counts: Counter[str] = Counter()
-    for entry in papers:
-        sections = entry.get("survey_section", [])
-        survey_counts.update(sections)
-        if sections:
-            primary_counts[sections[0]] += 1
-    lines.extend([
         "## Survey sections (`survey_section`)",
         "",
-        "Controlled vocabulary aligned with the Looped Models Survey outline. List every section where the paper belongs; the first entry is its primary section. Counts are primary / any.",
+        "List every section the entry belongs to; the first entry is its primary section. Counts are primary / any.",
         "",
-    ])
-    for section_id, part, title in SURVEY_SECTIONS:
-        lines.append(f"- `{section_id}` — {part}: {title} ({primary_counts.get(section_id, 0)} / {survey_counts.get(section_id, 0)})")
+    ]
+    chapter_titles = {number: title for number, _, title in SURVEY_CHAPTERS}
+    part_titles = dict(SURVEY_PARTS)
+    current_part = current_chapter = None
+    for section_id, number, title in SURVEY_SECTIONS:
+        chapter = number.split(".")[0]
+        part = next(part_id for num, part_id, _ in SURVEY_CHAPTERS if num == chapter)
+        if part != current_part:
+            if lines[-1] != "":
+                lines.append("")
+            lines.extend([f"### {part_titles[part]}", ""])
+            current_part = part
+        if chapter != current_chapter:
+            if current_chapter is not None and lines[-1] != "":
+                lines.append("")
+            lines.extend([f"**§{chapter} {chapter_titles[chapter]}**", ""])
+            current_chapter = chapter
+        lines.append(
+            f"- `{section_id}` — §{number} {title} "
+            f"({primary_counts.get(section_id, 0)} / {section_counts.get(section_id, 0)})"
+        )
     lines.append("")
     for field, allowed, intro in (
-        ("loop_topology", VALID_LOOP_TOPOLOGIES, "Where the loop sits in the network (single value)."),
-        ("sharing", VALID_SHARING_SCHEMES, "How parameters are shared across iterations (single value)."),
-        ("depth_control", VALID_DEPTH_CONTROLS, "How the number of iterations is decided (single value)."),
-        ("claims", VALID_CLAIMS, "What the paper argues looping buys or costs (list)."),
-        ("comparison", VALID_COMPARISONS, "Which quantity is held fixed when the paper compares looped and non-looped models (list; empty when there is no such comparison)."),
+        ("loop_topology", VALID_LOOP_TOPOLOGIES, "Where the loop sits in the network (one value, papers only)."),
+        ("sharing", VALID_SHARING_SCHEMES, "How parameters are shared across iterations (one value, papers only)."),
+        ("depth_control", VALID_DEPTH_CONTROLS, "How the number of iterations is decided (one value, papers only)."),
+        ("claims", VALID_CLAIMS, "What the paper argues looping buys or costs (list, papers only)."),
+        ("comparison", VALID_COMPARISONS, "Which quantity is held fixed when the paper compares looped and untied models (list; empty when there is no such comparison)."),
     ):
-        field_counts: Counter[str] = Counter()
-        for entry in papers:
-            value = entry.get(field)
-            if isinstance(value, list):
-                field_counts.update(value)
-            elif value:
-                field_counts[value] += 1
-        append_section(f"`{field}`", f"Controlled vocabulary. {intro}", [(tag, field_counts.get(tag, 0)) for tag in allowed])
-    append_section(
-        "domain_tags",
-        "Observed browser-facing domain tags currently used across the repo.",
-        sort_counted_tags(domain_counts),
-    )
-    append_section(
-        "tags",
-        "Observed alias tags currently used across the repo. These do not appear as browser filter chips, but contributors should still prefer existing spellings.",
-        sort_counted_tags(alias_counts),
-    )
-
+        counts = count_field_values(papers, field)
+        lines.extend([f"## {AXIS_LABELS[field]} (`{field}`)", "", intro, ""])
+        lines.extend(f"- `{value}` ({counts.get(value, 0)})" for value in allowed)
+        lines.append("")
     return "\n".join(lines).rstrip() + "\n"
 
 
 def build_tags_reference(papers: list[dict], blogs: list[dict]) -> None:
-    tag_text = render_tags_reference_text(papers, blogs)
-    TAGS_OUT.write_text(tag_text, encoding="utf-8")
-
-    unique_mechanism_tags = {tag for entry in [*papers, *blogs] for tag in entry.get("mechanism_tags", [])}
-    unique_domain_tags = {tag for entry in [*papers, *blogs] for tag in entry.get("domain_tags", [])}
-    unique_alias_tags = {tag for entry in [*papers, *blogs] for tag in entry.get("tags", [])}
-    print(
-        f"✓ TAGS.md      — {len(unique_mechanism_tags)} Loop Mechanism tags, {len(VALID_FOCUS_TAGS)} focus tags, "
-        f"{len(unique_domain_tags)} domain tags, {len(unique_alias_tags)} alias tags"
-    )
+    TAGS_OUT.write_text(render_tags_reference_text(papers, blogs), encoding="utf-8")
+    print(f"✓ TAGS.md      — {len(SURVEY_SECTIONS)} survey sections, {len(papers) + len(blogs)} classified entries")
 
 
 def primary_link(links: dict) -> str:
@@ -1372,9 +1091,7 @@ def _paper_to_md(paper: dict) -> str:
     venue = paper.get("venue", "")
     year = paper.get("year", "")
     desc = (paper.get("desc") or "").strip()
-    focus_tags = paper.get("focus_tags", [])
-    mechanism_tags = paper.get("mechanism_tags", [])
-    domain_tags = paper.get("domain_tags", [])
+    sections = paper.get("survey_section") or []
     comments = paper.get("community_comments") or []
     links = paper.get("links", {})
 
@@ -1401,12 +1118,17 @@ def _paper_to_md(paper: dict) -> str:
         detail_lines.append(f"  <div><strong>Authors:</strong> {escape(metadata)}</div>")
     if paper.get("catalog_fit") == "adjacent":
         detail_lines.append(f"  <div><strong>Catalog fit:</strong> {escape(ADJACENT_SCOPE_NOTE)}</div>")
-    if mechanism_tags:
-        detail_lines.append(f"  <div><strong>Loop Mechanism:</strong> {escape(' · '.join(mechanism_tags))}</div>")
-    if focus_tags:
-        detail_lines.append(f"  <div><strong>Focus:</strong> {escape(' · '.join(focus_tags))}</div>")
-    if domain_tags:
-        detail_lines.append(f"  <div><strong>Domains:</strong> {escape(' · '.join(domain_tags))}</div>")
+    if sections:
+        detail_lines.append(
+            f"  <div><strong>Survey sections:</strong> {escape(' · '.join(section_label(s) for s in sections))}</div>"
+        )
+    design = [
+        f"{AXIS_LABELS[field]}: {paper[field]}"
+        for field in ("loop_topology", "sharing", "depth_control")
+        if paper.get(field)
+    ]
+    if design:
+        detail_lines.append(f"  <div><strong>Design:</strong> {escape(' · '.join(design))}</div>")
     if comments:
         cc_links = [
             f'<a href="{escape(item["url"])}">{escape(item["label"])}</a>'
@@ -1442,18 +1164,6 @@ README_LINK_LABELS = (
     ("hf", "HF"),
     ("project", "Project"),
 )
-README_CATEGORY_PLURAL = {
-    "analysis": "analysis",
-    "designs": "designs",
-    "applications": "applications",
-}
-README_CATEGORY_SHORT = {
-    "analysis": "Analysis",
-    "designs": "Design",
-    "applications": "Application",
-}
-
-
 def _readme_date_rank(value: object) -> int:
     """Return a sortable ordinal for a YYYY-MM-DD value, or 0 when it is missing."""
     try:
@@ -1519,28 +1229,49 @@ def build_readme(papers: list[dict], blogs: list[dict], repo_meta: dict) -> None
     footer = render_readme_fragment(FOOTER_FILE.read_text(encoding="utf-8").rstrip(), repo_meta)
     browser_url = repo_meta["public_pages_base"] + "/index.html"
 
-    counts = Counter(paper.get("category") for paper in papers)
-    shelf_parts = [
-        f"{counts[category_id]} {README_CATEGORY_PLURAL.get(category_id, category['title'])}"
-        for category_id, category in iter_category_tree()
-        if counts.get(category_id)
-    ]
     stats_line = (
-        f"<p align=\"center\"><b>{len(papers)} papers</b> · {' · '.join(shelf_parts)}"
+        f"<p align=\"center\"><b>{len(papers)} papers</b> · {len(SURVEY_SECTIONS)} survey sections"
         + (f" · <b>{len(blogs)} blogs</b>" if blogs else "")
         + f" · <a href=\"{escape(browser_url)}\">browse all →</a></p>"
     )
 
     sections = ["## At a glance", "", stats_line]
 
-    anchors = [paper for paper in papers if paper.get("foundation") or paper.get("must_read")]
+    section_counts = count_field_values(papers, "survey_section")
+    primary_counts: Counter[str] = Counter(primary_section(p) for p in papers)
+    chapter_titles = {number: title for number, _, title in SURVEY_CHAPTERS}
+    map_rows = []
+    for section_id, number, title in SURVEY_SECTIONS:
+        chapter = number.split(".")[0]
+        map_rows.append([
+            f"§{number}",
+            _readme_cell(f"{chapter_titles[chapter]} › {title}"),
+            str(primary_counts.get(section_id, 0)),
+            str(section_counts.get(section_id, 0)),
+        ])
+    sections += [
+        "",
+        "## 🗺️ Survey map",
+        "",
+        "The catalog follows the chapters of the Looped Models Survey. A paper is counted once under its primary "
+        "section and again under every other section it belongs to.",
+        "",
+        "<details>",
+        "<summary>Papers per survey section</summary>",
+        "",
+        _readme_table(["§", "Section", "Primary", "Any"], map_rows),
+        "",
+        "</details>",
+    ]
+
+    anchors = [paper for paper in papers if paper.get("survey_core") or paper.get("must_read")]
     anchors.sort(key=lambda p: (_readme_date_rank(p.get("published_date")), str(p.get("title", "")).lower()))
     if anchors:
         rows = [
             [
                 _readme_title_cell(p),
                 _readme_cell(_readme_venue(p)),
-                _readme_cell(" · ".join(p.get("mechanism_tags") or [])),
+                _readme_cell(p.get("loop_topology") or ""),
                 _readme_link_cell(p),
             ]
             for p in anchors
@@ -1549,7 +1280,7 @@ def build_readme(papers: list[dict], blogs: list[dict], repo_meta: dict) -> None
             "",
             "## 🌟 Start here",
             "",
-            "The foundational papers, plus the ones the maintainer marks as must-read.",
+            "The survey's core papers, plus the ones the maintainer marks as must-read.",
             "",
             _readme_table(["Paper", "Venue", "Loop", "Links"], rows),
         ]
@@ -1567,7 +1298,7 @@ def build_readme(papers: list[dict], blogs: list[dict], repo_meta: dict) -> None
             [
                 _readme_cell(_readme_short_date(p.get("added_date"))),
                 _readme_title_cell(p),
-                _readme_cell(README_CATEGORY_SHORT.get(p.get("category"), "")),
+                _readme_cell(f"§{SURVEY_SECTION_NUMBERS[primary_section(p)]}" if primary_section(p) else ""),
                 _readme_link_cell(p),
             ]
             for p in latest
@@ -1576,7 +1307,7 @@ def build_readme(papers: list[dict], blogs: list[dict], repo_meta: dict) -> None
             "",
             "## 🆕 Latest additions",
             "",
-            _readme_table(["Added", "Paper", "Type", "Links"], rows),
+            _readme_table(["Added", "Paper", "§", "Links"], rows),
             "",
             f"<sub>A daily watch adds new arXiv papers. The <a href=\"{escape(browser_url)}\">browser</a> has every paper and each day's briefing.</sub>",
         ]
@@ -1646,11 +1377,10 @@ def build() -> None:
     build_repo_meta_js(repo_meta)
     build_issue_template_config(repo_meta)
 
-    counts = Counter(paper["category"] for paper in papers)
-    for category_id, category in CATEGORIES.items():
-        n = counts.get(category_id, 0)
-        if n:
-            print(f"    {category['title']}: {n}")
+    chapter_counts = Counter(chapter_of(primary_section(paper)) for paper in papers)
+    for number, _, title in SURVEY_CHAPTERS:
+        if chapter_counts.get(number):
+            print(f"    §{number} {title}: {chapter_counts[number]}")
     if blogs:
         print(f"    {BLOG_SECTION_TITLE}: {len(blogs)}")
 

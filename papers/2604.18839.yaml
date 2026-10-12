@@ -11,25 +11,10 @@ year: 2026
 published_date: '2026-04-20'
 added_date: '2026-04-26'
 venue: LIT Workshop @ ICLR
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- reasoning
-- algorithmic-reasoning
-tags:
-- DRM
-- TRM
-- looped-transformer
-- recursive-transformer
-- latent-refinement
-focus_tags:
-- objective-loss
-- training-algorithm
 survey_section:
-- outlook/diffusion
-- train/supervision
-- design/loop-x
+- open-problems/diffusion
+- training/supervision-optimization
+- architecture/hybrid
 loop_topology: hierarchical
 sharing: full
 depth_control: fixed

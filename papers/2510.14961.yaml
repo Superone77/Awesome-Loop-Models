@@ -7,22 +7,9 @@ year: 2026
 published_date: '2025-10-16'
 added_date: '2026-09-06'
 venue: ICML
-category: designs
-mechanism_tags:
-- flat-loop
-- parallel-loop
-domain_tags:
-- language-modeling
-- reasoning
-- efficiency
-tags:
-- Huginn
-- depth-recurrent
-focus_tags:
-- inference-algorithm
 survey_section:
 - systems/batching-parallel
-- outlook/diffusion
+- open-problems/diffusion
 loop_topology: prelude-core-coda
 sharing: full
 depth_control: unspecified

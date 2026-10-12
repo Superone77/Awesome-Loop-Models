@@ -27,10 +27,12 @@ def valid_paper(paper_id: str) -> dict:
         "year": 2026,
         "published_date": "2026-01-02",
         "venue": "arXiv",
-        "category": "designs",
-        "mechanism_tags": ["flat-loop"],
-        "domain_tags": ["shared-domain"],
-        "focus_tags": ["architecture"],
+        "survey_section": ["architecture/topology"],
+        "loop_topology": "whole-stack",
+        "sharing": "full",
+        "depth_control": "fixed",
+        "claims": [],
+        "comparison": [],
         "desc": "Reuses one learned block within a single forward pass.",
         "links": {"arxiv": f"https://arxiv.org/abs/{paper_id}"},
     }
@@ -69,13 +71,13 @@ def initialize_git_snapshot(root: Path) -> str:
 def build_four_priority_report(root: Path) -> dict:
     """Create a four-paper catalog exercising every priority and reason type."""
     p0 = valid_paper("2601.00001")
-    del p0["domain_tags"]
+    del p0["loop_topology"]
+    p0["survey_section"] = ["architecture/topology", "applications/vision"]
     write_paper(root, "2601.00001", p0)
 
     p1 = valid_paper("2510.03206")
-    p1["mechanism_tags"] = ["flat-loop", "parallel-loop"]
-    p1["domain_tags"] = ["MoE"]
-    p1["tags"] = ["zeta-alias"]
+    p1["sharing"] = "unspecified"
+    p1["survey_section"] = ["architecture/topology", "open-problems/diffusion"]
     write_paper(root, "2510.03206", p1)
 
     p2 = valid_paper("2601.00003")
@@ -83,7 +85,7 @@ def build_four_priority_report(root: Path) -> dict:
     write_paper(root, "2601.00003", p2)
 
     p3 = valid_paper("2601.00004")
-    p3["tags"] = ["MoE"]
+    p3["survey_section"] = ["applications/vision"]
     write_paper(root, "2601.00004", p3)
 
     findings = audit_catalog.audit_catalog(root)
@@ -118,8 +120,8 @@ class CatalogRiskReportTests(unittest.TestCase):
             rows["2510.03206"]["reasons"],
             [
                 "manual-scope-review-seed",
-                "multiple-mechanism-tags",
-                "singleton-alias-tag:zeta-alias",
+                "singleton-survey-section:open-problems/diffusion",
+                "unspecified-axis:sharing",
             ],
         )
         self.assertEqual(
@@ -128,20 +130,39 @@ class CatalogRiskReportTests(unittest.TestCase):
         )
         self.assertEqual(rows["2601.00004"]["reasons"], [])
 
-    def test_cross_axis_occurrences_share_one_singleton_frequency_table(self):
-        """A tag seen once per axis should have combined frequency two, not one."""
+    def test_section_listed_by_two_papers_is_not_a_singleton(self):
+        """A section counts every paper that lists it, primary or secondary."""
         with TemporaryDirectory() as tmpdir:
             report = build_four_priority_report(Path(tmpdir))
 
         rows = {row["paper_id"]: row for row in report["papers"]}
-        self.assertNotIn(
-            "singleton-domain-tag:MoE",
-            rows["2510.03206"]["reasons"],
-        )
         self.assertEqual(rows["2601.00004"]["priority"], "P3")
         self.assertNotIn(
-            "singleton-alias-tag:MoE",
+            "singleton-survey-section:applications/vision",
             rows["2601.00004"]["reasons"],
+        )
+
+    def test_unspecified_design_axis_alone_triggers_p1(self):
+        """A non-seed paper with an unspecified design axis is queued for early review."""
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            paper = valid_paper("2601.00001")
+            paper["depth_control"] = "unspecified"
+            write_paper(root, "2601.00001", paper)
+            write_paper(root, "2601.00002", valid_paper("2601.00002"))
+            report = build_catalog_risk_report.build_catalog_risk_report(
+                root=root,
+                findings=audit_catalog.audit_catalog(root),
+                generated_on="2026-07-10",
+                catalog_commit=SNAPSHOT_COMMIT,
+                manual_scope_review_seeds=(),
+            )
+
+        self.assertEqual(report["batches"]["P1"], ["2601.00001"])
+        self.assertEqual(report["batches"]["P3"], ["2601.00002"])
+        rows = {row["paper_id"]: row for row in report["papers"]}
+        self.assertEqual(
+            rows["2601.00001"]["reasons"], ["unspecified-axis:depth_control"]
         )
 
     def test_small_fixture_has_dynamic_id_and_batch_parity(self):
@@ -154,12 +175,12 @@ class CatalogRiskReportTests(unittest.TestCase):
         self.assertEqual(report["paper_count"], 4)
         self.assertEqual(
             report["generator"],
-            {"path": "scripts/build_catalog_risk_report.py", "version": 2},
+            {"path": "scripts/build_catalog_risk_report.py", "version": 3},
         )
         self.assertEqual(len(row_ids), len(set(row_ids)))
         self.assertEqual(sorted(row_ids), sorted(batch_ids))
         self.assertIn(
-            "all 4 canonical paper records",
+            "out of 4",
             report["priority_rules"]["singleton_frequency"],
         )
 
@@ -195,7 +216,7 @@ class CatalogRiskReportTests(unittest.TestCase):
         self.assertIn("- 2601.00003", markdown)
         self.assertIn("### P3 — 1 papers", markdown)
         self.assertIn("- 2601.00004", markdown)
-        self.assertIn("Generator: scripts/build_catalog_risk_report.py v2", markdown)
+        self.assertIn("Generator: scripts/build_catalog_risk_report.py v3", markdown)
 
     def test_markdown_escapes_every_dynamic_table_cell(self):
         """Pipes, backslashes, and newlines must not corrupt Markdown tables."""

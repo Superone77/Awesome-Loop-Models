@@ -7,19 +7,9 @@ year: 2026
 published_date: '2026-08-10'
 added_date: '2026-08-11'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- efficiency
-- adaptive-compute
-focus_tags:
-- inference-algorithm
 survey_section:
 - systems/batching-parallel
-- design/topology
+- architecture/topology
 loop_topology: whole-stack
 sharing: full
 depth_control: adaptive-halting

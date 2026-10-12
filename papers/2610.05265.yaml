@@ -9,20 +9,6 @@ year: 2026
 published_date: '2026-10-04'
 added_date: '2026-10-05'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- efficiency
-- memory-efficiency
-tags:
-- Ouro
-- Huginn
-- LoopLM
-focus_tags:
-- inference-algorithm
 survey_section:
 - systems/quantization-edge
 loop_topology: unspecified

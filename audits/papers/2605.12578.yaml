@@ -12,25 +12,19 @@ scope:
   evidence: "The channel estimator iteratively applies one learned state-memory transformer block within a forward estimation process."
   locator: "Abstract, paragraph 2"
 taxonomy:
-  category:
-    value: applications
-    rationale: "The recurrent transformer is applied to near- and far-field THz UM-MIMO channel estimation."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "A single state-memory transformer block is reused through a sequence of refinement iterations."
-  focus_tags:
-    values:
-      - architecture
-      - inference-algorithm
-    rationale: "The contribution is a block-recurrent estimator architecture and its iterative channel-estimation computation."
-  domain_tags:
-    values:
-      - wireless-communications
-    rationale: "The evaluated task is THz wideband UM-MIMO channel estimation."
-  tags:
-    values: []
-    rationale: "The canonical entry uses no optional alias tags."
+      - applications/embodied-other
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): A single state-memory transformer block is reused through a sequence of refinement iterations."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): A single state-memory transformer block is reused through a sequence of refinement iterations."
+  depth_control:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

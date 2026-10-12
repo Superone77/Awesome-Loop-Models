@@ -7,21 +7,9 @@ year: 2026
 published_date: '2026-03-09'
 added_date: '2026-04-24'
 venue: arXiv
-category: analysis
-mechanism_tags:
-- hierarchical-loop
-- flat-loop
-domain_tags:
-- algorithmic-reasoning
-- language-modeling
-tags:
-- TRM
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
-- benefits/limits
-- benefits/efficiency
+- understanding/failure-modes
+- capabilities/efficiency
 loop_topology: hierarchical
 sharing: full
 depth_control: fixed

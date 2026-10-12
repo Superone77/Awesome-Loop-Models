@@ -10,27 +10,10 @@ year: 2026
 published_date: '2026-10-06'
 added_date: '2026-10-08'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- adaptive-compute
-- efficiency
-- memory-efficiency
-tags:
-- Ouro
-- LoopLM
-- halting
-focus_tags:
-- inference-algorithm
-- objective-loss
-- training-algorithm
 survey_section:
-- design/depth-control
+- architecture/depth-control
 - systems/kv-memory
-- train/supervision
+- training/supervision-optimization
 loop_topology: whole-stack
 sharing: full
 depth_control: adaptive-halting

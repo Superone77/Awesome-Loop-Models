@@ -12,21 +12,20 @@ scope:
   evidence: "Each CHERRY expert restores depth by repeatedly applying its compressed learned middle core within one language-model forward pass."
   locator: "Section 3.3.2; Table 5; Appendix C.2"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper proposes compressed recurrent language-model experts and combines them."
-  mechanism_tags:
-    values: [flat-loop]
-    rationale: "A compressed shared core is recurrently unrolled along one depth axis."
-  focus_tags:
-    values: [architecture, objective-loss, training-algorithm]
-    rationale: "The contribution combines the recurrent expert design with selective-supervision objectives and staged compression/recovery training."
-  domain_tags:
-    values: [language-modeling, efficiency]
-    rationale: "The model targets language modeling with compression and parameter-efficient expert reuse."
-  tags:
-    values: [depth-recurrent, shared-weight-recurrence, CHERRY, MoEE]
-    rationale: "CHERRY and MoEE are the paper's method names; the remaining aliases describe recurrent shared-depth execution."
+  survey_section:
+    values:
+      - training/retrofitting
+      - capabilities/efficiency
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): A compressed shared core is recurrently unrolled along one depth axis."
+  sharing:
+    value: partial-adapter
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): A compressed shared core is recurrently unrolled along one depth axis."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

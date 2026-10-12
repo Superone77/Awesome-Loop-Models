@@ -14,18 +14,6 @@ year: 2026
 published_date: '2026-10-06'
 added_date: '2026-10-08'
 venue: arXiv
-category: applications
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- tabular-data
-tags:
-- TAFFY
-- looped-transformer
-focus_tags:
-- architecture
-- data
 survey_section:
 - applications/graphs-science
 loop_topology: whole-stack

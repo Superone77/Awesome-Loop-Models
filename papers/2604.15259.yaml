@@ -5,21 +5,10 @@ year: 2026
 published_date: '2026-04-16'
 added_date: '2026-04-20'
 venue: arXiv
-category: analysis
-mechanism_tags:
-- flat-loop
-domain_tags:
-- reasoning
-- theory
-tags:
-- looped-transformer
-- fixed-point-analysis
-focus_tags:
-- inference-algorithm
 survey_section:
-- train/stability
-- design/residual-injection
-- benefits/generalization
+- training/supervision-optimization
+- architecture/residual-init
+- capabilities/generalization
 loop_topology: whole-stack
 sharing: full
 depth_control: unspecified

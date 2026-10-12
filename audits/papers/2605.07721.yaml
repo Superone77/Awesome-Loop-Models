@@ -12,29 +12,20 @@ scope:
   evidence: "MELT repeatedly applies the same learned Transformer layers while maintaining and updating one fixed-size key-value state per layer across loops."
   locator: "Section 3.2, Figure 2 and Equation 1; Section 3.3, Figure 3"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces the MELT recurrent architecture and its cache-update and adaptation procedures."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "The shared Transformer stack is reused over one recurrent reasoning-depth axis."
-  focus_tags:
-    values:
-      - architecture
-      - training-algorithm
-    rationale: "The contributions include the fixed-state recurrent cache design and chunk-wise two-phase adaptation of pretrained Ouro models."
-  domain_tags:
-    values:
-      - language-modeling
-      - reasoning
-      - efficiency
-      - memory-efficiency
-    rationale: "MELT targets recurrent language-model reasoning while explicitly decoupling cache memory from loop depth."
-  tags:
-    values:
-      - MELT
-    rationale: "MELT is the official model abbreviation."
+      - systems/kv-memory
+      - architecture/state-memory
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The shared Transformer stack is reused over one recurrent reasoning-depth axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The shared Transformer stack is reused over one recurrent reasoning-depth axis."
+  depth_control:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

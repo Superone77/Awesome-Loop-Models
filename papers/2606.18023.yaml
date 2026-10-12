@@ -23,26 +23,11 @@ year: 2026
 published_date: '2026-06-16'
 added_date: '2026-06-17'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-- parallel-loop
-domain_tags:
-- language-modeling
-- reasoning
-- efficiency
-- memory-efficiency
-focus_tags:
-- architecture
-- inference-algorithm
-tags:
-- LoopCoder-v2
-- PLT
 survey_section:
 - applications/language-speech-multimodal
-- train/post-training
-- benefits/limits
+- training/post-training
+- understanding/failure-modes
+- open-problems/depth-into-time
 loop_topology: shifted-parallel
 sharing: full
 depth_control: fixed

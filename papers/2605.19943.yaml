@@ -7,19 +7,6 @@ year: 2026
 published_date: '2026-05-19'
 added_date: '2026-05-21'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- reasoning
-- algorithmic-reasoning
-- efficiency
-tags:
-- TRM
-- PTRM
-focus_tags:
-- inference-algorithm
 survey_section:
 - scaling/test-time
 loop_topology: hierarchical

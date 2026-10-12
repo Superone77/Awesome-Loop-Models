@@ -11,23 +11,10 @@ year: 2025
 published_date: '2024-10-28'
 added_date: '2026-04-24'
 venue: ICLR
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- efficiency
-tags:
-- recursive-transformer
-- LoRA
-focus_tags:
-- architecture
-- training-algorithm
-- inference-algorithm
 survey_section:
-- train/retrofitting
-- design/sharing-scheme
-- benefits/efficiency
+- training/retrofitting
+- architecture/sharing
+- capabilities/efficiency
 loop_topology: whole-stack
 sharing: partial-adapter
 depth_control: fixed

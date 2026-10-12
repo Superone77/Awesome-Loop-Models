@@ -8,20 +8,8 @@ year: 2026
 published_date: '2026-09-14'
 added_date: '2026-09-15'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-- adaptive-compute
-- efficiency
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
-- design/depth-control
+- architecture/depth-control
 - systems/kv-memory
 loop_topology: whole-stack
 sharing: full

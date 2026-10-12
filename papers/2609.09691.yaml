@@ -9,18 +9,8 @@ year: 2026
 published_date: '2026-09-09'
 added_date: '2026-09-10'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- efficiency
-focus_tags:
-- architecture
-- training-algorithm
 survey_section:
-- benefits/efficiency
+- capabilities/efficiency
 loop_topology: whole-stack
 sharing: full
 depth_control: fixed

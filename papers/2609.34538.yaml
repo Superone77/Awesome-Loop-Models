@@ -14,20 +14,9 @@ year: 2026
 published_date: '2026-09-28'
 added_date: '2026-09-28'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- efficiency
-tags:
-- DAS
-- DAS-Wave
-focus_tags:
-- inference-algorithm
 survey_section:
 - systems/batching-parallel
+- open-problems/depth-into-time
 loop_topology: shifted-parallel
 sharing: full
 depth_control: fixed

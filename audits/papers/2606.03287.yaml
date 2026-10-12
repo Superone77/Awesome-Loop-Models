@@ -12,21 +12,19 @@ scope:
   evidence: "BA-T repeatedly applies the same lightweight Transformer update layer to refine pose and structure tokens within a reconstruction run."
   locator: "Abstract; method section, iterative BA-T update"
 taxonomy:
-  category:
-    value: applications
-    rationale: "The recurrent architecture is applied to two-view bundle adjustment."
-  mechanism_tags:
-    values: [flat-loop]
-    rationale: "One learned update layer is reused across refinement iterations."
-  focus_tags:
-    values: [architecture, inference-algorithm]
-    rationale: "The work contributes an iterative token architecture and bundle-adjustment-style inference procedure."
-  domain_tags:
-    values: [vision]
-    rationale: "The task is camera-pose and 3D reconstruction from two images."
-  tags:
-    values: [recursive-transformer, BA-T]
-    rationale: "These identify the recurrent family and the proposed model."
+  survey_section:
+    values:
+      - applications/flow-3d
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: partial
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One learned update layer is reused across refinement iterations."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One learned update layer is reused across refinement iterations."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

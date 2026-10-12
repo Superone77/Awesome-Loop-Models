@@ -8,23 +8,9 @@ year: 2026
 published_date: '2026-07-11'
 added_date: '2026-07-16'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-- adaptive-compute
-focus_tags:
-- architecture
-- training-algorithm
-- inference-algorithm
-tags:
-- Looped-Mamba
 survey_section:
-- design/loop-x
-- design/depth-control
+- architecture/hybrid
+- architecture/depth-control
 - scaling/compute-optimal
 loop_topology: whole-stack
 sharing: full

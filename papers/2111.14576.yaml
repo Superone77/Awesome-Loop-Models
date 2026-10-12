@@ -9,18 +9,6 @@ year: 2022
 published_date: '2021-11-29'
 added_date: '2026-09-06'
 venue: ICIAP
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- vision
-- reasoning
-tags:
-- universal-transformer
-- weight-tying
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
 - applications/vision
 loop_topology: whole-stack

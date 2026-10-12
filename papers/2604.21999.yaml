@@ -6,25 +6,11 @@ year: 2026
 published_date: '2026-04-23'
 added_date: '2026-04-29'
 venue: arXiv
-category: analysis
-mechanism_tags:
-- flat-loop
-domain_tags:
-- reasoning
-- algorithmic-reasoning
-tags:
-- UT
-- ACT
-- memory-tokens
-- adaptive-computation-time
-focus_tags:
-- architecture
-- training-algorithm
-- inference-algorithm
 survey_section:
-- design/state-memory
-- design/depth-control
-- benefits/limits
+- architecture/state-memory
+- architecture/depth-control
+- understanding/failure-modes
+- understanding/why
 loop_topology: whole-stack
 sharing: full
 depth_control: adaptive-halting

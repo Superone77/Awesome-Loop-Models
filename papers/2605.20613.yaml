@@ -13,27 +13,9 @@ year: 2026
 published_date: '2026-05-20'
 added_date: '2026-05-20'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- hierarchical-loop
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-- efficiency
-tags:
-- HRM
-- HRM-Text
-- PrefixLM
-focus_tags:
-- architecture
-- training-algorithm
-- objective-loss
-- data
 survey_section:
-- benefits/efficiency
-- design/residual-injection
+- capabilities/efficiency
+- architecture/residual-init
 loop_topology: hierarchical
 sharing: full
 depth_control: fixed

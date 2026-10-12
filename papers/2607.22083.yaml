@@ -29,20 +29,8 @@ year: 2026
 published_date: '2026-07-24'
 added_date: '2026-10-01'
 venue: arXiv
-category: applications
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-tags:
-- looped-llm
-focus_tags:
-- training-algorithm
-- data
 survey_section:
-- train/post-training
+- training/post-training
 - applications/language-speech-multimodal
 loop_topology: whole-stack
 sharing: full

@@ -12,28 +12,20 @@ scope:
   evidence: "The same GPT-2-style learned layer stack f_theta is explicitly iterated R times in one forward process."
   locator: "Figure 1, pages 1-2; Section 4, pages 4-5"
 taxonomy:
-  category:
-    value: analysis
-    rationale: "The paper studies generalization and overthinking behavior in recurrent-depth Transformers."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: >-
-      The model explicitly unrolls one shared stack; 'implicit reasoning' means
-      reasoning without emitted chain-of-thought, not an implicit equilibrium layer.
-  focus_tags:
-    values:
-      - inference-algorithm
-    rationale: "The analysis centers on scaling recurrence at inference and its overthinking limit."
-  domain_tags:
-    values:
-      - language-modeling
-      - reasoning
-    rationale: "The experiments study implicit multi-hop reasoning in a language-model architecture."
-  tags:
-    values:
-      - implicit-reasoning
-    rationale: "Implicit reasoning is the paper's stated problem setting."
+      - capabilities/generalization
+      - capabilities/efficiency
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The model explicitly unrolls one shared stack; 'implicit reasoning' means reasoning without emitted chain-of-thought, not an implicit equilibrium layer."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The model explicitly unrolls one shared stack; 'implicit reasoning' means reasoning without emitted chain-of-thought, not an implicit equilibrium layer."
+  depth_control:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

@@ -14,24 +14,12 @@ published_date: '2025-02-07'
 added_date: '2026-04-24'
 venue: NeurIPS
 must_read: true
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-tags:
-- Huginn
-focus_tags:
-- architecture
-- training-algorithm
-- inference-algorithm
 survey_section:
 - scaling/test-time
-- design/topology
-- design/residual-injection
-- design/depth-control
-- benefits/efficiency
+- architecture/topology
+- architecture/residual-init
+- architecture/depth-control
+- capabilities/efficiency
 - applications/language-speech-multimodal
 loop_topology: prelude-core-coda
 sharing: full

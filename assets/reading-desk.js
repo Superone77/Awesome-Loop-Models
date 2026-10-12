@@ -57,7 +57,27 @@ function getReadingDeskThumbnailUrl(paper) {
   return match ? 'https://thumbnails.assets.alphaxiv.org/' + match[1] + (match[2] || 'v1') + '.png' : '';
 }
 
-/** Reuse catalog renderers so tags, scope notes and every source stay available. */
+/** Describe every survey placement and design axis, including unspecified values. */
+function renderReadingDeskSurveyHtml(paper) {
+  const sections = paper._sections || [];
+  const sectionsHtml = sections.length
+    ? '<div class="desk-survey-sections">' + sections.map(function(sectionId, index) {
+      return renderSectionBadgeHtml(sectionId, index === 0, false);
+    }).join('') + '</div>'
+    : '<p>Not yet placed in a survey section.</p>';
+  if (paper.entry_type === 'blog') return sectionsHtml;
+  const axesHtml = FACET_GROUPS.map(function(group) {
+    const entries = (paper._axisEntries || []).filter(function(entry) { return entry.group === group; });
+    const specified = entries.filter(function(entry) { return entry.value !== 'unspecified'; });
+    const valueHtml = specified.length
+      ? '<div class="paper-chips">' + specified.map(function(entry) { return renderAxisChipHtml(entry, true); }).join('') + '</div>'
+      : '<span class="desk-axis-unspecified">' + (entries.length ? 'unspecified' : 'none recorded') + '</span>';
+    return '<div><dt>' + escapeHtml(getFacetGroupLabel(group)) + '</dt><dd>' + valueHtml + '</dd></div>';
+  }).join('');
+  return sectionsHtml + '<dl class="desk-axis-list">' + axesHtml + '</dl>';
+}
+
+/** Reuse catalog renderers so survey placements, scope notes and every source stay available. */
 function renderReadingDeskDetail(paper) {
   const content = document.getElementById('paper-detail-content');
   if (!paper) {
@@ -67,12 +87,6 @@ function renderReadingDeskDetail(paper) {
   const primaryUrl = getPrimaryPaperUrl(paper);
   const thumbnailUrl = getReadingDeskThumbnailUrl(paper);
   const metricsHtml = renderMetricsHtml(paper);
-  const tags = paper._tagEntries || [];
-  const groups = ['mechanism', 'focus', 'domain'].map(function(group) {
-    const entries = tags.filter(function(entry) { return entry.group === group; });
-    return entries.length ? '<div class="desk-tag-group"><h4>' + escapeHtml(TAG_GROUP_LABELS[group]) + '</h4><div class="paper-tags">'
-      + entries.map(function(entry) { return renderPaperTagHtml(entry, 'paper-tag-' + group); }).join('') + '</div></div>' : '';
-  }).join('');
   content.innerHTML = '<header class="desk-detail-header"><div class="desk-detail-kicker">' + (paper.entry_type === 'blog' ? 'From the blogs' : 'From the collection') + '</div>'
     + (thumbnailUrl || metricsHtml ? '<div class="desk-detail-visual">' : '')
     + (thumbnailUrl ? '<a class="desk-card-preview desk-detail-preview" href="' + escapeHtml(primaryUrl || thumbnailUrl)
@@ -83,13 +97,13 @@ function renderReadingDeskDetail(paper) {
     + '<p class="desk-detail-authors">' + escapeHtml(paper._authorsText) + '</p>'
     + '<div class="desk-detail-meta"><span>' + escapeHtml(getPaperVenueLabel(paper)) + '</span><time>' + escapeHtml(getPaperDisplayDate(paper)) + '</time>'
     + (paper.must_read ? '<span class="desk-must-read">Must read</span>' : '')
-    + (paper.foundation ? '<span class="foundation-badge">Foundation</span>' : '') + renderCatalogFitBadgeHtml(paper) + '</div>'
+    + renderSurveyCoreBadgeHtml(paper) + renderCatalogFitBadgeHtml(paper) + '</div>'
     + '<div class="desk-primary-actions">'
     + (primaryUrl ? '<a class="desk-open-paper" href="' + escapeHtml(primaryUrl) + '" target="_blank" rel="noopener">Open ' + (paper.entry_type === 'blog' ? 'blog' : 'paper') + ' ↗</a>' : '')
     + '</div></header>'
     + '<div class="desk-detail-body" tabindex="0" role="region" aria-label="Resource details">'
     + '<section class="desk-detail-section"><h3>Summary</h3><p>' + escapeHtml(paper.desc || 'No summary is available yet. Follow the source for the full text.') + '</p>' + renderCatalogFitNoteHtml(paper) + '</section>'
-    + '<section class="desk-detail-section"><h3>Classification</h3><p class="desk-category-label">' + escapeHtml(paper._categoryTrailLabel) + '</p>' + groups + '</section>'
+    + '<section class="desk-detail-section"><h3>Survey placement</h3>' + renderReadingDeskSurveyHtml(paper) + '</section>'
     + '<section class="desk-detail-section" aria-labelledby="desk-sources-title"><h3 id="desk-sources-title">Sources</h3><div class="paper-links">' + renderPaperLinksHtml(paper, false) + '</div>'
     + (paper._addedDate ? '<p class="desk-added-date">Added to the collection ' + escapeHtml(paper._addedDate) + '</p>' : '') + '</section>'
     + '<section class="desk-detail-section desk-discussion" aria-labelledby="desk-discussion-title"><h3 id="desk-discussion-title">Discussion</h3>' + renderCommunityCommentsHtml(paper, true) + '</section></div>';
@@ -97,7 +111,7 @@ function renderReadingDeskDetail(paper) {
 
 /** Update selection from real visible records, never from presentation text. */
 function syncReadingDeskSelection(papers) {
-  // Category order is the displayed order, which can differ from a global date sort.
+  // Survey-section order is the displayed order, which can differ from a global date sort.
   const firstCard = document.querySelector('.paper-card[data-id]');
   const firstId = firstCard ? firstCard.dataset.id : '';
   const retained = papers.some(function(paper) { return paper.id === readingDeskSelectedId; });
@@ -281,11 +295,11 @@ function initReadingDesk() {
   document.getElementById('desk-theme-toggle').addEventListener('click', toggleReadingDeskTheme);
   document.getElementById('sections-container').addEventListener('click', function(event) {
     const card = event.target.closest('.paper-card');
-    const tagToggle = event.target.closest('.paper-tag-overflow');
-    if (card && tagToggle) {
-      const expanded = card.classList.toggle('show-all-tags');
-      tagToggle.setAttribute('aria-expanded', String(expanded));
-      tagToggle.textContent = expanded ? 'Fewer tags' : '+' + tagToggle.dataset.extraTags + ' tags';
+    const chipToggle = event.target.closest('.paper-chip-overflow');
+    if (card && chipToggle) {
+      const expanded = card.classList.toggle('show-all-chips');
+      chipToggle.setAttribute('aria-expanded', String(expanded));
+      chipToggle.textContent = expanded ? 'Fewer' : '+' + chipToggle.dataset.extraChips + ' more';
       return;
     }
     if (!card || (event.target.closest('a, button, summary') && !event.target.closest('.desk-paper-select'))) return;

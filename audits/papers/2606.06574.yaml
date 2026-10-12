@@ -12,21 +12,20 @@ scope:
   evidence: "PoLar executes an input-specific program over pretrained Transformer layer segments, including programs that revisit the same segment within one inference pass."
   locator: "Method section, program-of-layers execution; MCTS-generated supervision"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper proposes learned input-specific execution programs over existing LLM layers."
-  mechanism_tags:
-    values: [flat-loop]
-    rationale: "Selected layer segments can be revisited sequentially along one execution path."
-  focus_tags:
-    values: [architecture, inference-algorithm]
-    rationale: "The contribution changes model execution topology and selects skip/repeat programs at inference time."
-  domain_tags:
-    values: [language-modeling, reasoning]
-    rationale: "PoLar controls pretrained language models on reasoning tasks."
-  tags:
-    values: [looped-transformer, PoLar]
-    rationale: "The aliases identify the recurrent Transformer behavior and proposed method."
+  survey_section:
+    values:
+      - architecture/depth-control
+      - training/retrofitting
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: partial
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): Selected layer segments can be revisited sequentially along one execution path."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): Selected layer segments can be revisited sequentially along one execution path."
+  depth_control:
+    value: adaptive-halting
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

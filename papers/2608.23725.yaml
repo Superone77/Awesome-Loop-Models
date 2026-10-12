@@ -5,18 +5,8 @@ year: 2026
 published_date: '2026-08-24'
 added_date: '2026-08-26'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- implicit-layer
-domain_tags:
-- scientific-ml
-- theory
-focus_tags:
-- training-algorithm
 survey_section:
-- train/gradients
-- train/stability
+- training/supervision-optimization
 loop_topology: implicit-fixed-point
 sharing: full
 depth_control: convergence

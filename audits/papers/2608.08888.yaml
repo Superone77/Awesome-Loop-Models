@@ -12,21 +12,21 @@ scope:
   evidence: "The top-layer state from token position t-1 is gated into the input at token position t; the recurrence therefore crosses autoregressive decoding steps rather than adding internal recurrent depth within one forward process."
   locator: "Sections 2.1 and 2.4, Equations 1-4; Section 3 pseudocode"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces a learned full-bandwidth autoregressive feedback architecture and is retained only as explicitly marked adjacent work."
-  mechanism_tags:
-    values: []
-    rationale: "Sequence-time feedback does not qualify for a strict loop-mechanism tag."
-  focus_tags:
-    values: [architecture, training-algorithm]
-    rationale: "The contribution covers the feedback architecture and its training method."
-  domain_tags:
-    values: [language-modeling, reasoning, efficiency]
-    rationale: "The work evaluates autoregressive language modeling, reasoning behavior, and decoding efficiency."
-  tags:
-    values: []
-    rationale: "No optional alias is needed."
+  survey_section:
+    values:
+      - architecture/topology
+      - training/supervision-optimization
+      - open-problems/depth-into-time
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: shifted-parallel
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: none): Sequence-time feedback does not qualify for a strict loop-mechanism tag."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: none): Sequence-time feedback does not qualify for a strict loop-mechanism tag."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

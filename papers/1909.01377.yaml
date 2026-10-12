@@ -7,25 +7,11 @@ year: 2019
 published_date: '2019-09-03'
 added_date: '2026-04-24'
 venue: NeurIPS
-category: designs
-foundation: true
-mechanism_tags:
-- implicit-layer
-domain_tags:
-- sequence-modeling
-- language-modeling
-- memory-efficiency
-tags:
-- DEQ
-focus_tags:
-- architecture
-- training-algorithm
-- inference-algorithm
 survey_section:
 - foundations/implicit
-- train/gradients
+- training/supervision-optimization
 - systems/kv-memory
-- design/residual-injection
+- architecture/residual-init
 loop_topology: implicit-fixed-point
 sharing: full
 depth_control: convergence

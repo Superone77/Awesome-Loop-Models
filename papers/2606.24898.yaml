@@ -7,21 +7,10 @@ year: 2026
 published_date: '2026-06-12'
 added_date: '2026-10-01'
 venue: arXiv
-category: analysis
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-tags:
-- looped-llm
-focus_tags:
-- objective-loss
-- architecture
 survey_section:
-- benefits/limits
-- train/supervision
-- interpretability
+- understanding/failure-modes
+- training/supervision-optimization
+- understanding/interpretability
 loop_topology: whole-stack
 sharing: full
 depth_control: fixed

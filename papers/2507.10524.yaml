@@ -16,21 +16,8 @@ year: 2025
 published_date: '2025-07-14'
 added_date: '2026-04-24'
 venue: NeurIPS
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-- efficiency
-tags:
-- MoR
-focus_tags:
-- architecture
-- inference-algorithm
-- training-algorithm
 survey_section:
-- design/depth-control
+- architecture/depth-control
 - scaling/compute-optimal
 - systems/batching-parallel
 loop_topology: whole-stack

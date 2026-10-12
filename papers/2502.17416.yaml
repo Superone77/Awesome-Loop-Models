@@ -9,23 +9,9 @@ year: 2025
 published_date: '2025-02-24'
 added_date: '2026-04-24'
 venue: ICLR
-category: analysis
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-- algorithmic-reasoning
-- theory
-tags:
-- latent-thoughts
-- looped-transformer
-focus_tags:
-- objective-loss
-- training-algorithm
 survey_section:
-- benefits/expressivity
-- benefits/efficiency
+- capabilities/expressivity
+- capabilities/efficiency
 loop_topology: whole-stack
 sharing: full
 depth_control: fixed

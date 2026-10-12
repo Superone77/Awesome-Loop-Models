@@ -12,30 +12,20 @@ scope:
   evidence: "The model repeatedly reuses learned high-level and low-level reasoning modules in nested cycles and learns input-dependent halting for the recurrent computation."
   locator: "Abstract, paragraphs 1-3"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper explores a compact autoregressive language-model design built around a hierarchical recurrent reasoning module."
-  mechanism_tags:
+  survey_section:
     values:
-      - hierarchical-loop
-    rationale: "Learned high-level and low-level modules are reused in nested reasoning cycles."
-  focus_tags:
-    values:
-      - architecture
-      - inference-algorithm
-    rationale: "The contribution is a hierarchical recurrent architecture with adaptive halting during inference."
-  domain_tags:
-    values:
-      - language-modeling
-      - reasoning
-      - efficiency
-      - adaptive-compute
-    rationale: "The compact autoregressive model performs language reasoning with input-dependent recurrent depth."
-  tags:
-    values:
-      - HRM
-      - halting
-    rationale: "HRM names the Hierarchical Reasoning Module and halting names its learned adaptive-depth mechanism."
+      - architecture/depth-control
+      - applications/language-speech-multimodal
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: hierarchical
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: hierarchical-loop): Learned high-level and low-level modules are reused in nested reasoning cycles."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: hierarchical-loop): Learned high-level and low-level modules are reused in nested reasoning cycles."
+  depth_control:
+    value: adaptive-halting
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

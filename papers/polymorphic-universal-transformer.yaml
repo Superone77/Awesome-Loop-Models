@@ -15,23 +15,9 @@ year: 2026
 published_date: '2026-07-02'
 added_date: '2026-09-06'
 venue: "ACL"
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-- efficiency
-- adaptive-compute
-tags:
-- universal-transformer
-- halting
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
-- design/sharing-scheme
-- design/depth-control
+- architecture/sharing
+- architecture/depth-control
 loop_topology: whole-stack
 sharing: expert-routed
 depth_control: adaptive-halting

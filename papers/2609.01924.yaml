@@ -7,18 +7,8 @@ year: 2026
 published_date: '2026-09-01'
 added_date: '2026-09-03'
 venue: arXiv
-category: analysis
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
-- interpretability
+- understanding/interpretability
 loop_topology: unspecified
 sharing: full
 depth_control: fixed

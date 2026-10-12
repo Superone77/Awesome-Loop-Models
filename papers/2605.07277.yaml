@@ -6,21 +6,8 @@ year: 2026
 published_date: '2026-05-08'
 added_date: '2026-05-11'
 venue: arXiv
-category: analysis
-mechanism_tags:
-- flat-loop
-- implicit-layer
-domain_tags:
-- theory
-- algorithmic-reasoning
-tags:
-- weight-tying
-- convergence
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
-- benefits/expressivity
+- capabilities/expressivity
 - applications/graphs-science
 loop_topology: implicit-fixed-point
 sharing: full

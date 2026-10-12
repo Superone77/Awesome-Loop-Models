@@ -12,21 +12,20 @@ scope:
   evidence: "DiscoLoop applies one shared Transformer backbone four times in a forward pass while carrying discrete embeddings and continuous hidden states between loop steps."
   locator: "Abstract; method section; Appendix B"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces a dual-channel recurrent architecture for multi-hop reasoning."
-  mechanism_tags:
-    values: [flat-loop]
-    rationale: "The same backbone is reused sequentially across four loop steps."
-  focus_tags:
-    values: [architecture]
-    rationale: "The principal novelty is jointly recurrent discrete and continuous state channels."
-  domain_tags:
-    values: [language-modeling, reasoning]
-    rationale: "The architecture is evaluated as a language model on multi-hop reasoning."
-  tags:
-    values: [looped-transformer, looped-llm, DiscoLoop]
-    rationale: "The aliases identify the recurrent language-model family and the proposed method."
+  survey_section:
+    values:
+      - architecture/residual-init
+      - understanding/interpretability
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The same backbone is reused sequentially across four loop steps."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The same backbone is reused sequentially across four loop steps."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

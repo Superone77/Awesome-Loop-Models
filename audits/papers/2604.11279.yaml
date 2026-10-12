@@ -12,27 +12,19 @@ scope:
   evidence: "DEQ-Unmix repeatedly applies the same learned update f_Theta and solves its equilibrium, with implicit differentiation through that fixed point."
   locator: "Section 2.2, Equation 5; Section 2.3, Equation 6"
 taxonomy:
-  category:
-    value: applications
-    rationale: "The paper applies deep-equilibrium modeling to hyperspectral unmixing."
-  mechanism_tags:
+  survey_section:
     values:
-      - implicit-layer
-    rationale: "The forward model solves the fixed point of a learned shared update."
-  focus_tags:
-    values:
-      - architecture
-      - training-algorithm
-    rationale: "The work contributes the equilibrium unmixing architecture and implicit-gradient training method."
-  domain_tags:
-    values:
-      - hyperspectral-imaging
-    rationale: "The evaluated task is hyperspectral image unmixing."
-  tags:
-    values:
-      - DEQ
-      - DEQ-Unmix
-    rationale: "These identify the deep-equilibrium family and the paper's named model."
+      - applications/vision
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: implicit-fixed-point
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: implicit-layer): The forward model solves the fixed point of a learned shared update."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: implicit-layer): The forward model solves the fixed point of a learned shared update."
+  depth_control:
+    value: convergence
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

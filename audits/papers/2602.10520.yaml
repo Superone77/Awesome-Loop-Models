@@ -12,28 +12,19 @@ scope:
   evidence: "RLTT trains an underlying LoopLM whose shared weights produce multiple latent loop states in one forward computation."
   locator: "Introduction; Section 3.1, Equations 1-2; Section 3.2, page 3, Equation 4"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces a reinforcement-learning objective for looped language models."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "The underlying LoopLM reuses one learned stack over flat recurrent depth."
-  focus_tags:
-    values:
-      - objective-loss
-      - training-algorithm
-    rationale: "RLTT assigns and optimizes rewards over the latent loop-depth distribution."
-  domain_tags:
-    values:
-      - language-modeling
-      - reasoning
-    rationale: "The objective improves reasoning in looped language models."
-  tags:
-    values:
-      - RLTT
-      - LoopLM
-    rationale: "These are the proposed training method and target model-family identifiers."
+      - training/post-training
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The underlying LoopLM reuses one learned stack over flat recurrent depth."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The underlying LoopLM reuses one learned stack over flat recurrent depth."
+  depth_control:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

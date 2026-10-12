@@ -1,6 +1,15 @@
 # Save as: papers/<arxiv-id>.yaml
 # For non-arXiv papers, use a stable slug such as papers/openreview-example.yaml
 # For long-form technical blog posts, use blogs/YYYY-MM-DD-shortname.yaml and blogs/_template.yaml.example instead.
+#
+# Classification follows the Looped Models Survey; see TAXONOMY.md.
+# Every taxonomy value is controlled. There are no free-form tags: model and
+# method names go in the title and desc. The build rejects category,
+# foundation, mechanism_tags, focus_tags, domain_tags and tags.
+#
+# `published_date` is required: the first public release date as a quoted
+# `YYYY-MM-DD` string. `added_date` is the repo intake date, also a quoted
+# `YYYY-MM-DD` string; the greatest value defines the `Newly Arrived` batch.
 
 title: "Your Paper Title"
 authors:
@@ -11,72 +20,13 @@ published_date: "2026-04-20"
 added_date: "2026-04-20"
 venue: "arXiv"
 
-category: "designs"
-foundation: false
-must_read: false
+# `must_read: true` is an optional maintainer-only flag (🌟 in README and browser).
+# Omit `catalog_fit` for strict scope. A curator may set `catalog_fit: "adjacent"`
+# for a rare, labeled exception with primary-source boundary evidence.
 
-# Omit `catalog_fit` for normal strict-scope entries. A curator may set
-# `catalog_fit: "adjacent"` for a rare, explicitly labeled exception with
-# primary-source boundary evidence; adjacent entries use `mechanism_tags: []`.
-
-# `must_read: true` is an optional maintainer-only flag.
-# If enabled, the README and browser prepend 🌟 before the paper title.
-# `submit.html` intentionally does not generate this field.
-
-# New canonical paper YAML uses one flat category and omits `category_path`.
-#
-# Blogs do not use these fields. Blog entries live in `blogs/*.yaml`
-# and stay in one flat Blogs section.
-#
-# Valid top-level categories:
-#   analysis      -> Theoretical and Mechanical Analysis
-#   designs       -> Architecture and Algorithm Designs
-#   applications  -> Applications Focused
-#
-# Foundation is a secondary badge rather than a separate top-level shelf.
-# Set `foundation: true` only for canonical anchor papers such as ACT,
-# Universal Transformers, or DEQ.
-#
-# The shelves are intentionally coarse:
-#   analysis -> theory, mechanism analysis, probing, diagnostics, formal understanding
-#   designs -> new architecture, algorithm, efficiency method, memory-compression method, or training/inference method
-#   applications -> concrete task/domain performance, e.g. robotics, VLA, multimodal, tabular, or graph data
-#
-# `published_date` is required for all papers. Use the source-paper
-# release date and keep it as a quoted `YYYY-MM-DD` string.
-# `added_date` is required for new paper entries and records the repo intake date.
-# The greatest valid paper value defines the `Newly Arrived` batch; keep it
-# as a quoted `YYYY-MM-DD` string.
-
-mechanism_tags:
-  - "flat-loop"
-
-# Loop Mechanism (`mechanism_tags`) uses only loop-form tags:
-#   hierarchical-loop, flat-loop, parallel-loop, implicit-layer.
-
-domain_tags:
-  - "language-modeling"
-
-tags:
-  - "LoopLM"
-
-# `tags` are optional aliases / short identifiers kept in YAML / README metadata.
-# The interactive browser exposes `mechanism_tags`, `focus_tags`, and `domain_tags` as tag filters.
-
-focus_tags:
-  - "architecture"
-  - "inference-algorithm"
-
-# Valid focus_tags:
-#   objective-loss
-#   training-algorithm
-#   architecture
-#   data
-#   inference-algorithm
-
-# Survey-aligned axes (see TAXONOMY.md for the full vocabulary).
-survey_section:            # every survey section that fits; first = primary
-  - "design/topology"
+survey_section:            # every survey section the paper contributes to; first = primary
+  - "architecture/depth-control"
+  - "scaling/test-time"
 loop_topology: "prelude-core-coda"   # whole-stack | prelude-core-coda | partial | hierarchical | shifted-parallel | implicit-fixed-point | unspecified
 sharing: "full"                      # full | partial-adapter | expert-routed | unspecified
 depth_control: "sampled-train"       # fixed | sampled-train | adaptive-halting | convergence | unspecified

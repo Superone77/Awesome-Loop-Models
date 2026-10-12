@@ -13,21 +13,9 @@ year: 2026
 published_date: '2026-08-10'
 added_date: '2026-08-11'
 venue: arXiv
-category: applications
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- reasoning
-- algorithmic-reasoning
-- vision
-- efficiency
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
 - applications/vision
-- benefits/efficiency
+- capabilities/efficiency
 loop_topology: unspecified
 sharing: unspecified
 depth_control: unspecified

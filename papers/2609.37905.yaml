@@ -9,16 +9,6 @@ year: 2026
 published_date: '2026-09-29'
 added_date: '2026-09-30'
 venue: arXiv
-category: applications
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- recommendation
-- efficiency
-focus_tags:
-- architecture
-- training-algorithm
 survey_section:
 - applications/embodied-other
 loop_topology: partial

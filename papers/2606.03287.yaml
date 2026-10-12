@@ -8,18 +8,6 @@ year: 2026
 published_date: '2026-06-02'
 added_date: '2026-06-11'
 venue: arXiv
-category: applications
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- vision
-tags:
-- recursive-transformer
-- BA-T
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
 - applications/flow-3d
 loop_topology: partial

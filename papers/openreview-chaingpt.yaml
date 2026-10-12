@@ -8,21 +8,9 @@ year: 2026
 published_date: '2026-01-26'
 added_date: '2026-04-24'
 venue: ICLR
-category: "designs"
-mechanism_tags:
-- hierarchical-loop
-domain_tags:
-- language-modeling
-- reasoning
-tags:
-- ChainGPT
-focus_tags:
-- architecture
-- training-algorithm
-- inference-algorithm
 survey_section:
-- design/loop-x
-- design/state-memory
+- architecture/hybrid
+- architecture/state-memory
 loop_topology: hierarchical
 sharing: unspecified
 depth_control: adaptive-halting

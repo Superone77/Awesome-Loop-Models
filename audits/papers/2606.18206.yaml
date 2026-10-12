@@ -12,28 +12,21 @@ scope:
   evidence: "FPRM repeatedly applies one shared Looped Transformer block and uses a damped fixed-point optimizer until a residual threshold is met."
   locator: "Section 3.2, Equations 2-3 and Theorems 1-2; Section 3.3, Algorithm 1; Section 3.5, Algorithm 2"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces a fixed-point reasoning architecture and adaptive halting method."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-      - implicit-layer
-    rationale: "A shared block is repeated and a residual-based damped optimizer explicitly solves toward its fixed point."
-  focus_tags:
-    values:
-      - architecture
-      - inference-algorithm
-    rationale: "The contribution covers the looped architecture and convergence-based adaptive inference."
-  domain_tags:
-    values:
-      - reasoning
-      - algorithmic-reasoning
-      - adaptive-compute
-    rationale: "The method adapts iterations to Sudoku, maze, state-tracking, and ARC-AGI difficulty."
-  tags:
-    values: []
-    rationale: "The canonical record does not require an additional alias beyond its title."
+      - architecture/residual-init
+      - architecture/depth-control
+      - training/supervision-optimization
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop, implicit-layer): A shared block is repeated and a residual-based damped optimizer explicitly solves toward its fixed point."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop, implicit-layer): A shared block is repeated and a residual-based damped optimizer explicitly solves toward its fixed point."
+  depth_control:
+    value: convergence
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

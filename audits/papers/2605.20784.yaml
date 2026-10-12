@@ -12,28 +12,19 @@ scope:
   evidence: "The paper directly analyzes HRM's reused high/low schedule and TRM's repeated shared module over recursive cycles."
   locator: "Section 2, Equation 1; Section 3; Figures 1-5 and Table 2"
 taxonomy:
-  category:
-    value: analysis
-    rationale: "The main artifact is a mechanistic measurement framework for existing recursive models."
-  mechanism_tags:
+  survey_section:
     values:
-      - hierarchical-loop
-      - flat-loop
-    rationale: "The analyzed HRM and TRM models cover hierarchical and flat shared-module recurrence."
-  focus_tags:
-    values:
-      - architecture
-    rationale: "The framework measures information flow and specialization in recurrent architectures, not a new inference algorithm."
-  domain_tags:
-    values:
-      - reasoning
-      - algorithmic-reasoning
-    rationale: "The primary evaluations use maze, Sudoku, and ARC-AGI grid reasoning."
-  tags:
-    values:
-      - HRM
-      - TRM
-    rationale: "HRM and TRM are the two principal model families analyzed."
+      - understanding/interpretability
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: hierarchical
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: hierarchical-loop, flat-loop): The analyzed HRM and TRM models cover hierarchical and flat shared-module recurrence."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: hierarchical-loop, flat-loop): The analyzed HRM and TRM models cover hierarchical and flat shared-module recurrence."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

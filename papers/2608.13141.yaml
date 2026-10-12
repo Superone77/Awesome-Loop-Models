@@ -7,18 +7,6 @@ year: 2026
 published_date: '2026-08-13'
 added_date: '2026-10-01'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- vision
-- efficiency
-- memory-efficiency
-tags:
-- recursive-transformer
-focus_tags:
-- inference-algorithm
 survey_section:
 - systems/quantization-edge
 - applications/vision

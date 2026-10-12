@@ -8,24 +8,10 @@ year: 2026
 published_date: '2026-02-11'
 added_date: '2026-04-24'
 venue: ICLR
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-- efficiency
-- adaptive-compute
-tags:
-- LoopFormer
-focus_tags:
-- architecture
-- training-algorithm
-- inference-algorithm
 survey_section:
-- design/depth-control
-- design/sharing-scheme
-- train/supervision
+- architecture/depth-control
+- architecture/sharing
+- training/supervision-optimization
 loop_topology: whole-stack
 sharing: partial-adapter
 depth_control: sampled-train

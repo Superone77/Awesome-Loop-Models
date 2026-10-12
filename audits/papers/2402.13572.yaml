@@ -12,27 +12,20 @@ scope:
   evidence: "AlgoFormer places a weight-shared looped Transformer between pre- and post-Transformer stages."
   locator: "Section 2.2, Equation 2"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces the AlgoFormer architectural framework."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "The middle Transformer stage shares weights across a flat depth loop."
-  focus_tags:
-    values:
-      - architecture
-      - training-algorithm
-    rationale: "The work contributes the staged architecture and its algorithmic training setup."
-  domain_tags:
-    values:
-      - language-modeling
-      - algorithmic-reasoning
-    rationale: "Experiments cover algorithmic tasks and language settings."
-  tags:
-    values:
-      - AlgoFormer
-    rationale: "AlgoFormer is the official model name."
+      - capabilities/expressivity
+      - architecture/topology
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: prelude-core-coda
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The middle Transformer stage shares weights across a flat depth loop."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The middle Transformer stage shares weights across a flat depth loop."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

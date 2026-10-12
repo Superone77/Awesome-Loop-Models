@@ -12,21 +12,21 @@ scope:
   evidence: "CART applies the same learned CoreBlock R times in a single forward pass, anchoring each recurrence to precomputed context tensors."
   locator: "Section 3.2, architecture definition"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper proposes and evaluates a recurrent language-model architecture."
-  mechanism_tags:
-    values: [flat-loop]
-    rationale: "A single CoreBlock is reused over one recurrence axis."
-  focus_tags:
-    values: [architecture]
-    rationale: "The contribution is the context-anchored recurrent topology rather than a distinct training objective."
-  domain_tags:
-    values: [language-modeling]
-    rationale: "CART is trained and evaluated as an autoregressive language model."
-  tags:
-    values: [looped-transformer, shared-weight-recurrence, hyper-connections, CART]
-    rationale: "The aliases capture the model name, shared recurrent core, and hyper-connection design."
+  survey_section:
+    values:
+      - architecture/topology
+      - understanding/failure-modes
+      - architecture/residual-init
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: prelude-core-coda
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): A single CoreBlock is reused over one recurrence axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): A single CoreBlock is reused over one recurrence axis."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

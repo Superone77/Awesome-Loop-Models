@@ -13,25 +13,9 @@ year: 2026
 published_date: '2026-07-14'
 added_date: '2026-07-16'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- hierarchical-loop
-- flat-loop
-domain_tags:
-- recommendation
-- reasoning
-- adaptive-compute
-focus_tags:
-- architecture
-- objective-loss
-- training-algorithm
-- inference-algorithm
-tags:
-- RecRec
 survey_section:
 - applications/embodied-other
-- train/supervision
+- training/supervision-optimization
 loop_topology: partial
 sharing: full
 depth_control: sampled-train

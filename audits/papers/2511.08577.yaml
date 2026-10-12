@@ -12,33 +12,20 @@ scope:
   evidence: "Think-at-Hard executes recurrent depth sequentially while reusing learned latent refiners inside one forward process."
   locator: "Section 5.1, page 4, Figure 2 and Equation 6"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces selective latent iterations and their training procedure."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "Depth iterations are sequential; full-sequence attention parallelism is not a parallel loop form."
-  focus_tags:
-    values:
-      - architecture
-      - training-algorithm
-      - inference-algorithm
-    rationale: "The work contributes refiners/decider architecture, two-stage training, and selective inference depth."
-  domain_tags:
-    values:
-      - language-modeling
-      - reasoning
-      - efficiency
-      - adaptive-compute
-    rationale: "The method adaptively spends latent language-model compute on hard tokens."
-  tags:
-    values:
-      - Think-at-Hard
-      - TaH
-      - LoRA
-      - adaptive-latent-iteration
-    rationale: "These identify the method, abbreviation, adaptation mechanism, and selective recurrence."
+      - architecture/depth-control
+      - architecture/sharing
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): Depth iterations are sequential; full-sequence attention parallelism is not a parallel loop form."
+  sharing:
+    value: partial-adapter
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): Depth iterations are sequential; full-sequence attention parallelism is not a parallel loop form."
+  depth_control:
+    value: adaptive-halting
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

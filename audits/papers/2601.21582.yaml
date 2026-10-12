@@ -15,28 +15,20 @@ scope:
     each step and do not make the depth loop parallel.
   locator: "Sections 3.1 and 3.6, Figures 1-2, Equations 5-6; Section 3.7, Equations 7-8"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The primary contribution is a depth-recurrent attention-mixture architecture."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "The learned layer is reused sequentially across depth without parallel loop execution."
-  focus_tags:
-    values:
-      - architecture
-    rationale: "The paper proposes a fixed-depth recurrent architecture rather than a separate inference algorithm."
-  domain_tags:
-    values:
-      - language-modeling
-      - reasoning
-      - efficiency
-    rationale: "The framework combines language/reasoning evaluation with sparse experts and matched-resource analysis."
-  tags:
-    values:
-      - Dreamer
-      - MoE
-    rationale: "Dreamer is the official model name, and MoE identifies its sparse-expert architecture."
+      - architecture/state-memory
+      - architecture/hybrid
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The learned layer is reused sequentially across depth without parallel loop execution."
+  sharing:
+    value: expert-routed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The learned layer is reused sequentially across depth without parallel loop execution."
+  depth_control:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

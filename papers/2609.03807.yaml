@@ -12,19 +12,8 @@ year: 2026
 published_date: '2026-09-03'
 added_date: '2026-09-06'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- parallel-loop
-domain_tags:
-- language-modeling
-- efficiency
-focus_tags:
-- architecture
-- training-algorithm
-- inference-algorithm
 survey_section:
-- design/topology
+- architecture/topology
 - systems/kv-memory
 loop_topology: shifted-parallel
 sharing: full

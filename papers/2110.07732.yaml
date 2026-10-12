@@ -8,18 +8,8 @@ year: 2022
 published_date: '2021-10-14'
 added_date: '2026-09-06'
 venue: ICLR
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- algorithmic-reasoning
-- compositional-reasoning
-tags:
-- shared-weight-recurrence
-focus_tags:
-- architecture
 survey_section:
-- benefits/generalization
+- capabilities/generalization
 - foundations/algorithmic
 loop_topology: whole-stack
 sharing: full

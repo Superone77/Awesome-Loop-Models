@@ -10,21 +10,9 @@ year: 2025
 published_date: '2025-02-10'
 added_date: '2026-04-24'
 venue: ICML
-category: designs
-mechanism_tags:
-- implicit-layer
-domain_tags:
-- language-modeling
-- reasoning
-tags:
-- implicit-ssm
-focus_tags:
-- architecture
-- training-algorithm
-- inference-algorithm
 survey_section:
-- design/loop-x
-- benefits/expressivity
+- architecture/hybrid
+- capabilities/expressivity
 - foundations/implicit
 loop_topology: implicit-fixed-point
 sharing: full

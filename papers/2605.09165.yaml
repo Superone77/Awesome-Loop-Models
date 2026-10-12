@@ -8,24 +8,10 @@ year: 2026
 published_date: '2026-05-09'
 added_date: '2026-05-12'
 venue: arXiv
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- scaling
-- efficiency
-tags:
-- looped-transformer
-- looped-llm
-- MoE
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
-- design/loop-x
+- architecture/hybrid
 - scaling/compute-optimal
-- design/depth-control
+- architecture/depth-control
 loop_topology: whole-stack
 sharing: expert-routed
 depth_control: adaptive-halting

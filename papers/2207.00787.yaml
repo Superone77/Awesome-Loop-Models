@@ -8,19 +8,8 @@ year: 2022
 published_date: '2022-07-02'
 added_date: '2026-09-06'
 venue: NeurIPS
-category: designs
-mechanism_tags:
-- implicit-layer
-domain_tags:
-- vision
-- memory-efficiency
-tags:
-- latent-refinement
-focus_tags:
-- training-algorithm
-- inference-algorithm
 survey_section:
-- train/gradients
+- training/supervision-optimization
 - applications/vision
 loop_topology: partial
 sharing: full

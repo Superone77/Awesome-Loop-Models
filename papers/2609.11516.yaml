@@ -5,19 +5,9 @@ year: 2026
 published_date: '2026-09-10'
 added_date: '2026-09-13'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- hierarchical-loop
-- flat-loop
-domain_tags:
-- vision
-- efficiency
-focus_tags:
-- architecture
 survey_section:
 - applications/vision
-- design/topology
+- architecture/topology
 loop_topology: hierarchical
 sharing: partial-adapter
 depth_control: fixed

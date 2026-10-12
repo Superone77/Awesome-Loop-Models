@@ -21,7 +21,7 @@ Only the fourth category is the main target of this repo. Standard sequence-time
 
 ### Adjacent-work exception
 
-A rare, curator-approved paper may remain for its conceptual value with `catalog_fit: adjacent`. It must be visibly labeled **Adjacent work**, carry no strict `mechanism_tags`, and have primary-source audit evidence explaining why it falls outside the strict boundary. Omitting `catalog_fit` means strict scope.
+A rare, curator-approved paper may remain for its conceptual value with `catalog_fit: adjacent`. It must be visibly labeled **Adjacent work** and have primary-source audit evidence explaining why it falls outside the strict boundary. Omitting `catalog_fit` means strict scope.
 
 ## In Scope
 
@@ -45,138 +45,70 @@ A rare, curator-approved paper may remain for its conceptual value with `catalog
 - external search or planning over arbitrary layer orders when the qualifying loop is not a shared internal forward-process recurrence
 - sequence recurrence papers that do not add a genuine loop-model architectural argument beyond standard recurrence
 
-## Primary Paper Categories
+## Organization: the Looped Models Survey
 
-The public taxonomy uses exactly three flat paper categories. New canonical paper YAML should use one of these `category` values and omit `category_path`.
+The catalog follows the chapters of the Looped Models Survey, so the browser, the README and the survey share one map of the field. There are no shelves, categories or free-form tags. [TAGS.md](TAGS.md) lists every value with its current usage count. Every value below is closed: a paper that does not fit is a reason to discuss a taxonomy change with the maintainer, not to invent a value.
 
-### Theoretical and Mechanical Analysis (`analysis`)
+Each paper records two things:
 
-Use this category when the paper is mainly analytical.
+1. **Where it belongs in the survey** — `survey_section`, a list of every section the paper contributes to, with its primary section first. The browser files the paper under that primary section.
+2. **What its loop looks like and what it claims** — the design axes `loop_topology`, `sharing` and `depth_control` (survey §4), plus `claims` and `comparison` (survey §3).
 
-Typical fits:
-- formal theory
-- expressive-power results
-- convergence / stability / fixed-point analysis
-- mechanism analysis
-- probing, diagnostics, or interpretability
-- explanations of why loop models behave as they do
+`survey_core: true` marks the survey's core anchor papers. `must_read: true` is a maintainer-only flag.
 
-This category is for understanding loop models, not mainly for proposing a new architecture or demonstrating a task result.
+## Survey sections (`survey_section`)
 
-### Architecture and Algorithm Designs (`designs`)
+| § | `survey_section` | Covers |
+|:--|:--|:--|
+| 2.1 | `foundations/recurrence` | **Recurrent networks and weight sharing across computation.** RNNs, ACT and PonderNet, and other early weight sharing across computation steps. |
+| 2.2 | `foundations/depth-sharing` | **Weight sharing across network depth.** Early weight-tied depth: recursive CNNs, Universal Transformers, ALBERT-style sharing. |
+| 2.3 | `foundations/implicit` | **Deep equilibrium and implicit models.** DEQs, implicit layers, Neural ODE-style fixed points, implicit GNNs. |
+| 2.4 | `foundations/algorithmic` | **Iterative and algorithmic computation.** Neural GPU, deep thinking networks, neural algorithmic processors. |
+| 3.1 | `capabilities/efficiency` | **Parameter, data, and compute efficiency.** What looping saves in parameters, data or compute, and what it does not. |
+| 3.2 | `capabilities/expressivity` | **Expressivity and reasoning capacity.** Theory and evidence on what looped models can compute and reason about. |
+| 3.3 | `capabilities/generalization` | **Length, easy-to-hard, and compositional generalization.** Length, easy-to-hard and compositional generalization from extra iterations. |
+| 4.1 | `architecture/topology` | **Loop topology.** Where the recurrence sits: whole stack, prelude-core-coda, partial, hierarchical, shifted. |
+| 4.2 | `architecture/residual-init` | **Residual manipulation and initialization.** Input injection, residual scaling and gating, initialization of the looped state. |
+| 4.3 | `architecture/state-memory` | **Recurrent state and loop-time memory.** What state and history are carried across iterations. |
+| 4.4 | `architecture/sharing` | **Weight-sharing schemes and iteration-dependent computation.** Full vs partial sharing, iteration embeddings, per-loop adapters, loop-dependent modulation. |
+| 4.5 | `architecture/depth-control` | **Controlling recurrence depth.** Training-time depth distributions and adaptive, elastic or halting-based depth at inference. |
+| 4.6 | `architecture/hybrid` | **Hybrid looped architectures.** Loop x MoE, loops with linear/state-space/convolutional mixers, loops inside other generators. |
+| 5.1 | `training/supervision-optimization` | **Supervision, credit assignment, and loop-specific optimization.** Per-step or final supervision, BPTT/truncated/implicit gradients, loop-specific stability. |
+| 5.2 | `training/post-training` | **Post-training and reinforcement learning.** SFT, distillation and RL after pretraining a looped model. |
+| 5.3 | `training/retrofitting` | **Retrofitting pretrained models into looped models.** Turning a pretrained untied model into a looped one. |
+| 6.1 | `scaling/compute-optimal` | **Parameter, depth, and compute-optimal scaling.** Scaling laws over parameters, depth and loops; iso-param/iso-FLOP comparisons. |
+| 6.2 | `scaling/test-time` | **Test-time scaling.** Spending more iterations at inference. |
+| 7.1 | `systems/quantization-edge` | **Quantization and edge deployment.** Quantization, compression and on-device deployment of looped models. |
+| 7.2 | `systems/kv-memory` | **KV cache and memory.** KV caches and memory across loops. |
+| 7.3 | `systems/batching-parallel` | **Loop-level batching, scheduling, and parallel execution.** Batching, scheduling and parallel execution of loop iterations. |
+| 8.1 | `understanding/why` | **Why looped models work.** Analyses of why and when looping helps. |
+| 8.2 | `understanding/interpretability` | **Mechanistic interpretability.** Mechanistic interpretability of looped models. |
+| 8.3 | `understanding/failure-modes` | **When looping does not help: limits and failure modes.** Limits, negative results and failure modes of looping. |
+| 9.1 | `applications/language-speech-multimodal` | **Language, code, speech, and multimodal tasks.** Language, code, speech and multimodal tasks. |
+| 9.2 | `applications/vision` | **Visual recognition, restoration, and generation.** Visual recognition, restoration and generation. |
+| 9.3 | `applications/flow-3d` | **Flow, stereo, and 3D geometry.** Optical flow, stereo and 3D geometry. |
+| 9.4 | `applications/graphs-science` | **Graphs, structured data, and scientific modeling.** Graphs, tabular and structured data, scientific modeling. |
+| 9.5 | `applications/embodied-other` | **Embodied AI and other domains.** Robotics, VLA, RL, and other domains. |
+| 10.1 | `open-problems/diffusion` | **Unification with diffusion models.** Combining looping with diffusion or denoising. |
+| 10.2 | `open-problems/depth-into-time` | **Folding depth into time.** Looping across positions (shift-1 recurrence, pipelined loops) that folds depth into the sequence dimension. |
+| 10.3 | `open-problems/monitorability-safety` | **Monitorability and safety.** Monitoring, oversight and safety of latent looped computation. |
 
-Use this category when the paper mainly proposes a loop-model architecture or algorithm.
+Chapters: §2 From Recurrent Computation to Iterative Depth; §3 Capabilities, Benefits and Trade-offs; §4 Architecture and Design; §5 Learning Algorithms; §6 Scaling Laws; §7 Systems and Infrastructure; §8 Understanding Why Looped Models Work; §9 Applications; §10 Open Problems.
 
-Typical fits:
-- new looped architectures
-- recurrent computation-graph designs
-- adaptive-depth / routing / halting algorithms
-- training or inference algorithms for loop models
-- efficiency methods
-- memory-compression methods
-- domain-specialized loop-model designs when the main contribution is the design itself
+### Choosing sections
 
-This category should absorb papers whose core claim is better performance, efficiency, memory use, training, or inference through a new architecture or algorithm.
+1. First check scope: is a shared learned layer, block, module or operator reused inside one forward pass? If not, drop the paper.
+2. Pick the **primary** section by the paper's main contribution, i.e. where the survey would discuss it first.
+   - A design evaluated on language modeling is an `architecture/*`, `training/*`, `scaling/*` or `systems/*` paper, not `applications/language-speech-multimodal`. Use an `applications/*` section as primary only when the main takeaway is about that external domain.
+   - Theory of what loops can compute goes to `capabilities/expressivity`; an analysis of why a trained looped model works goes to `understanding/why`; probing and circuits go to `understanding/interpretability`; negative results go to `understanding/failure-modes`.
+   - `foundations/*` is for lineage papers, mostly before 2023.
+3. Add every other section the paper substantively contributes to. Do not add a section for a passing mention.
 
-### Applications Focused (`applications`)
-
-Use this category when the paper mainly demonstrates loop models on a concrete external domain or task.
-
-Typical fits:
-- robotics and VLA
-- multimodal tasks
-- tabular data
-- graph data
-- vision, scientific, or domain-specific data where the main point is task/domain performance
-- applied evaluations whose main takeaway is that loop models work in that setting
-
-This category is not a catch-all for any empirical result. If the main reusable idea is an architecture or algorithm, use `designs`; if the main contribution is analysis, use `analysis`.
-
-## Foundation Badge
-
-Foundation is not a separate top-level category.
-
-Canonical anchor papers can carry:
-
-- `foundation: true`
-
-Use this badge only for papers that introduced or canonized a major loop-model primitive or formulation that later work treats as a standard reference point. Examples include ACT, Universal Transformers, and DEQ.
-
-## Classification Note
-
-> The paper categories are intentionally coarse: Theoretical and Mechanical Analysis, Architecture and Algorithm Designs, and Applications Focused. Foundation status plus Loop Mechanism / focus / domain tags carry secondary structure without introducing a separate lineage-tag axis.
-
-## Tagging Scheme
-
-See [TAGS.md](TAGS.md) for the current repo-wide tag inventory and preferred spellings.
-
-### Loop Mechanism (`mechanism_tags`)
-
-Use Loop Mechanism (`mechanism_tags`) only for the loop form. This is a closed vocabulary with exactly four values:
-
-- `hierarchical-loop` — nested, recursive, multi-level, or coarse-to-fine loop structure
-- `flat-loop` — a single shared block/layer/module repeated in a flat depth/time loop
-- `parallel-loop` — parallel, branched, or multi-path loop execution
-- `implicit-layer` — fixed-point, equilibrium, or implicit-layer computation
-
-Do not use paper abbreviations such as `DEQ`, `UT`, `HRM`, or `Ouro`, and do not use fine-grained mechanism labels such as `recurrent-depth`, `adaptive-compute`, `algorithmic-loop`, `memory-compression`, or `recursive-loop` as browser-facing Loop Mechanism tags. Keep paper/model aliases in optional `tags` if they are useful metadata.
-
-### `focus_tags`
-
-Use these for contribution emphasis:
-- `objective-loss`
-- `training-algorithm`
-- `architecture`
-- `data`
-- `inference-algorithm`
-
-These are controlled vocabulary. The build validates them.
-
-### `domain_tags`
-
-Use these for problem/domain labels.
-
-Common examples:
-- `language-modeling`
-- `reasoning`
-- `algorithmic-reasoning`
-- `vision`
-- `robotics-vla`
-- `multimodal`
-- `tabular-data`
-- `graph-data`
-
-### `tags`
-
-Use `tags` for optional aliases or short identifiers kept in YAML / README metadata. They are useful metadata, but they are not the main browser filter axis.
-
-Examples: `DEQ`, `UT`, `ACT`, `HRM`, `Ouro`, `LoopLM`.
-
-## Survey-Aligned Axes
-
-These fields follow the outline of the Looped Models Survey so that the catalog and the survey share one map of the field. They are optional in the schema while the browser is being migrated, but every catalog paper carries them and new papers should fill all of them. The build validates every value; see [TAGS.md](TAGS.md) for current counts.
-
-### `survey_section` (list, first entry = primary)
-
-Every survey section where the paper belongs, primary contribution first. `analysis` papers usually land in `benefits/expressivity`, `benefits/limits`, or `interpretability`.
-
-| Part | Sections |
-| --- | --- |
-| Foundations (§2) | `foundations/recurrence`, `foundations/depth-sharing`, `foundations/implicit`, `foundations/algorithmic` — lineage papers, mostly before 2023 |
-| What looping buys (§3) | `benefits/efficiency`, `benefits/expressivity`, `benefits/generalization`, `benefits/limits` |
-| Architecture (§4) | `design/topology`, `design/residual-injection`, `design/state-memory`, `design/sharing-scheme`, `design/depth-control`, `design/loop-x` |
-| Training (§5) | `train/supervision`, `train/gradients`, `train/stability`, `train/post-training`, `train/retrofitting` |
-| Scaling (§6) | `scaling/compute-optimal`, `scaling/test-time` |
-| Systems (§7) | `systems/quantization-edge`, `systems/kv-memory`, `systems/batching-parallel` |
-| Interpretability (§8) | `interpretability` |
-| Applications (§9) | `applications/language-speech-multimodal`, `applications/vision`, `applications/flow-3d`, `applications/graphs-science`, `applications/embodied-other` |
-| Outlook (§10) | `outlook/diffusion` |
-
-Use an `applications/*` section as primary only when the main takeaway is a specific external domain; a design evaluated on language modeling is a `design/*` paper.
+## Design axes
 
 ### `loop_topology` (one value)
 
-Where the loop sits: `whole-stack` (the whole block stack repeats), `prelude-core-coda` (a middle core loops between distinct input and output layers), `partial` (only an early block or sub-module loops), `hierarchical` (coupled loops at different rates, e.g. HRM/TRM), `shifted-parallel` (loops pipelined across tokens or run in parallel branches), `implicit-fixed-point` (output solved as a fixed point), or `unspecified`.
+`whole-stack` (the whole block stack repeats), `prelude-core-coda` (a middle core loops between distinct input and output layers), `partial` (only an early block or sub-module loops), `hierarchical` (coupled loops at different rates, e.g. HRM/TRM), `shifted-parallel` (loops pipelined across tokens or run in parallel branches), `implicit-fixed-point` (output solved as a fixed point), or `unspecified`.
 
 ### `sharing` (one value)
 
@@ -192,85 +124,18 @@ What the paper argues looping buys or costs: `param-efficiency`, `compute-effici
 
 ### `comparison` (list)
 
-Only for papers that compare looped and non-looped (untied) models: which quantity is held fixed. `iso-param` (same unique parameters), `iso-flop` (same executed compute), `iso-depth` (K loops vs K untied layers), or `unclear` when the paper compares without stating the control. Use `[]` when there is no such comparison.
+Only for papers that compare looped and untied models: which quantity is held fixed. `iso-param` (same unique parameters), `iso-flop` (same executed compute), `iso-depth` (K loops vs K untied layers), or `unclear` when the paper compares without stating the control. Use `[]` when there is no such comparison.
 
 ### `survey_core` (bool)
 
-`true` for the survey's core set of roughly 30-50 anchor papers. It does not change repo inclusion; peer-review or citation thresholds of the survey do not apply to the catalog.
+`true` for the survey's core set of anchor papers. It does not change repo inclusion.
 
-## Browser Behavior
+## No free-form tags
 
-The interactive browser exposes only these visible tag-filter groups:
-- Loop Mechanism (`mechanism_tags`)
-- `focus_tags`
-- `domain_tags`
+Model names, acronyms and method names (Huginn, Ouro, TRM, ELR, …) belong in the title and `desc`, which the browser searches. Do not add `tags`, `mechanism_tags`, `focus_tags`, `domain_tags`, `category` or `foundation`: the build rejects them.
 
-Alias-style `tags` are kept in metadata but are not shown as browser filter chips.
+## Blogs
 
-## Blogs Section
+Blogs are intentionally separate from the paper catalog. They live in one flat `Blogs` section and list only the `survey_section` values they discuss; they do not use the design axes.
 
-Blogs are intentionally separate from the paper taxonomy.
-
-They live in one flat `Blogs` section and can carry `mechanism_tags`, `focus_tags`, `domain_tags`, and optional `tags`, but they do not use `category`, `category_path`, or `foundation`.
-
-A blog belongs here only if it is a substantive public long-form technical post about loop models or closely related loop-model questions.
-
-Good fits:
-- technical deep-dives
-- lab blog posts
-- long-form essays
-- tutorials with real technical content
-- long X articles / Substack posts / personal blog posts with substantial analysis
-
-Usually out of scope:
-- short tweets or announcement-only posts
-- marketing pages
-- bare link roundups with little or no analysis
-- generic news reposts
-- project pages without meaningful technical writing
-
-## Classification Procedure
-
-When a paper is ambiguous, use this order:
-
-1. First ask whether a shared learned internal layer, block, module, or operator is reused inside one model forward process.
-2. If the paper's iteration is really repeated full-model calls, agent steps, recursive self-calls, external search/planning, or latent reasoning via multiple complete forwards, drop it.
-3. If the paper is in scope, ask what readers should take away first.
-   - analysis, theory, mechanism, probing, explanation -> `analysis`
-   - architecture, algorithm, efficiency, memory compression, training/inference method -> `designs`
-   - domain/task demonstration such as robotics, VLA, multimodal, tabular, or graph data -> `applications`
-4. Then use `foundation`, Loop Mechanism (`mechanism_tags`), `focus_tags`, and `domain_tags` for the secondary story.
-5. Fill the survey-aligned axes: `survey_section` (primary first), `loop_topology`, `sharing`, `depth_control`, `claims`, `comparison`, and `survey_core`.
-
-## Tie-Break Rules
-
-### Applications Focused vs Architecture and Algorithm Designs
-
-- Use `designs` when the main reusable artifact is the architecture or algorithm.
-- Use `applications` when the main reusable artifact is evidence about a concrete task/domain.
-- If a paper introduces a named model variant and the paper is mostly selling that variant as a design, prefer `designs`.
-- If a paper mainly uses loop models to demonstrate performance in robotics, VLA, multimodal, tabular, graph, or another external domain, prefer `applications`.
-
-### Applications Focused vs Theoretical and Mechanical Analysis
-
-- Use `analysis` when the main artifact is explanation or understanding.
-- Use `applications` when the main artifact is task/domain behavior in use.
-- If empirical evidence mainly exists to support a mechanism claim, use `analysis`.
-- If analysis mainly exists to support a task/domain result, use `applications`.
-
-### Architecture and Algorithm Designs vs Theoretical and Mechanical Analysis
-
-- Use `designs` when the main artifact is a new architecture, algorithm, or efficiency method.
-- Use `analysis` when the main artifact is understanding an existing loop mechanism.
-
-## Legacy Metadata Policy
-
-Legacy taxonomy shapes are no longer read or remapped by the build. New or edited `papers/*.yaml` entries must use only the strict flat schema:
-
-- `category` must be exactly one of `analysis`, `designs`, or `applications`.
-- use `foundation: true` for anchor papers instead of `category: foundation`.
-- omit `category_path` and `subcategory`; nested category paths are rejected.
-- put loop-form labels only in `mechanism_tags`, using one or more of `hierarchical-loop`, `flat-loop`, `parallel-loop`, or `implicit-layer`.
-- keep paper acronyms, family names, and fine-grained mechanism words in `tags`, `domain_tags`, or prose; the build does not map them into `mechanism_tags`.
-
-For non-paper long-form resources, use `blogs/*.yaml` instead. Blog entries stay flat and are not part of the paper taxonomy.
+A blog belongs here only if it is a substantive public long-form technical post about loop models or closely related loop-model questions: technical deep-dives, lab blog posts, long-form essays, tutorials with real technical content, long X articles, Substack or personal posts with substantial analysis. Short announcement posts, marketing pages, bare link roundups and news reposts are out of scope.

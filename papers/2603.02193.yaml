@@ -9,21 +9,9 @@ year: 2026
 published_date: '2026-03-02'
 added_date: '2026-10-01'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- hierarchical-loop
-domain_tags:
-- algorithmic-reasoning
-- reasoning
-tags:
-- HRM
-- TRM
-focus_tags:
-- architecture
 survey_section:
-- benefits/generalization
-- design/topology
+- capabilities/generalization
+- architecture/topology
 loop_topology: hierarchical
 sharing: full
 depth_control: fixed

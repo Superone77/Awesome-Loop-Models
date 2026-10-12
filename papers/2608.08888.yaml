@@ -12,20 +12,11 @@ year: 2026
 published_date: '2026-08-09'
 added_date: '2026-08-11'
 venue: arXiv
-category: designs
 catalog_fit: adjacent
-foundation: false
-mechanism_tags: []
-domain_tags:
-- language-modeling
-- reasoning
-- efficiency
-focus_tags:
-- architecture
-- training-algorithm
 survey_section:
-- design/topology
-- train/supervision
+- architecture/topology
+- training/supervision-optimization
+- open-problems/depth-into-time
 loop_topology: shifted-parallel
 sharing: full
 depth_control: fixed

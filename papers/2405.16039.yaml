@@ -9,22 +9,9 @@ year: 2024
 published_date: '2024-05-25'
 added_date: '2026-04-20'
 venue: NeurIPS
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- efficiency
-tags:
-- MoEUT
-- UT
-- MoE
-focus_tags:
-- architecture
-- training-algorithm
 survey_section:
-- design/loop-x
-- design/sharing-scheme
+- architecture/hybrid
+- architecture/sharing
 loop_topology: whole-stack
 sharing: expert-routed
 depth_control: fixed

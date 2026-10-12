@@ -6,20 +6,9 @@ year: 2026
 published_date: '2026-07-31'
 added_date: '2026-08-02'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-- implicit-layer
-domain_tags:
-- graph-data
-- vision
-- scientific-ml
-focus_tags:
-- architecture
 survey_section:
 - applications/graphs-science
-- design/residual-injection
+- architecture/residual-init
 loop_topology: implicit-fixed-point
 sharing: full
 depth_control: convergence

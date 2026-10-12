@@ -21,7 +21,7 @@ PAPER_CHUNK_ENTRIES_LIMIT = 100
 PAPER_CHUNK_PATH_RE = re.compile(r"^catalog/papers-\d{3}\.json$")
 PAPERS_BRIEFINGS_LIMIT = 1
 BRIEFING_CONTENT_FIELDS_LIMIT = 0
-SUBMISSION_META_BYTES_LIMIT = 20_000
+SUBMISSION_META_BYTES_LIMIT = 32_000
 FAVICON_BYTES_LIMIT = 10_000
 
 
@@ -103,13 +103,57 @@ def count_nested_key(value: object, key: str) -> int:
     return 0
 
 
+SURVEY_TAXONOMY_LISTS = {
+    "parts": ("id", "title"),
+    "chapters": ("number", "part", "title"),
+    "sections": ("id", "number", "chapter", "title"),
+}
+SURVEY_AXES = ("loop_topology", "sharing", "depth_control", "claims", "comparison")
+SUBMISSION_INVENTORIES = ("survey_section",) + SURVEY_AXES
+
+
+def validate_survey_taxonomy(taxonomy: object, label: str, violations: list[str]) -> None:
+    """Validate the survey parts, chapters, sections and design axes the browser pickers read."""
+    if not isinstance(taxonomy, dict):
+        violations.append(f"{label} must be an object")
+        return
+    for list_name, string_fields in SURVEY_TAXONOMY_LISTS.items():
+        rows = taxonomy.get(list_name)
+        list_label = f"{label}.{list_name}"
+        if not isinstance(rows, list) or not rows:
+            violations.append(f"{list_label} must be a non-empty array")
+            continue
+        for index, row in enumerate(rows):
+            if not isinstance(row, dict):
+                violations.append(f"{list_label}[{index}] must be an object")
+                continue
+            for field in string_fields:
+                if not isinstance(row.get(field), str) or not row.get(field):
+                    violations.append(f"{list_label}[{index}].{field} must be a non-empty string")
+    axes = taxonomy.get("axes")
+    if not isinstance(axes, dict):
+        violations.append(f"{label}.axes must be an object")
+        return
+    for axis in SURVEY_AXES:
+        entry = axes.get(axis)
+        axis_label = f"{label}.axes.{axis}"
+        if not isinstance(entry, dict):
+            violations.append(f"{axis_label} must be an object")
+            continue
+        if not isinstance(entry.get("label"), str):
+            violations.append(f"{axis_label}.label must be a string")
+        values = entry.get("values")
+        if not isinstance(values, list) or not values or not all(isinstance(value, str) for value in values):
+            violations.append(f"{axis_label}.values must be a non-empty array of strings")
+
+
 def validate_papers_schema(payload: dict, violations: list[str]) -> tuple[int | None, int | None]:
     """Validate the browser catalog schema and return its briefing measurements."""
-    for field in ("meta", "categories"):
-        if not isinstance(payload.get(field), dict):
-            violations.append(f"papers.json.{field} must be an object")
+    if not isinstance(payload.get("meta"), dict):
+        violations.append("papers.json.meta must be an object")
+    validate_survey_taxonomy(payload.get("survey_taxonomy"), "papers.json.survey_taxonomy", violations)
 
-    for field in ("mechanism_tags", "focus_tags", "paper_chunks", "blogs"):
+    for field in ("paper_chunks", "blogs"):
         if not isinstance(payload.get(field), list):
             violations.append(f"papers.json.{field} must be an array")
 
@@ -148,7 +192,7 @@ def validate_papers_schema(payload: dict, violations: list[str]) -> tuple[int | 
 
 
 def validate_submission_schema(payload: dict, violations: list[str]) -> None:
-    """Validate the minimal path and tag inventory used by the submission page."""
+    """Validate the paths, survey taxonomy and value inventories used by the submission page."""
     existing_paths = payload.get("existing_paths")
     if not isinstance(existing_paths, list):
         violations.append("submission-meta.json.existing_paths must be an array")
@@ -157,14 +201,16 @@ def validate_submission_schema(payload: dict, violations: list[str]) -> None:
             if not isinstance(path, str):
                 violations.append(f"submission-meta.json.existing_paths[{index}] must be a string")
 
-    inventories = payload.get("tag_inventories")
+    validate_survey_taxonomy(payload.get("survey_taxonomy"), "submission-meta.json.survey_taxonomy", violations)
+
+    inventories = payload.get("inventories")
     if not isinstance(inventories, dict):
-        violations.append("submission-meta.json.tag_inventories must be an object")
+        violations.append("submission-meta.json.inventories must be an object")
         return
 
-    for inventory_name in ("mechanism", "focus", "domain"):
+    for inventory_name in SUBMISSION_INVENTORIES:
         inventory = inventories.get(inventory_name)
-        label = f"submission-meta.json.tag_inventories.{inventory_name}"
+        label = f"submission-meta.json.inventories.{inventory_name}"
         if not isinstance(inventory, list):
             violations.append(f"{label} must be an array")
             continue

@@ -5,20 +5,8 @@ year: 2026
 published_date: '2026-09-28'
 added_date: '2026-09-28'
 venue: arXiv
-category: analysis
-foundation: false
-mechanism_tags:
-- implicit-layer
-domain_tags:
-- graph-data
-- theory
-- scientific-ml
-tags:
-- implicit GNN
-focus_tags:
-- architecture
 survey_section:
-- benefits/expressivity
+- capabilities/expressivity
 - applications/graphs-science
 loop_topology: implicit-fixed-point
 sharing: full

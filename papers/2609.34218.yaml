@@ -12,21 +12,9 @@ year: 2026
 published_date: '2026-09-28'
 added_date: '2026-09-28'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-tags:
-- Loop Dropout
-- LoRA
-focus_tags:
-- training-algorithm
 survey_section:
-- train/post-training
-- design/sharing-scheme
+- training/post-training
+- architecture/sharing
 loop_topology: whole-stack
 sharing: full
 depth_control: fixed

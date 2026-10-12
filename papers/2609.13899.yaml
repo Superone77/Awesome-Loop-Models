@@ -6,19 +6,8 @@ year: 2026
 published_date: '2026-09-12'
 added_date: '2026-09-15'
 venue: BabyLM Workshop @ EMNLP
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- efficiency
-- hardware-aware
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
-- design/loop-x
+- architecture/hybrid
 - systems/quantization-edge
 loop_topology: implicit-fixed-point
 sharing: full

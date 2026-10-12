@@ -7,21 +7,11 @@ year: 2025
 published_date: '2025-10-11'
 added_date: '2026-10-01'
 venue: arXiv
-category: analysis
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- reasoning
-- theory
-tags:
-- looped-transformer
-focus_tags:
-- training-algorithm
 survey_section:
-- train/stability
-- design/depth-control
-- benefits/expressivity
+- training/supervision-optimization
+- architecture/depth-control
+- capabilities/expressivity
+- understanding/why
 loop_topology: whole-stack
 sharing: full
 depth_control: fixed

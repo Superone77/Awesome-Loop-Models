@@ -15,24 +15,9 @@ year: 2026
 published_date: '2026-09-27'
 added_date: '2026-10-08'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- multimodal
-- adaptive-compute
-- efficiency
-tags:
-- MoR
-- MoR-MLLM
-- recursive-transformer
-focus_tags:
-- architecture
-- training-algorithm
 survey_section:
-- train/retrofitting
-- design/depth-control
+- training/retrofitting
+- architecture/depth-control
 - applications/language-speech-multimodal
 loop_topology: partial
 sharing: full

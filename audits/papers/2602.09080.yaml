@@ -12,31 +12,20 @@ scope:
   evidence: "RecursiveVLM reuses one set of Transformer-decoder parameters over a single recurrent axis within the multimodal forward pass."
   locator: "Section 3.2, Figure 3 and Equation 3"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces RecursiveVLM, its connector, and recursion objective."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "There is no nested, multilevel, or coarse-to-fine recurrent loop."
-  focus_tags:
-    values:
-      - architecture
-      - objective-loss
-      - training-algorithm
-      - inference-algorithm
-    rationale: "The contribution spans the architecture, monotonic recursion loss, its training, and budget-controlled inference."
-  domain_tags:
-    values:
-      - vision
-      - efficiency
-      - multimodal
-      - adaptive-compute
-    rationale: "The model targets efficient multimodal vision-language computation with on-demand refinement under varying budgets."
-  tags:
-    values:
-      - RecursiveVLM
-    rationale: "RecursiveVLM is the model identifier; multimodal is a domain, not an alias."
+      - applications/language-speech-multimodal
+      - training/supervision-optimization
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): There is no nested, multilevel, or coarse-to-fine recurrent loop."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): There is no nested, multilevel, or coarse-to-fine recurrent loop."
+  depth_control:
+    value: sampled-train
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

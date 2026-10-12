@@ -9,22 +9,10 @@ year: 2026
 published_date: '2026-02-09'
 added_date: '2026-04-24'
 venue: ICML
-category: analysis
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- algorithmic-reasoning
-- efficiency
-- adaptive-compute
-tags:
-- ANIRA
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
-- benefits/limits
-- design/depth-control
+- understanding/failure-modes
+- architecture/depth-control
+- understanding/why
 loop_topology: whole-stack
 sharing: full
 depth_control: adaptive-halting
