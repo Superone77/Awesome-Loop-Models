@@ -18,10 +18,6 @@ domain_tags:
 - reasoning
 - algorithmic-reasoning
 - adaptive-compute
-tags:
-- InfiLoop
-- TRM
-- looped-transformer
 focus_tags:
 - architecture
 - inference-algorithm

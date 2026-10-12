@@ -14,9 +14,6 @@ mechanism_tags:
 domain_tags:
 - vision
 - efficiency
-tags:
-- reViT
-- looped-transformer
 focus_tags:
 - architecture
 - training-algorithm

@@ -17,10 +17,6 @@ mechanism_tags:
 domain_tags:
 - language-modeling
 - reasoning
-tags:
-- Ouro
-- LoopLM
-- LoopOPD
 focus_tags:
 - training-algorithm
 - objective-loss

@@ -14,8 +14,6 @@ mechanism_tags:
 domain_tags:
 - reasoning
 - algorithmic-reasoning
-tags:
-- TRM
 focus_tags:
 - training-algorithm
 - data

@@ -21,9 +21,6 @@ domain_tags:
 - biology
 - adaptive-compute
 - scaling
-tags:
-- Eco-RNA
-- depth-recurrent
 focus_tags:
 - architecture
 - objective-loss

@@ -16,9 +16,6 @@ domain_tags:
 - algorithmic-reasoning
 - reasoning
 - theory
-tags:
-- ImR
-- EqR
 focus_tags:
 - inference-algorithm
 - objective-loss

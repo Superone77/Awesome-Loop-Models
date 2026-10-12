@@ -19,11 +19,6 @@ domain_tags:
 - reasoning
 - adaptive-compute
 - efficiency
-tags:
-- ELR
-- Koi-4B
-- LoopLM
-- MoE
 focus_tags:
 - training-algorithm
 - architecture

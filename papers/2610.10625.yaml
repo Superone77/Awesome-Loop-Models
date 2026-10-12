@@ -17,10 +17,6 @@ mechanism_tags:
 domain_tags:
 - alignment
 - language-modeling
-tags:
-- Ouro
-- LoopLM
-- SafeBridge
 focus_tags:
 - training-algorithm
 - objective-loss

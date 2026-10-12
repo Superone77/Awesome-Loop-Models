@@ -18,9 +18,6 @@ domain_tags:
 - reasoning
 - language-modeling
 - efficiency
-tags:
-- LLoCoT
-- looped-transformer
 focus_tags:
 - architecture
 - inference-algorithm

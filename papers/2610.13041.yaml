@@ -14,9 +14,6 @@ mechanism_tags:
 domain_tags:
 - language-modeling
 - efficiency
-tags:
-- RAMP
-- Huginn
 focus_tags:
 - inference-algorithm
 survey_section:
