@@ -9,19 +9,9 @@ year: 2026
 published_date: '2026-08-31'
 added_date: '2026-09-01'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- theory
-- algorithmic-reasoning
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
-- benefits/generalization
-- benefits/expressivity
+- capabilities/generalization
+- capabilities/expressivity
 loop_topology: whole-stack
 sharing: full
 depth_control: adaptive-halting

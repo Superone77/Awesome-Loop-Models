@@ -8,19 +8,6 @@ year: 2026
 published_date: '2026-06-21'
 added_date: '2026-06-23'
 venue: ICML
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- graph-data
-- efficiency
-focus_tags:
-- architecture
-- inference-algorithm
-- training-algorithm
-tags:
-- AdaR
 survey_section:
 - applications/graphs-science
 - scaling/test-time

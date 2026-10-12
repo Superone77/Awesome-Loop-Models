@@ -9,21 +9,9 @@ year: 2025
 published_date: '2025-07-02'
 added_date: '2026-04-21'
 venue: COLM 2025 Workshop
-category: analysis
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-tags:
-- depth-recurrent
-- latent-cot
-- Huginn
-focus_tags:
-- inference-algorithm
 survey_section:
-- interpretability
-- benefits/efficiency
+- understanding/interpretability
+- capabilities/efficiency
 loop_topology: prelude-core-coda
 sharing: full
 depth_control: sampled-train

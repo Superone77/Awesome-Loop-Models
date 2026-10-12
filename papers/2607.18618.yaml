@@ -10,17 +10,6 @@ year: 2026
 published_date: '2026-07-21'
 added_date: '2026-07-22'
 venue: arXiv
-category: applications
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- machine-translation
-- efficiency
-focus_tags:
-- training-algorithm
-- inference-algorithm
 survey_section:
 - applications/language-speech-multimodal
 - scaling/test-time

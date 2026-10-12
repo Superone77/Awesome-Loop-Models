@@ -12,25 +12,9 @@ year: 2026
 published_date: '2026-09-30'
 added_date: '2026-10-04'
 venue: arXiv
-category: analysis
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- algorithmic-reasoning
-- reasoning
-tags:
-- HRM
-- TRM
-- URM
-- recursive-transformer
-focus_tags:
-- training-algorithm
-- architecture
 survey_section:
-- train/stability
-- train/gradients
-- design/topology
+- training/supervision-optimization
+- architecture/topology
 loop_topology: whole-stack
 sharing: full
 depth_control: adaptive-halting

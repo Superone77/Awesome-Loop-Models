@@ -7,19 +7,8 @@ year: 2026
 published_date: '2026-08-27'
 added_date: '2026-08-30'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- efficiency
-- scaling
-focus_tags:
-- architecture
-- data
 survey_section:
-- benefits/efficiency
+- capabilities/efficiency
 - scaling/compute-optimal
 loop_topology: whole-stack
 sharing: full

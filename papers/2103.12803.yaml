@@ -10,19 +10,8 @@ year: 2021
 published_date: '2021-03-23'
 added_date: '2026-10-01'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- implicit-layer
-domain_tags:
-- vision
-- efficiency
-tags:
-- DEQ
-focus_tags:
-- training-algorithm
 survey_section:
-- train/gradients
+- training/supervision-optimization
 loop_topology: implicit-fixed-point
 sharing: full
 depth_control: convergence

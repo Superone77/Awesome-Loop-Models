@@ -9,25 +9,10 @@ year: 2026
 published_date: '2026-06-29'
 added_date: '2026-06-29'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- algorithmic-reasoning
-- scaling
-- adaptive-compute
-focus_tags:
-- training-algorithm
-- inference-algorithm
-tags:
-- looped-transformer
-- depth-scaling
-- halting
 survey_section:
-- design/depth-control
+- architecture/depth-control
 - scaling/test-time
-- train/post-training
+- training/post-training
 loop_topology: whole-stack
 sharing: full
 depth_control: adaptive-halting

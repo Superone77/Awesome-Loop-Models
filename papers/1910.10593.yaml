@@ -9,15 +9,6 @@ year: 2020
 published_date: '2019-10-23'
 added_date: '2026-09-06'
 venue: ICLR
-category: applications
-mechanism_tags:
-- flat-loop
-domain_tags:
-- graph-data
-- algorithmic-reasoning
-focus_tags:
-- architecture
-- training-algorithm
 survey_section:
 - foundations/algorithmic
 - applications/graphs-science

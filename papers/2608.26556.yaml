@@ -5,20 +5,11 @@ year: 2026
 published_date: '2026-08-27'
 added_date: '2026-08-30'
 venue: arXiv
-category: analysis
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- theory
-- scaling
-- adaptive-compute
-focus_tags:
-- inference-algorithm
 survey_section:
 - scaling/test-time
-- interpretability
-- benefits/limits
+- understanding/interpretability
+- understanding/failure-modes
+- understanding/why
 loop_topology: whole-stack
 sharing: full
 depth_control: convergence

@@ -13,23 +13,9 @@ year: 2026
 published_date: '2026-10-04'
 added_date: '2026-10-05'
 venue: arXiv
-category: applications
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- vision
-- efficiency
-- adaptive-compute
-tags:
-- LoopMoEVR
-- LoopMoE
-- MoE
-focus_tags:
-- architecture
 survey_section:
 - applications/vision
-- design/depth-control
+- architecture/depth-control
 loop_topology: prelude-core-coda
 sharing: partial-adapter
 depth_control: adaptive-halting

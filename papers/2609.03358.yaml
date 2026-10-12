@@ -6,20 +6,9 @@ year: 2026
 published_date: '2026-09-03'
 added_date: '2026-09-06'
 venue: arXiv
-category: applications
-foundation: false
-mechanism_tags:
-- implicit-layer
-domain_tags:
-- scientific-ml
-- efficiency
-- memory-efficiency
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
 - applications/graphs-science
-- train/gradients
+- training/supervision-optimization
 loop_topology: implicit-fixed-point
 sharing: full
 depth_control: convergence

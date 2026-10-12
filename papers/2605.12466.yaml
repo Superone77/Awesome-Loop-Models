@@ -6,26 +6,10 @@ year: 2026
 published_date: '2026-05-12'
 added_date: '2026-05-12'
 venue: FoGen Workshop @ ICML
-category: designs
-mechanism_tags:
-- flat-loop
-- implicit-layer
-domain_tags:
-- language-modeling
-- reasoning
-- scaling
-- efficiency
-tags:
-- looped-transformer
-- looped-llm
-focus_tags:
-- architecture
-- training-algorithm
-- inference-algorithm
 survey_section:
-- train/gradients
-- design/topology
-- benefits/efficiency
+- training/supervision-optimization
+- architecture/topology
+- capabilities/efficiency
 loop_topology: implicit-fixed-point
 sharing: full
 depth_control: convergence

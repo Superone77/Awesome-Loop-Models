@@ -9,22 +9,9 @@ published_date: '2026-04-14'
 added_date: '2026-04-24'
 venue: LIT Workshop @ ICLR
 must_read: true
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-tags:
-- Parcae
-- isoFLOPs
-focus_tags:
-- architecture
-- training-algorithm
-- inference-algorithm
 survey_section:
 - scaling/compute-optimal
-- design/depth-control
+- architecture/depth-control
 - scaling/test-time
 loop_topology: prelude-core-coda
 sharing: full

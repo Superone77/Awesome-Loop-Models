@@ -12,17 +12,8 @@ year: 2021
 published_date: '2021-06-08'
 added_date: '2026-09-06'
 venue: NeurIPS
-category: analysis
-mechanism_tags:
-- flat-loop
-domain_tags:
-- reasoning
-- algorithmic-reasoning
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
-- benefits/generalization
+- capabilities/generalization
 - foundations/algorithmic
 loop_topology: prelude-core-coda
 sharing: full

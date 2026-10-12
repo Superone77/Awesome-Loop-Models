@@ -6,23 +6,10 @@ year: 2026
 published_date: '2026-07-31'
 added_date: '2026-08-12'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-- algorithmic-reasoning
-- efficiency
-focus_tags:
-- architecture
-- objective-loss
-- training-algorithm
 survey_section:
-- train/retrofitting
-- benefits/generalization
-- train/supervision
+- training/retrofitting
+- capabilities/generalization
+- training/supervision-optimization
 loop_topology: prelude-core-coda
 sharing: full
 depth_control: fixed

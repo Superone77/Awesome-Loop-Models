@@ -17,23 +17,8 @@ year: 2026
 published_date: '2025-08-22'
 added_date: '2026-09-16'
 venue: Findings of ACL
-category: analysis
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- reasoning
-- algorithmic-reasoning
-- adaptive-compute
-tags:
-- ACT
-- adaptive-computation-time
-- test-time-compute
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
-- benefits/limits
+- understanding/failure-modes
 - scaling/test-time
 loop_topology: unspecified
 sharing: unspecified

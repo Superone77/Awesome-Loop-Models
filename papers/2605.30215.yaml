@@ -16,22 +16,9 @@ year: 2026
 published_date: '2026-05-28'
 added_date: '2026-06-02'
 venue: arXiv
-category: applications
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- vision
-- efficiency
-tags:
-- looped-transformer
-- DVLT
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
 - applications/flow-3d
-- benefits/efficiency
+- capabilities/efficiency
 loop_topology: prelude-core-coda
 sharing: full
 depth_control: sampled-train

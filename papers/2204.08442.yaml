@@ -8,20 +8,6 @@ year: 2022
 published_date: '2022-04-18'
 added_date: '2026-09-06'
 venue: CVPR
-category: designs
-mechanism_tags:
-- implicit-layer
-domain_tags:
-- vision
-- efficiency
-- memory-efficiency
-tags:
-- DEQ
-- convergence
-focus_tags:
-- architecture
-- training-algorithm
-- inference-algorithm
 survey_section:
 - applications/flow-3d
 loop_topology: implicit-fixed-point

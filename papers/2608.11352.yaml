@@ -8,21 +8,9 @@ added_date: '2026-08-12'
 venue: ACVR Workshop @ ECCV
 peer_reviewed: true
 venue_source: https://iplab.dmi.unict.it/acvr2026/program.html
-category: designs
-foundation: false
-mechanism_tags:
-- hierarchical-loop
-- flat-loop
-domain_tags:
-- machine-translation
-- multimodal
-- efficiency
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
 - applications/language-speech-multimodal
-- design/residual-injection
+- architecture/residual-init
 loop_topology: partial
 sharing: full
 depth_control: fixed

@@ -15,22 +15,9 @@ year: 2026
 published_date: '2026-03-05'
 added_date: '2026-04-24'
 venue: arXiv
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- efficiency
-tags:
-- MOUE
-- MoE
-focus_tags:
-- objective-loss
-- architecture
-- inference-algorithm
 survey_section:
-- design/loop-x
-- design/sharing-scheme
+- architecture/hybrid
+- architecture/sharing
 loop_topology: whole-stack
 sharing: expert-routed
 depth_control: fixed

@@ -8,24 +8,9 @@ year: 2026
 published_date: '2026-06-05'
 added_date: '2026-09-06'
 venue: "CVPR"
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- vision
-- efficiency
-- adaptive-compute
-- memory-efficiency
-tags:
-- halting
-- weight-tying
-focus_tags:
-- architecture
-- training-algorithm
-- inference-algorithm
 survey_section:
 - applications/vision
-- design/depth-control
+- architecture/depth-control
 loop_topology: whole-stack
 sharing: full
 depth_control: adaptive-halting

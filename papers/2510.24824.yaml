@@ -16,23 +16,11 @@ year: 2025
 published_date: '2025-10-28'
 added_date: '2026-04-21'
 venue: arXiv
-category: designs
-mechanism_tags:
-- parallel-loop
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-- efficiency
-tags:
-- PLT
-focus_tags:
-- inference-algorithm
-- architecture
 survey_section:
-- design/topology
+- architecture/topology
 - scaling/test-time
 - systems/batching-parallel
+- open-problems/depth-into-time
 loop_topology: shifted-parallel
 sharing: full
 depth_control: fixed

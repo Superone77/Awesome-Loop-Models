@@ -12,23 +12,10 @@ year: 2026
 published_date: "2026-07-31"
 added_date: "2026-08-12"
 venue: "IFM Research"
-mechanism_tags:
-  - "flat-loop"
-
-domain_tags:
-  - "language-modeling"
-  - "reasoning"
-  - "scaling"
-  - "efficiency"
-  - "memory-efficiency"
-
-tags:
-  - "Huginn"
-  - "Ouro"
-  - "MoE"
-
-focus_tags:
-  - "architecture"
+survey_section:
+  - "architecture/topology"
+  - "architecture/residual-init"
+  - "architecture/state-memory"
 
 desc: >
   Runs controlled, compute-matched ablations of recurrence topology, input

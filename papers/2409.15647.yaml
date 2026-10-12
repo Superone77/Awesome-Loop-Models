@@ -8,20 +8,9 @@ year: 2025
 published_date: '2024-09-24'
 added_date: '2026-07-18'
 venue: ICLR
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- algorithmic-reasoning
-- adaptive-compute
-focus_tags:
-- architecture
-- training-algorithm
-- inference-algorithm
 survey_section:
-- benefits/generalization
-- design/depth-control
+- capabilities/generalization
+- architecture/depth-control
 loop_topology: whole-stack
 sharing: full
 depth_control: adaptive-halting

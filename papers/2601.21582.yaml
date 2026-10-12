@@ -10,21 +10,9 @@ year: 2026
 published_date: '2026-01-29'
 added_date: '2026-04-24'
 venue: arXiv
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-- efficiency
-tags:
-- Dreamer
-- MoE
-focus_tags:
-- architecture
 survey_section:
-- design/state-memory
-- design/loop-x
+- architecture/state-memory
+- architecture/hybrid
 loop_topology: whole-stack
 sharing: expert-routed
 depth_control: unspecified

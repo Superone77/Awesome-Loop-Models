@@ -12,26 +12,9 @@ year: 2026
 published_date: '2026-05-26'
 added_date: '2026-05-27'
 venue: ICML
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-- theory
-- scaling
-tags:
-- LoopLM
-- STARS
-- recurrent-scaling
-- stability-analysis
-focus_tags:
-- training-algorithm
-- inference-algorithm
 survey_section:
-- train/stability
-- benefits/limits
+- training/supervision-optimization
+- understanding/failure-modes
 - scaling/test-time
 loop_topology: whole-stack
 sharing: full

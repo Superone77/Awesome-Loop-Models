@@ -10,21 +10,8 @@ year: 2026
 published_date: '2026-09-27'
 added_date: '2026-09-28'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- reasoning
-- algorithmic-reasoning
-tags:
-- CHARM
-- CoSE
-focus_tags:
-- architecture
-- data
 survey_section:
-- benefits/efficiency
+- capabilities/efficiency
 - applications/vision
 loop_topology: unspecified
 sharing: full

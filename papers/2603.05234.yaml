@@ -9,19 +9,8 @@ year: 2026
 published_date: '2026-03-05'
 added_date: '2026-04-24'
 venue: arXiv
-category: designs
-mechanism_tags:
-- hierarchical-loop
-domain_tags:
-- reasoning
-- tabular-data
-tags:
-- RIM
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
-- design/state-memory
+- architecture/state-memory
 loop_topology: hierarchical
 sharing: full
 depth_control: unspecified

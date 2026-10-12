@@ -11,25 +11,9 @@ year: 2026
 published_date: '2026-05-11'
 added_date: '2026-05-26'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-- scaling
-- efficiency
-tags:
-- looped-transformer
-- fully-looped-transformer
-focus_tags:
-- architecture
-- training-algorithm
-- inference-algorithm
 survey_section:
-- design/residual-injection
-- train/stability
+- architecture/residual-init
+- training/supervision-optimization
 loop_topology: whole-stack
 sharing: full
 depth_control: fixed

@@ -8,20 +8,8 @@ year: 2026
 published_date: '2026-05-15'
 added_date: '2026-05-18'
 venue: arXiv
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- sequence-modeling
-- efficiency
-tags:
-- depth-recurrent
-- shared-weight-recurrence
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
-- design/loop-x
+- architecture/hybrid
 - applications/embodied-other
 loop_topology: whole-stack
 sharing: full

@@ -13,24 +13,9 @@ year: 2026
 published_date: '2026-02-09'
 added_date: '2026-04-20'
 venue: arXiv
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- vision
-- efficiency
-- multimodal
-- adaptive-compute
-tags:
-- RecursiveVLM
-focus_tags:
-- architecture
-- objective-loss
-- training-algorithm
-- inference-algorithm
 survey_section:
 - applications/language-speech-multimodal
-- train/supervision
+- training/supervision-optimization
 loop_topology: whole-stack
 sharing: full
 depth_control: sampled-train

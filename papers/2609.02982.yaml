@@ -14,17 +14,6 @@ year: 2026
 published_date: '2026-09-02'
 added_date: '2026-09-06'
 venue: arXiv
-category: applications
-foundation: false
-mechanism_tags:
-- implicit-layer
-domain_tags:
-- scientific-ml
-- efficiency
-focus_tags:
-- data
-- training-algorithm
-- inference-algorithm
 survey_section:
 - applications/graphs-science
 loop_topology: implicit-fixed-point

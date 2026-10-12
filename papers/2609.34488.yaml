@@ -10,21 +10,9 @@ year: 2026
 published_date: '2026-09-28'
 added_date: '2026-09-28'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- rl-control
-- adaptive-compute
-tags:
-- FlexLoop
-focus_tags:
-- training-algorithm
-- inference-algorithm
 survey_section:
-- design/depth-control
-- train/post-training
+- architecture/depth-control
+- training/post-training
 - applications/embodied-other
 loop_topology: whole-stack
 sharing: full

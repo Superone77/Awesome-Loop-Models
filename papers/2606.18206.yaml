@@ -12,22 +12,10 @@ year: 2026
 published_date: '2026-06-16'
 added_date: '2026-06-17'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-- implicit-layer
-domain_tags:
-- reasoning
-- algorithmic-reasoning
-- adaptive-compute
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
-- design/residual-injection
-- design/depth-control
-- train/stability
+- architecture/residual-init
+- architecture/depth-control
+- training/supervision-optimization
 loop_topology: whole-stack
 sharing: full
 depth_control: convergence

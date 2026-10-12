@@ -7,20 +7,8 @@ year: 2026
 published_date: '2026-02-11'
 added_date: '2026-04-20'
 venue: ICML
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-tags:
-- RLTT
-- LoopLM
-focus_tags:
-- objective-loss
-- training-algorithm
 survey_section:
-- train/post-training
+- training/post-training
 loop_topology: whole-stack
 sharing: full
 depth_control: unspecified

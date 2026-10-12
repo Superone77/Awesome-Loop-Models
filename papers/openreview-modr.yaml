@@ -10,22 +10,8 @@ year: 2026
 published_date: '2026-01-26'
 added_date: '2026-04-24'
 venue: ICLR
-category: designs
-mechanism_tags:
-- parallel-loop
-domain_tags:
-- language-modeling
-- reasoning
-- efficiency
-tags:
-- MoDr
-- MoE
-focus_tags:
-- architecture
-- inference-algorithm
-- training-algorithm
 survey_section:
-- design/sharing-scheme
+- architecture/sharing
 - scaling/test-time
 loop_topology: shifted-parallel
 sharing: expert-routed

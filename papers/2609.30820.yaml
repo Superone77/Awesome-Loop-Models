@@ -5,21 +5,9 @@ year: 2026
 published_date: '2026-09-25'
 added_date: '2026-09-27'
 venue: arXiv
-category: analysis
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- efficiency
-tags:
-- Huginn
-- GPTQ
-focus_tags:
-- inference-algorithm
 survey_section:
 - systems/quantization-edge
-- benefits/limits
+- understanding/failure-modes
 loop_topology: unspecified
 sharing: full
 depth_control: unspecified

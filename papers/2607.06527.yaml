@@ -7,20 +7,6 @@ year: 2026
 published_date: '2026-07-07'
 added_date: '2026-07-12'
 venue: ICML
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- graph-data
-- reasoning
-- efficiency
-focus_tags:
-- architecture
-- objective-loss
-- inference-algorithm
-tags:
-- RSF-GLLM
 survey_section:
 - applications/graphs-science
 loop_topology: partial

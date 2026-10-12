@@ -7,17 +7,6 @@ year: 2026
 published_date: '2026-08-20'
 added_date: '2026-08-24'
 venue: arXiv
-category: applications
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- vision
-- efficiency
-focus_tags:
-- architecture
-- training-algorithm
-- inference-algorithm
 survey_section:
 - applications/vision
 loop_topology: whole-stack

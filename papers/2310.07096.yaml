@@ -9,26 +9,9 @@ year: 2023
 published_date: '2023-10-11'
 added_date: '2026-09-06'
 venue: EMNLP
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- machine-translation
-- compositional-reasoning
-- adaptive-compute
-- efficiency
-tags:
-- UT
-- MoE
-- halting
-focus_tags:
-- architecture
-- objective-loss
-- inference-algorithm
 survey_section:
-- design/loop-x
-- design/depth-control
+- architecture/hybrid
+- architecture/depth-control
 loop_topology: whole-stack
 sharing: expert-routed
 depth_control: adaptive-halting

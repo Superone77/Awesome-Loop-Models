@@ -8,24 +8,9 @@ year: 2026
 published_date: '2026-07-08'
 added_date: '2026-09-02'
 venue: arXiv
-category: analysis
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-- adaptive-compute
-- algorithmic-reasoning
-tags:
-- Ouro
-- halting
-focus_tags:
-- training-algorithm
-- inference-algorithm
 survey_section:
-- benefits/limits
-- design/depth-control
+- understanding/failure-modes
+- architecture/depth-control
 loop_topology: whole-stack
 sharing: full
 depth_control: adaptive-halting

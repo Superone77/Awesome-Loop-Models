@@ -7,19 +7,9 @@ year: 2026
 published_date: '2026-04-19'
 added_date: '2026-04-21'
 venue: LIT Workshop @ ICLR
-category: designs
-mechanism_tags:
-- hierarchical-loop
-domain_tags:
-- efficiency
-tags:
-- TRM
-- activation-compression
-focus_tags:
-- training-algorithm
 survey_section:
 - systems/kv-memory
-- interpretability
+- understanding/interpretability
 loop_topology: hierarchical
 sharing: full
 depth_control: unspecified

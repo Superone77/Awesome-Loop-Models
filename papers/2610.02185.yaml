@@ -12,20 +12,6 @@ year: 2026
 published_date: '2026-10-01'
 added_date: '2026-10-04'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-- efficiency
-tags:
-- LoopCD
-- Ouro
-- Huginn
-focus_tags:
-- inference-algorithm
 survey_section:
 - scaling/test-time
 loop_topology: unspecified

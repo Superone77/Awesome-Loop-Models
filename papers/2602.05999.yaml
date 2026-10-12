@@ -8,20 +8,10 @@ year: 2026
 published_date: '2026-02-05'
 added_date: '2026-04-24'
 venue: ICML
-category: analysis
-mechanism_tags:
-- flat-loop
-domain_tags:
-- rl-control
-- theory
-tags:
-- compute-bounded-policy
-- IRU
-focus_tags:
-- architecture
 survey_section:
 - applications/embodied-other
-- benefits/expressivity
+- capabilities/expressivity
+- understanding/why
 loop_topology: unspecified
 sharing: unspecified
 depth_control: unspecified

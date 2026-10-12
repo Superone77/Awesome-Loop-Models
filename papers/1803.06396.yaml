@@ -12,19 +12,8 @@ year: 2018
 published_date: '2018-03-16'
 added_date: '2026-09-06'
 venue: ICML
-category: designs
-mechanism_tags:
-- implicit-layer
-domain_tags:
-- efficiency
-- memory-efficiency
-- theory
-tags:
-- convergence
-focus_tags:
-- training-algorithm
 survey_section:
-- train/gradients
+- training/supervision-optimization
 - foundations/implicit
 loop_topology: implicit-fixed-point
 sharing: full

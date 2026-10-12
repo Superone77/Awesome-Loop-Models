@@ -12,17 +12,9 @@ year: 2026
 published_date: '2026-09-29'
 added_date: '2026-09-30'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-focus_tags:
-- architecture
 survey_section:
-- design/residual-injection
-- design/state-memory
+- architecture/residual-init
+- architecture/state-memory
 loop_topology: unspecified
 sharing: full
 depth_control: fixed

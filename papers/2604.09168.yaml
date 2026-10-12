@@ -10,24 +10,10 @@ year: 2026
 published_date: '2026-04-10'
 added_date: '2026-05-03'
 venue: EDGE
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- vision
-- efficiency
-tags:
-- ELT
-- looped-transformer
-- ILSD
-focus_tags:
-- architecture
-- training-algorithm
-- inference-algorithm
 survey_section:
 - applications/vision
-- design/loop-x
-- outlook/diffusion
+- architecture/hybrid
+- open-problems/diffusion
 loop_topology: whole-stack
 sharing: full
 depth_control: sampled-train

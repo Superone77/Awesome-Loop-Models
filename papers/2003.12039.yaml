@@ -6,17 +6,6 @@ year: 2020
 published_date: '2020-03-26'
 added_date: '2026-09-06'
 venue: ECCV
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- vision
-- efficiency
-tags:
-- latent-refinement
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
 - applications/flow-3d
 loop_topology: partial

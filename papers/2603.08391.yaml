@@ -10,22 +10,9 @@ year: 2026
 published_date: '2026-03-09'
 added_date: '2026-04-20'
 venue: LIT Workshop @ ICLR
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-- efficiency
-tags:
-- memory-banks
-- ACT
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
-- design/state-memory
-- design/topology
+- architecture/state-memory
+- architecture/topology
 - scaling/compute-optimal
 loop_topology: partial
 sharing: full

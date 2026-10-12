@@ -7,24 +7,10 @@ year: 2026
 published_date: '2026-10-06'
 added_date: '2026-10-06'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-tags:
-- SanSi
-- Ouro
-- LoRA
-focus_tags:
-- training-algorithm
-- inference-algorithm
 survey_section:
 - scaling/test-time
-- train/supervision
-- train/post-training
+- training/supervision-optimization
+- training/post-training
 loop_topology: whole-stack
 sharing: unspecified
 depth_control: fixed

@@ -13,20 +13,9 @@ year: 2025
 published_date: '2024-02-21'
 added_date: '2026-04-24'
 venue: TMLR
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- algorithmic-reasoning
-tags:
-- AlgoFormer
-focus_tags:
-- architecture
-- training-algorithm
 survey_section:
-- benefits/expressivity
-- design/topology
+- capabilities/expressivity
+- architecture/topology
 loop_topology: prelude-core-coda
 sharing: full
 depth_control: fixed

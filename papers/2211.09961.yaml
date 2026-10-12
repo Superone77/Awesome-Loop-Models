@@ -12,25 +12,11 @@ year: 2022
 published_date: '2022-11-18'
 added_date: '2026-09-06'
 venue: NeurIPS
-category: analysis
-mechanism_tags:
-- implicit-layer
-domain_tags:
-- reasoning
-- theory
-- adaptive-compute
-tags:
-- fixed-point-analysis
-- convergence
-- test-time-compute
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
-- benefits/generalization
+- capabilities/generalization
 - scaling/test-time
-- benefits/limits
-- design/depth-control
+- understanding/failure-modes
+- architecture/depth-control
 loop_topology: implicit-fixed-point
 sharing: full
 depth_control: convergence

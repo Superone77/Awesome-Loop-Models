@@ -6,19 +6,8 @@ year: 2023
 published_date: '2021-04-13'
 added_date: '2026-09-06'
 venue: Fourth Workshop on Simple and Efficient Natural Language Processing (SustaiNLP)
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- sequence-modeling
-- machine-translation
-- efficiency
-tags:
-- weight-tying
-focus_tags:
-- architecture
 survey_section:
-- design/sharing-scheme
+- architecture/sharing
 - foundations/depth-sharing
 loop_topology: whole-stack
 sharing: full

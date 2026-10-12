@@ -8,21 +8,9 @@ year: 2026
 published_date: '2026-05-19'
 added_date: '2026-05-20'
 venue: arXiv
-category: applications
-mechanism_tags:
-- implicit-layer
-domain_tags:
-- vision
-- efficiency
-tags:
-- DEQ
-- i-DEQ
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
 - applications/vision
-- train/stability
+- training/supervision-optimization
 loop_topology: implicit-fixed-point
 sharing: full
 depth_control: convergence

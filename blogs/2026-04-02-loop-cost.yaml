@@ -5,21 +5,9 @@ year: 2026
 published_date: "2026-04-19"
 added_date: "2026-04-22"
 venue: "Personal Blog"
-mechanism_tags:
-- flat-loop
-
-domain_tags:
-  - "FLOPs-efficiency"
-  - "memory-efficiency"
-  - "theory"
-
-tags:
-  - "BPTT"
-  - "detach"
-  - "checkpointing"
-
-focus_tags:
-  - "training-algorithm"
+survey_section:
+  - "training/supervision-optimization"
+  - "capabilities/efficiency"
 
 desc: >
   Builds a clean cost-ablation chain for loop-model training, comparing

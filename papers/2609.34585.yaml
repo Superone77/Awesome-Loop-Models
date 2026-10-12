@@ -6,20 +6,6 @@ year: 2026
 published_date: '2026-09-28'
 added_date: '2026-09-28'
 venue: arXiv
-category: applications
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- graph-data
-- algorithmic-reasoning
-- adaptive-compute
-tags:
-- TRM
-- halting
-focus_tags:
-- architecture
-- training-algorithm
 survey_section:
 - applications/graphs-science
 - scaling/test-time

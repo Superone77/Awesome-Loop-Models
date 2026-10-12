@@ -8,23 +8,10 @@ year: 2026
 published_date: '2026-09-27'
 added_date: '2026-09-28'
 venue: arXiv
-category: analysis
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- reasoning
-- algorithmic-reasoning
-- theory
-tags:
-- MR-Loop
-- DR-Loop
-focus_tags:
-- training-algorithm
 survey_section:
-- interpretability
-- benefits/generalization
-- benefits/limits
+- understanding/interpretability
+- capabilities/generalization
+- understanding/failure-modes
 loop_topology: whole-stack
 sharing: full
 depth_control: unspecified

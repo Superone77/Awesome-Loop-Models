@@ -6,19 +6,6 @@ year: 2026
 published_date: '2026-06-04'
 added_date: '2026-06-11'
 venue: arXiv
-category: applications
-foundation: false
-mechanism_tags:
-- parallel-loop
-domain_tags:
-- robotics-vla
-- reasoning
-tags:
-- MPCoT
-focus_tags:
-- architecture
-- objective-loss
-- inference-algorithm
 survey_section:
 - applications/embodied-other
 - scaling/test-time

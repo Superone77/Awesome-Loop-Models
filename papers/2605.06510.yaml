@@ -8,16 +8,6 @@ year: 2026
 published_date: '2026-05-07'
 added_date: '2026-05-08'
 venue: ICML
-category: analysis
-mechanism_tags:
-- flat-loop
-domain_tags:
-- tabular-data
-tags:
-- nanoTabPFNlooped
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
 - applications/embodied-other
 loop_topology: whole-stack

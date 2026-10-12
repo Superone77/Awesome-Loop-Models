@@ -9,21 +9,9 @@ year: 2021
 published_date: '2019-08-17'
 added_date: '2026-09-06'
 venue: SIAM Journal on Mathematics of Data Science
-category: designs
-mechanism_tags:
-- implicit-layer
-domain_tags:
-- theory
-- efficiency
-tags:
-- convergence
-focus_tags:
-- architecture
-- training-algorithm
-- inference-algorithm
 survey_section:
 - foundations/implicit
-- train/stability
+- training/supervision-optimization
 loop_topology: implicit-fixed-point
 sharing: full
 depth_control: convergence

@@ -6,20 +6,9 @@ year: 2019
 published_date: '2018-07-14'
 added_date: '2026-09-06'
 venue: AAAI
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- machine-translation
-- efficiency
-tags:
-- shared-weight-recurrence
-- weight-tying
-focus_tags:
-- architecture
 survey_section:
 - foundations/depth-sharing
-- benefits/efficiency
+- capabilities/efficiency
 loop_topology: whole-stack
 sharing: full
 depth_control: fixed

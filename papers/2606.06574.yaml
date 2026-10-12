@@ -7,22 +7,9 @@ year: 2026
 published_date: '2026-06-04'
 added_date: '2026-06-11'
 venue: ICML
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-tags:
-- looped-transformer
-- PoLar
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
-- design/depth-control
-- train/retrofitting
+- architecture/depth-control
+- training/retrofitting
 loop_topology: partial
 sharing: full
 depth_control: adaptive-halting

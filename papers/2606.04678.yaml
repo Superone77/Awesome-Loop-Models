@@ -10,25 +10,10 @@ year: 2026
 published_date: '2026-06-03'
 added_date: '2026-06-04'
 venue: arXiv
-category: applications
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- speech-recognition
-- efficiency
-- scaling
-tags:
-- LARM
-- looped-transformer
-- test-time-compute
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
 - applications/language-speech-multimodal
 - scaling/test-time
-- design/sharing-scheme
+- architecture/sharing
 loop_topology: whole-stack
 sharing: partial-adapter
 depth_control: unspecified

@@ -14,21 +14,9 @@ year: 2025
 published_date: '2025-11-10'
 added_date: '2026-04-26'
 venue: arXiv
-category: designs
-mechanism_tags:
-- flat-loop
-domain_tags:
-- efficiency
-- language-modeling
-- reasoning
-focus_tags:
-- architecture
-- training-algorithm
-tags:
-- depth-recurrent
 survey_section:
-- train/retrofitting
-- design/depth-control
+- training/retrofitting
+- architecture/depth-control
 loop_topology: prelude-core-coda
 sharing: full
 depth_control: sampled-train

@@ -11,26 +11,10 @@ year: 2026
 published_date: '2026-05-20'
 added_date: '2026-05-21'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-- efficiency
-- scaling
-tags:
-- looped-transformer
-- looped-llm
-- Ouro
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
-- design/loop-x
+- architecture/hybrid
 - systems/kv-memory
-- train/retrofitting
+- training/retrofitting
 loop_topology: whole-stack
 sharing: full
 depth_control: fixed

@@ -8,21 +8,9 @@ year: 2026
 published_date: '2026-09-27'
 added_date: '2026-09-28'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- implicit-layer
-domain_tags:
-- reasoning
-- algorithmic-reasoning
-- language-modeling
-tags:
-- GFPR
-focus_tags:
-- architecture
 survey_section:
-- design/residual-injection
-- benefits/limits
+- architecture/residual-init
+- understanding/failure-modes
 loop_topology: implicit-fixed-point
 sharing: full
 depth_control: fixed

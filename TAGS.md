@@ -1,76 +1,85 @@
-# TAGS
+# Taxonomy vocabulary
 
-Prefer existing tags from this file when adding a paper or blog. Only propose a new tag when no current option fits.
+Every paper and blog is classified with the controlled vocabulary below, which follows the chapters of the Looped Models Survey. There are no free-form tags; a value that is not listed here is a taxonomy change and needs the maintainer. See [TAXONOMY.md](TAXONOMY.md) for how to choose values.
 
 This file is auto-generated from `papers/*.yaml` and `blogs/*.yaml` by `scripts/build.py`.
 
-## Selection Policy
-
-- Reuse an existing tag whenever possible.
-- Reuse the existing spelling and case exactly.
-- Loop Mechanism (`mechanism_tags`) describes the loop form and must be one of `hierarchical-loop`, `flat-loop`, `parallel-loop`, or `implicit-layer`; do not use paper acronyms or lineage labels such as `DEQ` as browser-facing tags.
-- `focus_tags` are controlled vocabulary and must come from the allowlist below.
-- `domain_tags` are browser-facing domain labels; prefer an existing one before proposing a new domain tag.
-- `tags` are optional alias metadata for short model or paper identifiers; prefer existing spellings before proposing a new alias tag.
-
-## Loop Mechanism (`mechanism_tags`)
-
-Loop Mechanism is a controlled loop-form tag set. Use only `hierarchical-loop`, `flat-loop`, `parallel-loop`, or `implicit-layer`.
-
-- `hierarchical-loop` (29)
-- `flat-loop` (259)
-- `parallel-loop` (7)
-- `implicit-layer` (39)
-
-## focus_tags
-
-Controlled vocabulary. The build validates these values, and the interactive browser uses them as filter chips.
-
-- `objective-loss` (35)
-- `training-algorithm` (125)
-- `architecture` (240)
-- `data` (9)
-- `inference-algorithm` (187)
-
 ## Survey sections (`survey_section`)
 
-Controlled vocabulary aligned with the Looped Models Survey outline. List every section where the paper belongs; the first entry is its primary section. Counts are primary / any.
+List every section the entry belongs to; the first entry is its primary section. Counts are primary / any.
 
-- `foundations/recurrence` — Foundations: Recurrent networks and weight sharing across computation (2 / 3)
-- `foundations/depth-sharing` — Foundations: Weight sharing across network depth (4 / 6)
-- `foundations/implicit` — Foundations: Deep equilibrium and implicit models (7 / 11)
-- `foundations/algorithmic` — Foundations: Iterative and algorithmic computation (4 / 7)
-- `benefits/efficiency` — What Looping Buys: Parameter, data, and compute efficiency (7 / 32)
-- `benefits/expressivity` — What Looping Buys: Expressivity and reasoning capacity (17 / 21)
-- `benefits/generalization` — What Looping Buys: Length, easy-to-hard, and compositional generalization (9 / 18)
-- `benefits/limits` — What Looping Buys: Limits and failure modes (9 / 30)
-- `design/topology` — Architecture: Loop topology (10 / 25)
-- `design/residual-injection` — Architecture: Residual manipulation, input injection, and initialization (8 / 29)
-- `design/state-memory` — Architecture: Recurrent state and loop-time memory (7 / 14)
-- `design/sharing-scheme` — Architecture: Weight-sharing schemes and iteration-dependent computation (5 / 21)
-- `design/depth-control` — Architecture: Controlling recurrence depth (15 / 51)
-- `design/loop-x` — Architecture: Loop x MoE, efficient mixers, and diffusion (17 / 23)
-- `train/supervision` — Training: Supervision and credit assignment (3 / 26)
-- `train/gradients` — Training: BPTT, truncated BPTT, and implicit gradients (7 / 15)
-- `train/stability` — Training: Loop-specific optimization and stability (12 / 20)
-- `train/post-training` — Training: Post-training and reinforcement learning (4 / 10)
-- `train/retrofitting` — Training: Retrofitting pretrained models into looped models (10 / 16)
-- `scaling/compute-optimal` — Scaling: Parameter, depth, and compute-optimal scaling (7 / 15)
-- `scaling/test-time` — Scaling: Test-time scaling (10 / 34)
-- `systems/quantization-edge` — Systems: Quantization and edge deployment (8 / 12)
-- `systems/kv-memory` — Systems: KV cache and memory (8 / 16)
-- `systems/batching-parallel` — Systems: Loop-level batching, scheduling, and parallel execution (5 / 8)
-- `interpretability` — Interpretability: Mechanistic interpretability of looped models (20 / 28)
-- `applications/language-speech-multimodal` — Applications: Language, code, speech, and multimodal tasks (23 / 29)
-- `applications/vision` — Applications: Visual recognition, restoration, and generation (20 / 26)
-- `applications/flow-3d` — Applications: Flow, stereo, and 3D geometry (5 / 5)
-- `applications/graphs-science` — Applications: Graphs, structured data, and scientific modeling (15 / 22)
-- `applications/embodied-other` — Applications: Embodied AI and other domains (20 / 23)
-- `outlook/diffusion` — Outlook: Unification with diffusion models (1 / 9)
+### Part I. Foundations
 
-## `loop_topology`
+**§2 From Recurrent Computation to Iterative Depth**
 
-Controlled vocabulary. Where the loop sits in the network (single value).
+- `foundations/recurrence` — §2.1 Recurrent networks and weight sharing across computation (2 / 4)
+- `foundations/depth-sharing` — §2.2 Weight sharing across network depth (4 / 6)
+- `foundations/implicit` — §2.3 Deep equilibrium and implicit models (7 / 11)
+- `foundations/algorithmic` — §2.4 Iterative and algorithmic computation (4 / 7)
+
+### Part II. What Looping Buys
+
+**§3 Capabilities, Benefits and Trade-offs**
+
+- `capabilities/efficiency` — §3.1 Parameter, data, and compute efficiency (7 / 33)
+- `capabilities/expressivity` — §3.2 Expressivity and reasoning capacity (17 / 21)
+- `capabilities/generalization` — §3.3 Length, easy-to-hard, and compositional generalization (10 / 19)
+
+### Part III. Building, Training and Deploying
+
+**§4 Architecture and Design**
+
+- `architecture/topology` — §4.1 Loop topology (11 / 27)
+- `architecture/residual-init` — §4.2 Residual manipulation and initialization (9 / 32)
+- `architecture/state-memory` — §4.3 Recurrent state and loop-time memory (7 / 15)
+- `architecture/sharing` — §4.4 Weight-sharing schemes and iteration-dependent computation (5 / 21)
+- `architecture/depth-control` — §4.5 Controlling recurrence depth (16 / 52)
+- `architecture/hybrid` — §4.6 Hybrid looped architectures (17 / 23)
+
+**§5 Learning Algorithms**
+
+- `training/supervision-optimization` — §5.1 Supervision, credit assignment, and loop-specific optimization (23 / 60)
+- `training/post-training` — §5.2 Post-training and reinforcement learning (4 / 10)
+- `training/retrofitting` — §5.3 Retrofitting pretrained models into looped models (10 / 16)
+
+**§6 Scaling Laws**
+
+- `scaling/compute-optimal` — §6.1 Parameter, depth, and compute-optimal scaling (9 / 17)
+- `scaling/test-time` — §6.2 Test-time scaling (10 / 34)
+
+**§7 Systems and Infrastructure**
+
+- `systems/quantization-edge` — §7.1 Quantization and edge deployment (8 / 12)
+- `systems/kv-memory` — §7.2 KV cache and memory (8 / 17)
+- `systems/batching-parallel` — §7.3 Loop-level batching, scheduling, and parallel execution (5 / 8)
+
+### Part IV. Understanding and Applications
+
+**§8 Understanding Why Looped Models Work**
+
+- `understanding/why` — §8.1 Why looped models work (1 / 10)
+- `understanding/interpretability` — §8.2 Mechanistic interpretability (20 / 28)
+- `understanding/failure-modes` — §8.3 When looping does not help: limits and failure modes (9 / 30)
+
+**§9 Applications**
+
+- `applications/language-speech-multimodal` — §9.1 Language, code, speech, and multimodal tasks (23 / 29)
+- `applications/vision` — §9.2 Visual recognition, restoration, and generation (20 / 26)
+- `applications/flow-3d` — §9.3 Flow, stereo, and 3D geometry (5 / 5)
+- `applications/graphs-science` — §9.4 Graphs, structured data, and scientific modeling (15 / 22)
+- `applications/embodied-other` — §9.5 Embodied AI and other domains (20 / 23)
+
+### Part V. Open Problems
+
+**§10 Open Problems**
+
+- `open-problems/diffusion` — §10.1 Unification with diffusion models (1 / 9)
+- `open-problems/depth-into-time` — §10.2 Folding depth into time (0 / 5)
+- `open-problems/monitorability-safety` — §10.3 Monitorability and safety (0 / 1)
+
+## Loop topology (`loop_topology`)
+
+Where the loop sits in the network (one value, papers only).
 
 - `whole-stack` (128)
 - `prelude-core-coda` (30)
@@ -80,18 +89,18 @@ Controlled vocabulary. Where the loop sits in the network (single value).
 - `implicit-fixed-point` (36)
 - `unspecified` (37)
 
-## `sharing`
+## Sharing (`sharing`)
 
-Controlled vocabulary. How parameters are shared across iterations (single value).
+How parameters are shared across iterations (one value, papers only).
 
 - `full` (264)
 - `partial-adapter` (15)
 - `expert-routed` (10)
 - `unspecified` (10)
 
-## `depth_control`
+## Depth control (`depth_control`)
 
-Controlled vocabulary. How the number of iterations is decided (single value).
+How the number of iterations is decided (one value, papers only).
 
 - `fixed` (134)
 - `sampled-train` (14)
@@ -99,9 +108,9 @@ Controlled vocabulary. How the number of iterations is decided (single value).
 - `convergence` (42)
 - `unspecified` (50)
 
-## `claims`
+## Claims (`claims`)
 
-Controlled vocabulary. What the paper argues looping buys or costs (list).
+What the paper argues looping buys or costs (list, papers only).
 
 - `param-efficiency` (88)
 - `compute-efficiency` (99)
@@ -113,227 +122,11 @@ Controlled vocabulary. What the paper argues looping buys or costs (list).
 - `stability` (35)
 - `failure-mode` (43)
 
-## `comparison`
+## Looped-vs-untied comparison (`comparison`)
 
-Controlled vocabulary. Which quantity is held fixed when the paper compares looped and non-looped models (list; empty when there is no such comparison).
+Which quantity is held fixed when the paper compares looped and untied models (list; empty when there is no such comparison).
 
 - `iso-param` (32)
 - `iso-flop` (23)
 - `iso-depth` (18)
 - `unclear` (45)
-
-## domain_tags
-
-Observed browser-facing domain tags currently used across the repo.
-
-- `efficiency` (141)
-- `language-modeling` (134)
-- `reasoning` (132)
-- `algorithmic-reasoning` (71)
-- `adaptive-compute` (52)
-- `vision` (47)
-- `theory` (40)
-- `scaling` (35)
-- `memory-efficiency` (34)
-- `graph-data` (18)
-- `sequence-modeling` (16)
-- `multimodal` (12)
-- `scientific-ml` (9)
-- `machine-translation` (6)
-- `rl-control` (5)
-- `compositional-reasoning` (4)
-- `hardware-aware` (4)
-- `speech-recognition` (4)
-- `tabular-data` (4)
-- `recommendation` (3)
-- `alignment` (2)
-- `biology` (2)
-- `robotics-vla` (2)
-- `wireless-communications` (2)
-- `world-modeling` (2)
-- `audio-classification` (1)
-- `electronic-structure` (1)
-- `FLOPs-efficiency` (1)
-- `hyperspectral-imaging` (1)
-- `multilingual` (1)
-- `neuroscience` (1)
-- `quantum-machine-learning` (1)
-- `retrieval` (1)
-- `speech-synthesis` (1)
-- `summarization` (1)
-
-## tags
-
-Observed alias tags currently used across the repo. These do not appear as browser filter chips, but contributors should still prefer existing spellings.
-
-- `looped-transformer` (43)
-- `DEQ` (16)
-- `Ouro` (16)
-- `TRM` (16)
-- `halting` (15)
-- `weight-tying` (15)
-- `HRM` (13)
-- `MoE` (13)
-- `recursive-transformer` (12)
-- `Huginn` (11)
-- `looped-llm` (11)
-- `convergence` (10)
-- `depth-recurrent` (9)
-- `LoopLM` (8)
-- `shared-weight-recurrence` (8)
-- `ACT` (7)
-- `test-time-compute` (7)
-- `LoRA` (6)
-- `adaptive-computation-time` (5)
-- `depth-scaling` (5)
-- `latent-refinement` (5)
-- `universal-transformer` (5)
-- `UT` (5)
-- `fixed-point-analysis` (4)
-- `LoopMoE` (4)
-- `mechanistic-analysis` (4)
-- `flow matching` (3)
-- `NCA` (3)
-- `Parcae` (3)
-- `activation-compression` (2)
-- `EqR` (2)
-- `HRM-Text` (2)
-- `hyper-connections` (2)
-- `implicit GNN` (2)
-- `masked-diffusion-language-model` (2)
-- `memory-banks` (2)
-- `MoR` (2)
-- `mythos` (2)
-- `PLT` (2)
-- `PoLar` (2)
-- `RecRec` (2)
-- `scaling-laws` (2)
-- `URM` (2)
-- `AdaLoop` (1)
-- `AdaPonderLM` (1)
-- `adaptive-latent-iteration` (1)
-- `AdaR` (1)
-- `AlgoFormer` (1)
-- `ALoDLM` (1)
-- `aNCA` (1)
-- `ANIRA` (1)
-- `BA-T` (1)
-- `BPTD` (1)
-- `BPTT` (1)
-- `CART` (1)
-- `ChainGPT` (1)
-- `CHARM` (1)
-- `checkpointing` (1)
-- `CHERRY` (1)
-- `CoFRe` (1)
-- `CoLa` (1)
-- `compositional-generalization` (1)
-- `compute-bounded-policy` (1)
-- `CoSE` (1)
-- `CoTFormer` (1)
-- `DAS` (1)
-- `DAS-Wave` (1)
-- `DeepJEPA` (1)
-- `DeepLoop` (1)
-- `DEQ-Unmix` (1)
-- `detach` (1)
-- `DiscoLoop` (1)
-- `DR-Loop` (1)
-- `Dreamer` (1)
-- `DRM` (1)
-- `DVLT` (1)
-- `ELT` (1)
-- `Exact-ZOH` (1)
-- `FlashLoop` (1)
-- `FlexLoop` (1)
-- `Foil` (1)
-- `FP-MGM` (1)
-- `fully-looped-transformer` (1)
-- `G-RRM` (1)
-- `generalist-processor` (1)
-- `GFPR` (1)
-- `GPTQ` (1)
-- `GRAM` (1)
-- `HamEvo` (1)
-- `hierarchical-recurrence` (1)
-- `HLA` (1)
-- `Hyperloop` (1)
-- `i-DEQ` (1)
-- `ILSD` (1)
-- `implicit-reasoning` (1)
-- `implicit-ssm` (1)
-- `IRU` (1)
-- `iso-depth` (1)
-- `isoFLOPs` (1)
-- `LARM` (1)
-- `latent-cot` (1)
-- `latent-thoughts` (1)
-- `LexLattice` (1)
-- `LLA` (1)
-- `LOOM` (1)
-- `Loop Dropout` (1)
-- `LoopCD` (1)
-- `LoopCoder-v2` (1)
-- `looped-depth-up-scaling` (1)
-- `Looped-DiT` (1)
-- `looped-gpt` (1)
-- `Looped-Mamba` (1)
-- `LoopFormer` (1)
-- `Loopie` (1)
-- `LoopMDM` (1)
-- `LoopMoEVR` (1)
-- `LoopRPT` (1)
-- `LoopTrack` (1)
-- `LoopUS` (1)
-- `LoopVL` (1)
-- `LoopWM` (1)
-- `LOTUS` (1)
-- `MDEQ` (1)
-- `MELT` (1)
-- `memory-tokens` (1)
-- `MEQ` (1)
-- `MoDr` (1)
-- `MoEE` (1)
-- `MoEUT` (1)
-- `MoR-MLLM` (1)
-- `MOUE` (1)
-- `MPCoT` (1)
-- `MR-Loop` (1)
-- `multi-resolution-recursion` (1)
-- `nanoTabPFNlooped` (1)
-- `Neural GPU` (1)
-- `PaTh` (1)
-- `PERL` (1)
-- `phantom-gradient` (1)
-- `preference-probing` (1)
-- `PrefixLM` (1)
-- `programmable-computer` (1)
-- `PTRM` (1)
-- `QDEQ` (1)
-- `RD-VLA` (1)
-- `RE-PoLar` (1)
-- `recurrent-scaling` (1)
-- `RecursiveVLM` (1)
-- `ResidualQuant` (1)
-- `reverse-residual` (1)
-- `RGNN` (1)
-- `RIM` (1)
-- `RLTT` (1)
-- `RSF-GLLM` (1)
-- `SanSi` (1)
-- `SE-RRM` (1)
-- `SheafDEQ` (1)
-- `silent-thinking` (1)
-- `SpiralFormer` (1)
-- `SRM` (1)
-- `stability-analysis` (1)
-- `STARS` (1)
-- `TAFFY` (1)
-- `TaH` (1)
-- `TaH2` (1)
-- `Think-at-Hard` (1)
-- `timestep-encoding` (1)
-- `TMLT` (1)
-- `training-free-looping` (1)
-- `TTS` (1)
-- `WISE` (1)

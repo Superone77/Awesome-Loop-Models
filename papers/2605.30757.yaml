@@ -5,23 +5,9 @@ year: 2026
 published_date: '2026-05-29'
 added_date: '2026-06-01'
 venue: arXiv
-category: analysis
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-- theory
-- memory-efficiency
-tags:
-- looped-transformer
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
-- benefits/expressivity
-- benefits/limits
+- capabilities/expressivity
+- understanding/failure-modes
 loop_topology: unspecified
 sharing: full
 depth_control: unspecified

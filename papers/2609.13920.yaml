@@ -6,19 +6,9 @@ year: 2026
 published_date: '2026-09-12'
 added_date: '2026-09-15'
 venue: arXiv
-category: analysis
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- graph-data
-- theory
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
 - applications/graphs-science
-- benefits/limits
+- understanding/failure-modes
 loop_topology: whole-stack
 sharing: full
 depth_control: fixed
