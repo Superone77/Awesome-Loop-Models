@@ -7,19 +7,10 @@ year: 2026
 published_date: '2026-10-09'
 added_date: '2026-10-12'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- efficiency
-focus_tags:
-- inference-algorithm
 survey_section:
 - systems/quantization-edge
-- benefits/efficiency
-- train/stability
+- capabilities/efficiency
+- training/supervision-optimization
 loop_topology: prelude-core-coda
 sharing: full
 depth_control: fixed

@@ -10,22 +10,11 @@ year: 2026
 published_date: '2026-10-08'
 added_date: '2026-10-12'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- hierarchical-loop
-domain_tags:
-- reasoning
-- algorithmic-reasoning
-- adaptive-compute
-focus_tags:
-- architecture
-- inference-algorithm
 survey_section:
-- design/residual-injection
-- design/state-memory
+- architecture/residual-init
+- architecture/state-memory
 - scaling/test-time
-- train/stability
+- training/supervision-optimization
 loop_topology: hierarchical
 sharing: full
 depth_control: fixed

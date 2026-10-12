@@ -10,22 +10,9 @@ year: 2026
 published_date: '2026-10-08'
 added_date: '2026-10-12'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- language-modeling
-- reasoning
-- adaptive-compute
-- efficiency
-focus_tags:
-- training-algorithm
-- architecture
-- inference-algorithm
 survey_section:
-- train/retrofitting
-- design/depth-control
+- training/retrofitting
+- architecture/depth-control
 - scaling/test-time
 - systems/kv-memory
 loop_topology: prelude-core-coda

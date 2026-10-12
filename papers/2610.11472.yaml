@@ -10,21 +10,9 @@ year: 2026
 published_date: '2026-10-08'
 added_date: '2026-10-12'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- reasoning
-- language-modeling
-- efficiency
-focus_tags:
-- architecture
-- inference-algorithm
-- objective-loss
 survey_section:
-- design/state-memory
-- train/supervision
+- architecture/state-memory
+- training/supervision-optimization
 - scaling/test-time
 loop_topology: whole-stack
 sharing: full

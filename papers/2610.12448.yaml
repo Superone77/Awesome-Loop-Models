@@ -7,21 +7,11 @@ year: 2026
 published_date: '2026-10-08'
 added_date: '2026-10-12'
 venue: arXiv
-category: designs
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- vision
-- efficiency
-focus_tags:
-- architecture
-- training-algorithm
 survey_section:
-- design/sharing-scheme
+- architecture/sharing
 - applications/vision
-- design/depth-control
-- benefits/efficiency
+- architecture/depth-control
+- capabilities/efficiency
 loop_topology: whole-stack
 sharing: expert-routed
 depth_control: sampled-train

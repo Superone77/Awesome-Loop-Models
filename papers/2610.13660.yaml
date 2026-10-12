@@ -7,19 +7,9 @@ year: 2026
 published_date: '2026-10-09'
 added_date: '2026-10-12'
 venue: BNAIC/BeNeLearn 2026
-category: analysis
-foundation: false
-mechanism_tags:
-- hierarchical-loop
-domain_tags:
-- reasoning
-- algorithmic-reasoning
-focus_tags:
-- training-algorithm
-- data
 survey_section:
-- train/post-training
-- benefits/limits
+- training/post-training
+- understanding/failure-modes
 loop_topology: hierarchical
 sharing: full
 depth_control: unspecified

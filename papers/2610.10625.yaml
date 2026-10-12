@@ -10,21 +10,11 @@ year: 2026
 published_date: '2026-10-07'
 added_date: '2026-10-12'
 venue: arXiv
-category: applications
-foundation: false
-mechanism_tags:
-- flat-loop
-domain_tags:
-- alignment
-- language-modeling
-focus_tags:
-- training-algorithm
-- objective-loss
-- architecture
 survey_section:
-- train/post-training
-- design/sharing-scheme
+- training/post-training
+- architecture/sharing
 - applications/language-speech-multimodal
+- open-problems/monitorability-safety
 loop_topology: whole-stack
 sharing: partial-adapter
 depth_control: fixed
