@@ -12,26 +12,19 @@ scope:
   evidence: "The same learned residual mixer stack F_theta is composed N times inside one forecasting forward pass."
   locator: "Section 5.1, Equation 1 and Algorithm 1, pages 6-8; Section 5.2, Equations 7-8, page 8"
 taxonomy:
-  category:
-    value: applications
-    rationale: "The main artifact is a loop-model application to multivariate time-series forecasting."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "One shared residual mixer stack is repeatedly applied in a flat refinement loop."
-  focus_tags:
-    values:
-      - architecture
-      - inference-algorithm
-    rationale: "The all-MLP architecture includes shared-parameter forward-time iterative refinement."
-  domain_tags:
-    values:
-      - sequence-modeling
-      - efficiency
-    rationale: "The task is multivariate sequence forecasting and the design targets lower-cost modeling."
-  tags:
-    values: []
-    rationale: "The canonical record does not need a separate short alias."
+      - applications/embodied-other
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: partial
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One shared residual mixer stack is repeatedly applied in a flat refinement loop."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One shared residual mixer stack is repeatedly applied in a flat refinement loop."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

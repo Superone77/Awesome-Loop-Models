@@ -4,6 +4,17 @@ final result: prior layout QA passed; subsequent list, detail, thumbnail and fil
 
 Scope: local visual and interaction QA, not a deployment or an automated test-suite result.
 
+## Follow-up: Looped Models Survey taxonomy (2026-10)
+
+Supersedes the category, tag and Foundation notes in the older follow-ups below; those describe UI that no longer exists.
+
+- The Papers list is grouped Part → Chapter (§2–§10) → Section; each paper appears once, under its primary (first) `survey_section`, and keeps the active sort inside its section. Empty groups are not rendered and headings show filtered counts. The table view stays one globally sorted list, with Survey section and Design axes columns.
+- A sidebar "Survey chapters" list (hidden in Stats, Blogs and at phone width) shows filtered primary counts per chapter and scrolls to `#chapter-N`; `#section-4-5`-style anchors also scroll. Old `#section-<category>` hashes are ignored.
+- Filters: a chapter-grouped Survey section select (a chapter value matches every section in it; matching uses primary and secondary placements, and also applies to Blogs) and a Design axes chip panel (loop topology, sharing, depth control, claims, comparison; OR within an axis, AND across axes; paper-only). State lives in the URL as `section`, `loop_topology`, `sharing`, `depth_control`, `claims`, `comparison` and `q`; old `tag` parameters are ignored.
+- Cards show section badges (primary emphasized, all linking to the section filter), axis chips with short prefixes (unspecified values omitted; four shown, then "+N more"), and a quiet "Survey core" label in place of the Foundation badge. The detail panel's "Survey placement" lists every section and all five axes, including unspecified ones.
+- Stats: Survey chapters (primary chapter per paper; rows open the unfiltered list at that chapter), Loop topology, and recent Active directions by Sections or Claims; topology and direction rows open a filtered list.
+- Verified in headless Chromium at 1440px and 390px: no console errors, 299 papers, per-section primary counts match the catalog and TAGS.md (papers plus blogs), URL/panel/card/Stats filters, search, back navigation, table and Blogs views, no horizontal scroll on phones. `node tests/reading-desk-check.cjs` passes.
+
 ## Follow-up: categories in Filters
 
 - Replaced the left-rail category directory and phone Browse Sections entry with a native Category selector at the top of Filters. Options use the canonical titles and catalog totals, with All categories restoring the full resource set.

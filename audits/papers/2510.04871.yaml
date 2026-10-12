@@ -14,28 +14,22 @@ scope:
     latent state and then reuses that network across answer-improvement steps.
   locator: "Figure 3; Algorithm 3; Sections 4 and 4.3"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The main contribution is the Tiny Recursive Model architecture and training recipe."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "One network is reused repeatedly; the paper explicitly removes HRM's two-module hierarchy."
-  focus_tags:
-    values:
-      - architecture
-      - inference-algorithm
-      - training-algorithm
-    rationale: "TRM changes the recurrent architecture, recursive execution, and deep-supervision training."
-  domain_tags:
-    values:
-      - reasoning
-      - algorithmic-reasoning
-    rationale: "The reported tasks are ARC-AGI, Sudoku, and maze-style algorithmic reasoning."
-  tags:
-    values:
-      - TRM
-    rationale: "TRM is the proposed model's official abbreviation."
+      - capabilities/efficiency
+      - architecture/topology
+      - architecture/residual-init
+      - training/supervision-optimization
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: hierarchical
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One network is reused repeatedly; the paper explicitly removes HRM's two-module hierarchy."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One network is reused repeatedly; the paper explicitly removes HRM's two-module hierarchy."
+  depth_control:
+    value: adaptive-halting
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

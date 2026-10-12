@@ -12,21 +12,20 @@ scope:
   evidence: "Each MPCoT latent hypothesis path is refined for K steps by the same weight-tied refiner before the paths are reward-aggregated for action prediction."
   locator: "Section 3.3, Equations 4-5; Sections 3.4 and 3.6"
 taxonomy:
-  category:
-    value: applications
-    rationale: "The parallel recurrent reasoning mechanism is applied to vision-language-action policy learning."
-  mechanism_tags:
-    values: [parallel-loop]
-    rationale: "Multiple latent paths recur independently through a shared refiner before aggregation."
-  focus_tags:
-    values: [architecture, objective-loss, inference-algorithm]
-    rationale: "The work contributes parallel latent paths, reward-guided supervision, and test-time path/refinement scaling."
-  domain_tags:
-    values: [robotics-vla, reasoning]
-    rationale: "The target is latent reasoning for embodied vision-language-action control."
-  tags:
-    values: [MPCoT]
-    rationale: "MPCoT is the paper's method abbreviation."
+  survey_section:
+    values:
+      - applications/embodied-other
+      - scaling/test-time
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: shifted-parallel
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: parallel-loop): Multiple latent paths recur independently through a shared refiner before aggregation."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: parallel-loop): Multiple latent paths recur independently through a shared refiner before aggregation."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

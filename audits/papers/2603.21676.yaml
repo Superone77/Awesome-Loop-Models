@@ -12,30 +12,21 @@ scope:
   evidence: "The depth-recurrent Transformer repeatedly applies the same shared block to latent states within one forward computation."
   locator: "Section 3.1, Equations 1-3"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces a depth-recurrent Transformer for compositional generalization."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "One shared Transformer block is iterated over a single recurrent-depth axis."
-  focus_tags:
-    values:
-      - architecture
-      - objective-loss
-      - inference-algorithm
-    rationale: "The work contributes the recurrent design, silent-thinking objective, and variable latent-depth execution."
-  domain_tags:
-    values:
-      - reasoning
-      - compositional-reasoning
-    rationale: "The experiments target compositional-generalization reasoning."
-  tags:
-    values:
-      - depth-recurrent
-      - compositional-generalization
-      - silent-thinking
-    rationale: "These identify the model family, evaluation setting, and named objective."
+      - capabilities/generalization
+      - architecture/residual-init
+      - training/supervision-optimization
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One shared Transformer block is iterated over a single recurrent-depth axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One shared Transformer block is iterated over a single recurrent-depth axis."
+  depth_control:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

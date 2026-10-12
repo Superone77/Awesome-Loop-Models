@@ -13,7 +13,7 @@
 
 ### 🌐 [**Interactive Browser**]({{PUBLIC_INDEX_URL}}) · 🧾 [**PR Submission Guide**]({{PUBLIC_SUBMIT_URL}})
 
-<sub>The full catalog lives in the browser: search, filter by loop mechanism and domain, and read TL;DRs, venues, code links, and daily briefings.</sub>
+<sub>The full catalog lives in the browser: search, browse by survey chapter, filter by section and loop design, and read TL;DRs, venues, code links, and daily briefings.</sub>
 
 </div>
 
@@ -35,12 +35,15 @@ Only the rightmost end of this scale is in scope. Omitting `catalog_fit` means s
 <summary>How the catalog is organized</summary>
 <br>
 
-| Axis | Values |
-|:--|:--|
-| **Category** | Theoretical and Mechanical Analysis · Architecture and Algorithm Designs · Applications Focused |
-| **Loop Mechanism** (`mechanism_tags`) | `flat-loop` · `hierarchical-loop` · `parallel-loop` · `implicit-layer` |
-| **Focus** (`focus_tags`) | `architecture` · `training-algorithm` · `inference-algorithm` · `objective-loss` · `data` |
-| **Domain** (`domain_tags`) | `language-modeling`, `reasoning`, `vision`, `graph-data`, … |
+The catalog follows the chapters of the **Looped Models Survey**. Each paper lists every survey section it belongs to, primary first, and the browser files it under that primary section.
 
-A paper can also carry a `foundation` badge when it is a canonical anchor such as ACT, Universal Transformers, or DEQ. The browser filters by Loop Mechanism, focus, and domain tags. Blogs sit in one flat section outside the paper categories. [TAGS.md](TAGS.md) lists every tag in use.
+| Part | Chapters |
+|:--|:--|
+| I. Foundations | §2 From recurrent computation to iterative depth |
+| II. What looping buys | §3 Capabilities, benefits and trade-offs |
+| III. Building, training and deploying | §4 Architecture · §5 Learning algorithms · §6 Scaling laws · §7 Systems |
+| IV. Understanding and applications | §8 Why looped models work · §9 Applications |
+| V. Open problems | §10 Diffusion · folding depth into time · monitorability and safety |
+
+Every paper also records its design axes (`loop_topology`, `sharing`, `depth_control`) and what it claims looping buys (`claims`, `comparison`). All values are controlled; there are no free-form tags. Blogs sit in one flat section and list only the survey sections they discuss. [TAXONOMY.md](TAXONOMY.md) explains each value and [TAGS.md](TAGS.md) shows current counts.
 </details>

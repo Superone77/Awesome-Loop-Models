@@ -12,28 +12,20 @@ scope:
   evidence: "ChainGPT shares its learned update across multiple substeps inside a layer and repeats the recurrent core across depth in one forward reasoning process."
   locator: "Introduction, pages 1-2; Architecture section, recurrent-core definition"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces the ChainGPT dual-reasoning recurrent-depth architecture."
-  mechanism_tags:
+  survey_section:
     values:
-      - hierarchical-loop
-    rationale: "Shared within-layer substeps are nested inside recurrence across depth."
-  focus_tags:
-    values:
-      - architecture
-      - training-algorithm
-      - inference-algorithm
-    rationale: "The contribution spans the recurrent architecture, its training procedure, and adaptive-stopping inference."
-  domain_tags:
-    values:
-      - language-modeling
-      - reasoning
-    rationale: "ChainGPT moves language-model reasoning into recurrent latent computation."
-  tags:
-    values:
-      - ChainGPT
-    rationale: "ChainGPT is the official model name."
+      - architecture/hybrid
+      - architecture/state-memory
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: hierarchical
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: hierarchical-loop): Shared within-layer substeps are nested inside recurrence across depth."
+  sharing:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: hierarchical-loop): Shared within-layer substeps are nested inside recurrence across depth."
+  depth_control:
+    value: adaptive-halting
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

@@ -14,33 +14,20 @@ scope:
     two-timescale schedule, with three low updates inside each of two high cycles.
   locator: "Section 2 and Figure 2; Table 1, H2L3 configuration"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces the HRM-Text pretraining architecture and recipe."
-  mechanism_tags:
+  survey_section:
     values:
-      - hierarchical-loop
-      - flat-loop
-    rationale: "Low updates are nested under high cycles, and each learned module is reused across its updates."
-  focus_tags:
-    values:
-      - architecture
-      - training-algorithm
-      - objective-loss
-      - data
-    rationale: "The contributions include architecture, warmup credit assignment, PrefixLM/task-completion objectives, and data-efficient pretraining."
-  domain_tags:
-    values:
-      - language-modeling
-      - reasoning
-      - efficiency
-    rationale: "The 1B model is pretrained for language/reasoning tasks with 40B unique tokens and efficiency as a core claim."
-  tags:
-    values:
-      - HRM
-      - HRM-Text
-      - PrefixLM
-    rationale: "HRM-Text is the official model, HRM its family, and PrefixLM the masking scheme explicitly used and ablated."
+      - capabilities/efficiency
+      - architecture/residual-init
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: hierarchical
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: hierarchical-loop, flat-loop): Low updates are nested under high cycles, and each learned module is reused across its updates."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: hierarchical-loop, flat-loop): Low updates are nested under high cycles, and each learned module is reused across its updates."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

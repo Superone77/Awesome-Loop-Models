@@ -14,32 +14,20 @@ scope:
     inner and outer latent-recursion steps within a model forward process.
   locator: "Section 2.1, Figure 2, Equations 1-9"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces a probabilistic generative recursive-reasoning architecture."
-  mechanism_tags:
+  survey_section:
     values:
-      - hierarchical-loop
-      - flat-loop
-    rationale: >-
-      The main instantiation nests shared low- and high-level transitions, while
-      the framework also supports a flat shared-transition backbone.
-  focus_tags:
-    values:
-      - architecture
-      - objective-loss
-      - training-algorithm
-      - inference-algorithm
-    rationale: "The work defines the architecture, ELBO objective, variational training, and depth/trajectory inference scaling."
-  domain_tags:
-    values:
-      - reasoning
-      - algorithmic-reasoning
-    rationale: "The experiments cover structured reasoning and multi-solution constraint tasks."
-  tags:
-    values:
-      - GRAM
-    rationale: "GRAM is the paper's official method abbreviation; other descriptive phrases are not model aliases."
+      - scaling/test-time
+      - training/supervision-optimization
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: hierarchical
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: hierarchical-loop, flat-loop): The main instantiation nests shared low- and high-level transitions, while the framework also supports a flat shared-transition backbone."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: hierarchical-loop, flat-loop): The main instantiation nests shared low- and high-level transitions, while the framework also supports a flat shared-transition backbone."
+  depth_control:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

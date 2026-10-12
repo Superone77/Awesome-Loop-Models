@@ -12,29 +12,20 @@ scope:
   evidence: "PERL repeatedly applies one compact shared learned reasoning module to refine frozen CLIP latent representations within a forward prediction process."
   locator: "Abstract, paragraphs 3-4"
 taxonomy:
-  category:
-    value: applications
-    rationale: "The recurrent module is applied to few-shot CLIP adaptation and transfer."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "A single shared reasoning module is reused across a linear sequence of latent-refinement steps."
-  focus_tags:
-    values:
-      - architecture
-      - training-algorithm
-      - inference-algorithm
-    rationale: "The paper contributes a parameter-efficient recurrent adaptation architecture, its few-shot training procedure, and iterative latent inference."
-  domain_tags:
-    values:
-      - vision
-      - reasoning
-      - efficiency
-    rationale: "PERL performs visual representation reasoning with roughly 6K trainable adaptation parameters."
-  tags:
-    values:
-      - PERL
-    rationale: "PERL is the model name used by the paper."
+      - applications/language-speech-multimodal
+      - capabilities/efficiency
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: partial
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): A single shared reasoning module is reused across a linear sequence of latent-refinement steps."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): A single shared reasoning module is reused across a linear sequence of latent-refinement steps."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

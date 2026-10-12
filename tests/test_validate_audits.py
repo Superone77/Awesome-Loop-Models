@@ -22,11 +22,12 @@ def canonical_paper(paper_id: str = "2601.00001") -> dict:
         "year": 2026,
         "published_date": "2026-01-02",
         "venue": "arXiv",
-        "category": "designs",
-        "mechanism_tags": ["flat-loop"],
-        "focus_tags": ["architecture"],
-        "domain_tags": ["reasoning"],
-        "tags": ["looped-transformer"],
+        "survey_section": ["architecture/topology", "capabilities/efficiency"],
+        "loop_topology": "whole-stack",
+        "sharing": "full",
+        "depth_control": "fixed",
+        "claims": ["param-efficiency"],
+        "comparison": ["iso-param"],
         "desc": "Reuses a learned block within one forward pass.",
         "links": {"arxiv": f"https://arxiv.org/abs/{paper_id}"},
     }
@@ -50,25 +51,21 @@ def valid_audit(paper_id: str = "2601.00001") -> dict:
             "locator": "Section 3, Equation 2",
         },
         "taxonomy": {
-            "category": {
-                "value": "designs",
-                "rationale": "The primary contribution is a recurrent architecture.",
+            "survey_section": {
+                "values": ["architecture/topology", "capabilities/efficiency"],
+                "rationale": "The paper proposes a loop topology and reports parameter savings.",
             },
-            "mechanism_tags": {
-                "values": ["flat-loop"],
-                "rationale": "One flat recurrent block is reused.",
+            "loop_topology": {
+                "value": "whole-stack",
+                "rationale": "The whole transformer stack is applied repeatedly.",
             },
-            "focus_tags": {
-                "values": ["architecture"],
-                "rationale": "The paper changes the model architecture.",
+            "sharing": {
+                "value": "full",
+                "rationale": "Every iteration reuses the same weights.",
             },
-            "domain_tags": {
-                "values": ["reasoning"],
-                "rationale": "The evaluated domain is multi-step reasoning.",
-            },
-            "tags": {
-                "values": ["looped-transformer"],
-                "rationale": "The alias matches the authors' model family.",
+            "depth_control": {
+                "value": "fixed",
+                "rationale": "The iteration count is a fixed hyperparameter.",
             },
         },
         "content_checks": {
@@ -353,7 +350,7 @@ class AuditValidationTests(unittest.TestCase):
             audit = valid_audit()
             audit["scope"]["evidence"] = ""
             del audit["scope"]["locator"]
-            audit["taxonomy"]["category"]["rationale"] = "  "
+            audit["taxonomy"]["sharing"]["rationale"] = "  "
             audit["content_checks"]["links"]["evidence"] = ""
             write_yaml(root, "audits/papers/2601.00001.yaml", audit)
 
@@ -362,7 +359,7 @@ class AuditValidationTests(unittest.TestCase):
         fields = {finding.field for finding in result.findings}
         self.assertIn("scope.evidence", fields)
         self.assertIn("scope.locator", fields)
-        self.assertIn("taxonomy.category.rationale", fields)
+        self.assertIn("taxonomy.sharing.rationale", fields)
         self.assertIn("content_checks.links.evidence", fields)
         self.assertEqual(result.coverage.verified, 0)
         self.assertEqual(result.coverage.complete_decisions, 0)
@@ -373,8 +370,11 @@ class AuditValidationTests(unittest.TestCase):
             root = Path(tmpdir)
             write_yaml(root, "papers/2601.00001.yaml", canonical_paper())
             audit = valid_audit()
-            audit["taxonomy"]["category"]["value"] = "analysis"
-            audit["taxonomy"]["mechanism_tags"]["values"] = ["parallel-loop"]
+            audit["taxonomy"]["loop_topology"]["value"] = "partial"
+            audit["taxonomy"]["survey_section"]["values"] = [
+                "capabilities/efficiency",
+                "architecture/topology",
+            ]
             write_yaml(root, "audits/papers/2601.00001.yaml", audit)
 
             result = validate_audits.validate_audits(root)
@@ -386,17 +386,93 @@ class AuditValidationTests(unittest.TestCase):
         }
         self.assertEqual(
             drift_fields,
-            {"taxonomy.category.value", "taxonomy.mechanism_tags.values"},
+            {"taxonomy.loop_topology.value", "taxonomy.survey_section.values"},
         )
         self.assertEqual(result.coverage.verified, 0)
         self.assertEqual(result.coverage.complete_decisions, 0)
+
+    def test_secondary_section_order_is_ignored_but_values_are_controlled(self):
+        """Only the primary section is order-sensitive; unknown values are errors."""
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            paper = canonical_paper()
+            paper["survey_section"] = [
+                "architecture/topology",
+                "capabilities/efficiency",
+                "applications/vision",
+            ]
+            write_yaml(root, "papers/2601.00001.yaml", paper)
+            audit = valid_audit()
+            audit["taxonomy"]["survey_section"]["values"] = [
+                "architecture/topology",
+                "applications/vision",
+                "capabilities/efficiency",
+            ]
+            write_yaml(root, "audits/papers/2601.00001.yaml", audit)
+            reordered = validate_audits.validate_audits(root)
+
+            audit["taxonomy"]["sharing"]["value"] = "flat-loop"
+            audit["taxonomy"]["survey_section"]["values"] = ["design/topology"]
+            write_yaml(root, "audits/papers/2601.00001.yaml", audit)
+            invalid = validate_audits.validate_audits(root)
+
+        self.assertEqual(reordered.findings, ())
+        self.assertIn(
+            ("invalid-enum", "taxonomy.sharing.value"),
+            {(item.code, item.field) for item in invalid.findings},
+        )
+        self.assertIn(
+            ("invalid-enum", "taxonomy.survey_section.values[0]"),
+            {(item.code, item.field) for item in invalid.findings},
+        )
+
+    def test_legacy_taxonomy_keys_are_rejected(self):
+        """Audit records and canonical papers may not keep retired taxonomy fields."""
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            paper = canonical_paper()
+            paper["mechanism_tags"] = ["flat-loop"]
+            write_yaml(root, "papers/2601.00001.yaml", paper)
+            audit = valid_audit()
+            audit["taxonomy"]["category"] = {
+                "value": "designs",
+                "rationale": "Legacy shelf.",
+            }
+            write_yaml(root, "audits/papers/2601.00001.yaml", audit)
+
+            result = validate_audits.validate_audits(root)
+
+        keys = {(item.code, item.field) for item in result.findings}
+        self.assertIn(("unknown-field", "taxonomy.category"), keys)
+        self.assertIn(("retired-field", "mechanism_tags"), keys)
+
+    def test_remove_record_may_omit_taxonomy_but_others_may_not(self):
+        """Taxonomy is optional only for remove decisions."""
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            write_yaml(root, "papers/2601.00001.yaml", canonical_paper())
+            audit = valid_audit()
+            del audit["taxonomy"]
+            write_yaml(root, "audits/papers/2601.00001.yaml", audit)
+            verified = validate_audits.validate_audits(root)
+
+            audit["status"] = "remove"
+            audit["scope"]["verdict"] = "out-of-scope"
+            write_yaml(root, "audits/papers/2601.00001.yaml", audit)
+            removed = validate_audits.validate_audits(root)
+
+        self.assertIn(
+            ("missing-field", "taxonomy"),
+            {(item.code, item.field) for item in verified.findings},
+        )
+        self.assertEqual(removed.findings, ())
 
     def test_invalid_canonical_paper_cannot_complete_a_verified_decision(self):
         """Record validity must include the corresponding canonical source."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             paper = canonical_paper()
-            paper["category"] = 42
+            paper["loop_topology"] = 42
             write_yaml(root, "papers/2601.00001.yaml", paper)
             write_yaml(root, "audits/papers/2601.00001.yaml", valid_audit())
 
@@ -481,10 +557,10 @@ class AuditValidationTests(unittest.TestCase):
             root = Path(tmpdir)
             paper = canonical_paper()
             paper["catalog_fit"] = "adjacent"
-            paper["mechanism_tags"] = []
+            paper["loop_topology"] = "unspecified"
             write_yaml(root, "papers/2601.00001.yaml", paper)
             audit = valid_audit()
-            audit["taxonomy"]["mechanism_tags"]["values"] = []
+            audit["taxonomy"]["loop_topology"]["value"] = "unspecified"
             audit["scope"]["verdict"] = "out-of-scope"
             write_yaml(root, "audits/papers/2601.00001.yaml", audit)
 
@@ -504,27 +580,18 @@ class AuditValidationTests(unittest.TestCase):
             {finding.code for finding in invalid_result.findings},
         )
 
-    def test_catalog_fit_controls_whether_mechanism_tags_must_be_empty(self):
+    def test_catalog_fit_is_validated_and_survey_fields_are_required(self):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            adjacent = canonical_paper()
-            adjacent["catalog_fit"] = "adjacent"
-            write_yaml(root, "papers/2601.00001.yaml", adjacent)
-            adjacent_result = validate_audits.validate_audits(root)
+            paper = canonical_paper()
+            paper["catalog_fit"] = "borderline"
+            del paper["depth_control"]
+            write_yaml(root, "papers/2601.00001.yaml", paper)
+            result = validate_audits.validate_audits(root)
 
-            strict = canonical_paper()
-            strict["mechanism_tags"] = []
-            write_yaml(root, "papers/2601.00001.yaml", strict)
-            strict_result = validate_audits.validate_audits(root)
-
-        self.assertIn(
-            "adjacent-mechanism-tag",
-            {finding.code for finding in adjacent_result.findings},
-        )
-        self.assertIn(
-            "missing-mechanism-tag",
-            {finding.code for finding in strict_result.findings},
-        )
+        keys = {(item.code, item.field) for item in result.findings}
+        self.assertIn(("invalid-catalog-fit", "catalog_fit"), keys)
+        self.assertIn(("missing-field", "depth_control"), keys)
 
     def test_shape_unknown_fields_and_duplicate_lists_are_rejected(self):
         """Strict mappings and unique string lists should expose schema mistakes."""
@@ -533,9 +600,9 @@ class AuditValidationTests(unittest.TestCase):
             write_yaml(root, "papers/2601.00001.yaml", canonical_paper())
             audit = valid_audit()
             audit["unexpected"] = True
-            audit["taxonomy"]["domain_tags"]["values"] = [
-                "reasoning",
-                "reasoning",
+            audit["taxonomy"]["survey_section"]["values"] = [
+                "architecture/topology",
+                "architecture/topology",
             ]
             audit["unresolved_questions"] = "none"
             write_yaml(root, "audits/papers/2601.00001.yaml", audit)

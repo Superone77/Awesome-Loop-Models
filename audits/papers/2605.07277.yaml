@@ -12,29 +12,20 @@ scope:
   evidence: "One weight-tied learned update g_theta is repeatedly applied so different initializations can reach different stable equilibria."
   locator: "Section 1, Equation 1, pages 1-2; Theorem 2.2, page 4"
 taxonomy:
-  category:
-    value: analysis
-    rationale: "The paper primarily develops theory for set-valued equilibrium solution maps."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-      - implicit-layer
-    rationale: "A weight-tied update is iterated toward an attractor landscape of equilibrium solutions."
-  focus_tags:
-    values:
-      - architecture
-      - inference-algorithm
-    rationale: "The work defines the weight-tied dynamics and how multiple equilibria are discovered from initializations."
-  domain_tags:
-    values:
-      - theory
-      - algorithmic-reasoning
-    rationale: "The paper proves representation results and studies combinatorial Ising and Allen-Cahn solution tasks."
-  tags:
-    values:
-      - weight-tying
-      - convergence
-    rationale: "These aliases describe the shared dynamics and their equilibrium behavior."
+      - capabilities/expressivity
+      - applications/graphs-science
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: implicit-fixed-point
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop, implicit-layer): A weight-tied update is iterated toward an attractor landscape of equilibrium solutions."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop, implicit-layer): A weight-tied update is iterated toward an attractor landscape of equilibrium solutions."
+  depth_control:
+    value: convergence
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

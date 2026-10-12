@@ -12,31 +12,19 @@ scope:
   evidence: "PTRM reuses the same two-layer TRM network to update latent state and answer over recursive steps within inference."
   locator: "Section 2, single-network TRM definition and recursive updates; Section 4, Figure 4"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces a stochastic test-time inference framework for TRM."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: >-
-      One two-layer network is reused for both latent and answer updates, without
-      distinct hierarchical modules; independently sampled complete trajectories
-      are rollout width, not a parallel loop form.
-  focus_tags:
-    values:
-      - inference-algorithm
-    rationale: "Gaussian perturbations, multiple trajectories, and Q-head selection are inference-time changes."
-  domain_tags:
-    values:
-      - reasoning
-      - algorithmic-reasoning
-      - efficiency
-    rationale: "The method scales inference on puzzle reasoning with a small fixed model and no retraining."
-  tags:
-    values:
-      - TRM
-      - PTRM
-    rationale: "TRM and PTRM are the official base-model and proposed-method abbreviations."
+      - scaling/test-time
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: hierarchical
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One two-layer network is reused for both latent and answer updates, without distinct hierarchical modules; independently sampled complete trajectories are rollout width, not a parallel loop form."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One two-layer network is reused for both latent and answer updates, without distinct hierarchical modules; independently sampled complete trajectories are rollout width, not a parallel loop form."
+  depth_control:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

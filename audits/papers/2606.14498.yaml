@@ -12,21 +12,19 @@ scope:
   evidence: "HamEvo repeatedly applies one learned Hamiltonian-update operator until its state reaches a fixed point within a prediction."
   locator: "Section 2.1, Equation 1; Section 4.1, Equations 4-5"
 taxonomy:
-  category:
-    value: applications
-    rationale: "The implicit recurrent operator is applied to Kohn-Sham Hamiltonian prediction."
-  mechanism_tags:
-    values: [implicit-layer]
-    rationale: "Prediction is defined as the equilibrium of a shared learned update operator."
-  focus_tags:
-    values: [architecture, objective-loss, training-algorithm, inference-algorithm]
-    rationale: "The work specifies the fixed-point operator, its learning objective and training, and equilibrium inference."
-  domain_tags:
-    values: [electronic-structure]
-    rationale: "The application is transferable electronic-structure Hamiltonian prediction."
-  tags:
-    values: [HamEvo]
-    rationale: "HamEvo is the proposed operator name; DEQ appears as a baseline rather than the paper's method name."
+  survey_section:
+    values:
+      - applications/graphs-science
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: implicit-fixed-point
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: implicit-layer): Prediction is defined as the equilibrium of a shared learned update operator."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: implicit-layer): Prediction is defined as the equilibrium of a shared learned update operator."
+  depth_control:
+    value: convergence
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

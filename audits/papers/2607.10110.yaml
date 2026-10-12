@@ -12,21 +12,21 @@ scope:
   evidence: "The model repeatedly applies a shared Mamba or hybrid block to internal states within one forward computation."
   locator: "Abstract; Section 3"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces looped state-space language-model architectures and exit-state selection."
-  mechanism_tags:
-    values: [flat-loop]
-    rationale: "A shared block is reused over a single recurrent-depth axis."
-  focus_tags:
-    values: [architecture, training-algorithm, inference-algorithm]
-    rationale: "Section 3 specifies the architecture, staged training pipeline, and exit-state selector."
-  domain_tags:
-    values: [language-modeling, reasoning, adaptive-compute]
-    rationale: "The models are trained and evaluated for language modeling and reasoning with learned prediction-depth selection."
-  tags:
-    values: [Looped-Mamba]
-    rationale: "Looped-Mamba is the named model family."
+  survey_section:
+    values:
+      - architecture/hybrid
+      - architecture/depth-control
+      - scaling/compute-optimal
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): A shared block is reused over a single recurrent-depth axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): A shared block is reused over a single recurrent-depth axis."
+  depth_control:
+    value: adaptive-halting
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

@@ -14,30 +14,20 @@ scope:
     solves the joint equilibrium of its feature streams within one forward pass.
   locator: "Section 3.1, page 3, Equations 1-2; Section 3.2 and Figure 1, page 4"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The main contribution is a multiscale deep-equilibrium architecture."
-  mechanism_tags:
+  survey_section:
     values:
-      - implicit-layer
-    rationale: >-
-      The model solves a joint fixed point; the resolution streams operate
-      simultaneously rather than as a nested recurrent hierarchy.
-  focus_tags:
-    values:
-      - architecture
-    rationale: "The paper's primary artifact is the multiscale equilibrium model design."
-  domain_tags:
-    values:
-      - vision
-      - memory-efficiency
-    rationale: >-
-      The experiments cover ImageNet and Cityscapes, and Section 4.4 reports
-      constant-depth activation memory and substantial GPU-memory savings.
-  tags:
-    values:
-      - MDEQ
-    rationale: "MDEQ is the model abbreviation used by the paper and official repository."
+      - foundations/implicit
+      - applications/vision
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: implicit-fixed-point
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: implicit-layer): The model solves a joint fixed point; the resolution streams operate simultaneously rather than as a nested recurrent hierarchy."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: implicit-layer): The model solves a joint fixed point; the resolution streams operate simultaneously rather than as a nested recurrent hierarchy."
+  depth_control:
+    value: convergence
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

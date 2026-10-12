@@ -17,31 +17,22 @@ scope:
     Section 2.1, Equation 1; Section 2.2.1, Figure 2 and Algorithms 1-2;
     Section 2.2.2, Equation 2 and Algorithm 4
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces an architecture and execution method for efficient looped inference."
-  mechanism_tags:
+  survey_section:
     values:
-      - parallel-loop
-      - flat-loop
-    rationale: >-
-      A shared block is reused in flat depth loops, while cross-loop parallelism
-      pipelines different loop stages concurrently across displaced micro-batches.
-  focus_tags:
-    values:
-      - inference-algorithm
-      - architecture
-    rationale: "Cross-loop parallel execution and shared-loop KV representations change both execution and design."
-  domain_tags:
-    values:
-      - language-modeling
-      - reasoning
-      - efficiency
-    rationale: "The experiments evaluate language/reasoning accuracy together with latency and memory."
-  tags:
-    values:
-      - PLT
-    rationale: "PLT is the paper's short name for Parallel Loop Transformer."
+      - architecture/topology
+      - scaling/test-time
+      - systems/batching-parallel
+      - open-problems/depth-into-time
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: shifted-parallel
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: parallel-loop, flat-loop): A shared block is reused in flat depth loops, while cross-loop parallelism pipelines different loop stages concurrently across displaced micro-batches."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: parallel-loop, flat-loop): A shared block is reused in flat depth loops, while cross-loop parallelism pipelines different loop stages concurrently across displaced micro-batches."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

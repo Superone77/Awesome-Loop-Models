@@ -12,28 +12,20 @@ scope:
   evidence: "The retrofit extracts a learned core from a pretrained feedforward language model and repeatedly reuses that core across recurrent depth in one forward computation."
   locator: "Figure 1; Introduction; Method section, recurrent-core construction"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper proposes a method for converting pretrained feedforward language models into depth-recurrent models."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "The extracted recurrent core is repeated along a single depth axis."
-  focus_tags:
-    values:
-      - architecture
-      - training-algorithm
-    rationale: "The contribution changes model depth sharing and supplies a training procedure for the retrofitted recurrence."
-  domain_tags:
-    values:
-      - efficiency
-      - language-modeling
-      - reasoning
-    rationale: "The method targets compute-efficient language-model training and evaluates mathematics reasoning."
-  tags:
-    values:
-      - depth-recurrent
-    rationale: "Depth recurrence is the architecture family named by the source."
+      - training/retrofitting
+      - architecture/depth-control
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: prelude-core-coda
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The extracted recurrent core is repeated along a single depth axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The extracted recurrent core is repeated along a single depth axis."
+  depth_control:
+    value: sampled-train
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

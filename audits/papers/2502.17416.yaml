@@ -12,30 +12,20 @@ scope:
   evidence: "The same learned backbone f is applied L times over latent depth within one forward computation."
   locator: "Section 2, page 3; Figure 1, page 2; Section 5.1, Definition 5.2"
 taxonomy:
-  category:
-    value: analysis
-    rationale: "The paper studies the theoretical reasoning power and regularization of looped Transformers."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "One shared backbone is repeated over a single latent-depth axis."
-  focus_tags:
-    values:
-      - objective-loss
-      - training-algorithm
-    rationale: "The paper introduces and analyzes a looping regularizer rather than a new inference procedure."
-  domain_tags:
-    values:
-      - language-modeling
-      - reasoning
-      - algorithmic-reasoning
-      - theory
-    rationale: "The theory and experiments concern latent language-model reasoning and algorithmic tasks."
-  tags:
-    values:
-      - latent-thoughts
-      - looped-transformer
-    rationale: "These aliases identify the latent-computation setting and analyzed model family."
+      - capabilities/expressivity
+      - capabilities/efficiency
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One shared backbone is repeated over a single latent-depth axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One shared backbone is repeated over a single latent-depth axis."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

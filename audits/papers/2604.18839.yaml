@@ -12,31 +12,21 @@ scope:
   evidence: "Denoising Recursion Models use a looped Transformer whose same learned block recursively refines a solution state over multiple steps in one prediction process."
   locator: "Method section, recursive denoising trajectory; official repository model implementation"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces a training method for denoising recursion models."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "One Transformer block is reused sequentially along the recursive-refinement trajectory."
-  focus_tags:
-    values:
-      - objective-loss
-      - training-algorithm
-    rationale: "The contribution corrupts targets and optimizes a denoising objective across recursive training steps rather than changing the inference loop topology."
-  domain_tags:
-    values:
-      - reasoning
-      - algorithmic-reasoning
-    rationale: "The method is evaluated on ARC-AGI and related algorithmic reasoning tasks."
-  tags:
-    values:
-      - DRM
-      - TRM
-      - looped-transformer
-      - recursive-transformer
-      - latent-refinement
-    rationale: "DRM is the official method abbreviation; TRM identifies the comparison lineage, while the remaining aliases describe shared Transformer recurrence and iterative latent refinement."
+      - open-problems/diffusion
+      - training/supervision-optimization
+      - architecture/hybrid
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: hierarchical
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One Transformer block is reused sequentially along the recursive-refinement trajectory."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One Transformer block is reused sequentially along the recursive-refinement trajectory."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

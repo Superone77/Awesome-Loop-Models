@@ -305,10 +305,17 @@
       align-items: start;
     }
 
-    .tag-pickers {
+    .axis-pickers {
       display: grid;
       gap: var(--space-3);
       grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-items: start;
+    }
+
+    .survey-pickers {
+      display: grid;
+      gap: var(--space-3);
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       align-items: start;
     }
 
@@ -318,14 +325,29 @@
       gap: var(--space-3);
     }
 
-    .tag-picker,
+    .picker,
     .field {
       display: grid;
       gap: var(--space-2);
     }
 
-    .tag-picker {
+    .picker {
       min-width: 0;
+      align-content: start;
+    }
+
+    .panel .picker-title,
+    .panel .option-row {
+      color: var(--text);
+    }
+
+    .picker.is-invalid .picker-title,
+    .picker.is-invalid .picker-note {
+      color: var(--danger);
+    }
+
+    .picker.is-invalid .field-select {
+      border-color: var(--danger);
     }
 
     .field.is-required .field-label::after {
@@ -354,7 +376,7 @@
       box-shadow: 0 0 0 1px rgba(207, 34, 46, 0.12);
     }
 
-    .tag-picker-head,
+    .picker-head,
     .field-head {
       display: flex;
       align-items: baseline;
@@ -362,7 +384,7 @@
       gap: 12px;
     }
 
-    .tag-picker-title,
+    .picker-title,
     .field-label,
     .preview-title {
       font-size: 14px;
@@ -370,7 +392,7 @@
       color: var(--text);
     }
 
-    .tag-picker-note,
+    .picker-note,
     .helper-note,
     .field-note,
     .muted,
@@ -379,7 +401,6 @@
       font-size: 12px;
     }
 
-    .tag-picker-search,
     .field-input,
     .field-select,
     .field-textarea,
@@ -392,7 +413,6 @@
       font-size: 14px;
     }
 
-    .tag-picker-search,
     .field-input,
     .field-select {
       padding: 10px 12px;
@@ -437,7 +457,6 @@
       min-height: 86px;
     }
 
-    .tag-picker-search:focus,
     .field-input:focus,
     .field-select:focus,
     .field-textarea:focus {
@@ -446,71 +465,76 @@
       box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent);
     }
 
-    .tag-picker-menu {
-      max-height: 260px;
+    .option-list {
+      max-height: 320px;
       overflow: auto;
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
       background: var(--bg);
       padding: 6px;
       display: grid;
-      gap: 6px;
+      gap: 4px;
     }
 
-    .tag-option {
+    .option-group-title {
+      padding: 8px 4px 2px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .option-row {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
+      align-items: baseline;
+      gap: 10px;
       width: 100%;
-      border: 1px solid var(--border);
+      border: 1px solid transparent;
       border-radius: var(--radius);
-      background: transparent;
       color: var(--text);
-      padding: 8px 10px;
-      text-align: left;
+      padding: 6px 8px;
       cursor: pointer;
       font-size: 13px;
     }
 
-    .tag-option:hover,
-    .tag-option.is-selected {
+    .option-row input {
+      flex: 0 0 auto;
+      margin: 0;
+      accent-color: var(--accent);
+    }
+
+    .option-row:hover,
+    .option-row.is-selected {
       border-color: var(--accent);
       background: color-mix(in srgb, var(--accent) 7%, transparent);
     }
 
-    .tag-option-count {
+    .option-row.is-disabled {
+      cursor: default;
+      opacity: 0.55;
+    }
+
+    .option-row.is-disabled:hover {
+      border-color: transparent;
+      background: none;
+    }
+
+    .option-label {
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .option-count {
       color: var(--muted);
       font-variant-numeric: tabular-nums;
       font-size: 12px;
     }
 
-    .tag-selected-list {
+    .selection-summary {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
-      min-height: 18px;
-    }
-
-    .tag-chip {
-      display: inline-flex;
-      align-items: center;
       gap: 6px;
-      padding: 6px 10px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      background: var(--bg);
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text);
-    }
-
-    .tag-chip button {
-      border: 0;
-      background: transparent;
-      color: var(--muted);
-      cursor: pointer;
-      padding: 0;
+      min-height: 18px;
       font-size: 12px;
     }
 
@@ -528,7 +552,7 @@
       gap: var(--space-2);
     }
 
-    .tag-picker-actions {
+    .picker-actions {
       margin-block: var(--space-4);
     }
 
@@ -633,7 +657,8 @@
 
     @media (max-width: 980px) {
       .grid,
-      .tag-pickers,
+      .axis-pickers,
+      .survey-pickers,
       .preview-meta,
       .form-grid,
       .wizard-grid {
@@ -729,12 +754,11 @@
         font-size: 16px;
       }
 
-      .tag-picker-menu {
+      .option-list {
         max-height: 260px;
       }
 
-      .tag-chip,
-      .tag-option,
+      .option-row,
       .pill {
         max-width: 100%;
       }
@@ -771,11 +795,12 @@
       <div class="hero-kicker">Catalog contribution</div>
       <h1>Submit to Awesome Loop Models</h1>
       <p class="hero-sub">
-        Fill the metadata once, reuse existing Loop Mechanism / focus / domain tags, review the generated YAML, then copy the path and YAML into your own fork / branch for the final pull request step.
+        Fill the metadata once, place the entry in the Looped Models Survey and describe its loop with the controlled design axes, review the generated YAML, then copy the path and YAML into your own fork / branch for the final pull request step.
       </p>
       <div class="hero-links">
         <a class="hero-link" href="index.html">← Back to the browser</a>
-        <a class="hero-link" id="hero-tags-link" href="#">Open TAGS.md</a>
+        <a class="hero-link" id="hero-tags-link" href="#">Open the vocabulary (TAGS.md)</a>
+        <a class="hero-link" id="hero-taxonomy-link" href="#">How to choose values (TAXONOMY.md)</a>
         <a class="hero-link" id="hero-contributing-link" href="#">Read CONTRIBUTING.md</a>
       </div>
     </div>
@@ -788,12 +813,12 @@
         <article class="wizard-step">
           <div class="wizard-step-kicker">Step 1</div>
           <h3>Pick what you are submitting</h3>
-          <p>Choose Paper or Blog first. Papers must fit the loop-model taxonomy. Blogs stay in the flat Blogs section.</p>
+          <p>Choose Paper or Blog first. Papers must fit the loop-model scope. Blogs stay in the flat Blogs section.</p>
         </article>
         <article class="wizard-step">
           <div class="wizard-step-kicker">Step 2</div>
           <h3>Fill metadata once</h3>
-          <p>Reuse existing Loop Mechanism / focus / domain tags, add alias tags manually if needed, then review the generated path and YAML before leaving this page.</p>
+          <p>Pick the survey sections (primary first) and, for papers, the loop topology, sharing, depth control, claims and comparison. Every value comes from a closed list; then review the generated path and YAML.</p>
         </article>
         <article class="wizard-step">
           <div class="wizard-step-kicker">Step 3</div>
@@ -801,7 +826,7 @@
           <p>Copy the generated path and YAML, fork the repository on GitHub, create a branch in your fork, add the file at that path, then open a pull request back to this repo.</p>
         </article>
       </div>
-      <div class="status" id="status-box">Loading existing tags and filenames from submission metadata…</div>
+      <div class="status" id="status-box">Loading the survey taxonomy and existing filenames from submission metadata…</div>
     </section>
 
     <section class="grid">
@@ -817,7 +842,7 @@
         </div>
 
         <p class="helper-note" id="kind-helper">
-          Paper submissions need a taxonomy category. Blog submissions stay in the flat Blogs section and use filenames of the form <code>blogs/YYYY-MM-DD-shortname.yaml</code>.
+          Paper submissions need survey sections and design axes. Blog submissions stay in the flat Blogs section, list survey sections only, and use filenames of the form <code>blogs/YYYY-MM-DD-shortname.yaml</code>.
         </p>
 
         <form id="submission-form" class="submission-form" novalidate>
@@ -880,12 +905,6 @@
               <input class="field-input" id="github-input" type="url" placeholder="https://github.com/..." />
             </label>
 
-            <label class="field kind-only field-span-2" id="paper-category-field">
-              <span class="field-label">Paper Category</span>
-              <select class="field-select" id="category-select"></select>
-              <span class="field-note">Choose one of the three flat paper categories. If none fits, explain the taxonomy proposal in the PR message instead of adding a YAML path field.</span>
-            </label>
-
             <label class="field field-span-2 kind-only" id="blog-twitter-field" hidden>
               <span class="field-label">Related Discussion / Thread Link (optional)</span>
               <input class="field-input" id="twitter-input" type="url" placeholder="https://x.com/..." />
@@ -899,37 +918,51 @@
           </div>
         </form>
 
-        <h3>Searchable tag picker</h3>
+        <h3>Survey placement</h3>
         <p>
-          After filling the core paper / blog fields above, reuse existing Loop Mechanism / focus / domain tags here and add alias tags manually only if needed. GitHub pull requests do not support structured form fields, so this page keeps the structured tag inputs local before handing you off to the manual fork / branch / PR flow.
+          Every entry lists the survey sections it belongs to, primary first. The browser files the entry under its primary section; the other sections make it findable from their filters. GitHub pull requests do not support structured form fields, so these pickers stay local before handing you off to the manual fork / branch / PR flow.
         </p>
 
-        <div class="tag-pickers">
-          <div class="tag-picker" id="mechanism-picker"></div>
-          <div class="tag-picker" id="focus-picker"></div>
-          <div class="tag-picker" id="domain-picker"></div>
-        </div>
-
-        <div class="action-row tag-picker-actions">
-          <button class="btn" id="copy-tag-block-btn" type="button">Copy tag block</button>
-          <button class="btn" id="clear-tags-btn" type="button">Clear selected tags</button>
-        </div>
-
-        <label class="field">
-          <span class="field-label">Additional Domain Tags (optional)</span>
-          <input class="field-input" id="domain-tags-manual-input" type="text" placeholder="e.g. math-reasoning, multimodal-agents" />
-          <span class="field-note">Comma-separated open-ended domain labels. Reuse picker values when possible.</span>
-        </label>
-
-        <div class="tag-picker">
-          <div class="tag-picker-head">
-            <div class="tag-picker-title">Alias tags</div>
-            <div class="tag-picker-note">Manual fill-in only. The current alias inventory is not shown here.</div>
+        <div class="survey-pickers">
+          <div class="picker" id="primary-section-picker">
+            <div class="picker-head">
+              <label class="picker-title" for="primary-section-select">Primary survey section</label>
+              <div class="picker-note">Required</div>
+            </div>
+            <select class="field-select" id="primary-section-select"></select>
+            <div class="picker-note">The one section that best describes the entry's main contribution.</div>
           </div>
-          <input class="field-input" id="alias-tags-manual-input" type="text" placeholder="e.g. LoopLM, UT, DEQ" />
+          <div class="picker" id="extra-sections-picker">
+            <div class="picker-head">
+              <div class="picker-title" id="extra-sections-title">Other survey sections</div>
+              <div class="picker-note" id="extra-sections-count">0 selected</div>
+            </div>
+            <div class="option-list" id="extra-sections-list" role="group" aria-labelledby="extra-sections-title"></div>
+            <div class="picker-note">Optional. List them in order of relevance; the YAML keeps the order you pick them in.</div>
+          </div>
         </div>
 
-        <p class="helper-note">Loop Mechanism and focus tags are controlled vocabularies. If this submission needs a taxonomy or tag-vocabulary change, describe the proposal in the PR message instead of inventing YAML values here.</p>
+        <div class="kind-only" id="paper-axes-section">
+          <h3>Design axes</h3>
+          <p>
+            Describe where the loop sits, how weights are shared, how depth is controlled, what the paper claims looping buys and how it compares looped with untied models. Choose <code>unspecified</code> when the paper does not say.
+          </p>
+          <div class="axis-pickers">
+            <div class="picker" id="loop_topology-picker"></div>
+            <div class="picker" id="sharing-picker"></div>
+            <div class="picker" id="depth_control-picker"></div>
+            <div class="picker" id="claims-picker"></div>
+            <div class="picker" id="comparison-picker"></div>
+          </div>
+          <p class="helper-note"><code>survey_core</code> is generated as <code>false</code>; maintainers set it for core survey references. <code>must_read</code> and <code>catalog_fit</code> are maintainer-only and omitted.</p>
+        </div>
+
+        <div class="action-row picker-actions">
+          <button class="btn" id="copy-taxonomy-block-btn" type="button">Copy taxonomy fields</button>
+          <button class="btn" id="clear-taxonomy-btn" type="button">Clear taxonomy selections</button>
+        </div>
+
+        <p class="helper-note">Survey sections and design axes are closed vocabularies. If this submission needs a new value, describe the proposal in the PR message instead of inventing YAML values here.</p>
 
         <div class="preview-box">
           <div class="preview-title">Generated target path</div>
@@ -964,7 +997,7 @@
               <li>Copy the generated target path and generated YAML from this page.</li>
               <li>Open the upstream GitHub repo and fork it to your own account.</li>
               <li>In your fork, create a branch and add a new file at the generated path.</li>
-              <li>Paste the YAML, commit it to your branch, then open a pull request back to this repo. If you need a taxonomy or tag-vocabulary change, describe the proposal in the PR message.</li>
+              <li>Paste the YAML, commit it to your branch, then open a pull request back to this repo. If you need a taxonomy change, describe the proposal in the PR message.</li>
             </ol>
           </div>
           <div class="action-row">
@@ -980,7 +1013,7 @@
       <section class="panel">
         <h2>JavaScript required for YAML generation</h2>
         <p>
-          Without JavaScript, use <a href="https://github.com/huskydoge/Awesome-Loop-Models/blob/main/TAGS.md">TAGS.md</a> manually and prepare the YAML by hand. Then fork the repo on GitHub, create a branch in your fork, create the file under <code>papers/</code> or <code>blogs/</code>, paste the YAML, and open a pull request.
+          Without JavaScript, use <a href="https://github.com/huskydoge/Awesome-Loop-Models/blob/main/TAGS.md">TAGS.md</a> and <a href="https://github.com/huskydoge/Awesome-Loop-Models/blob/main/TAXONOMY.md">TAXONOMY.md</a> manually and prepare the YAML by hand. Then fork the repo on GitHub, create a branch in your fork, create the file under <code>papers/</code> or <code>blogs/</code>, paste the YAML, and open a pull request.
         </p>
       </section>
     </noscript>
@@ -991,64 +1024,39 @@
     const REPO_META = window.REPO_META;
     const GITHUB_REPO_BASE = REPO_META.getGitHubRepoBase();
     const GITHUB_TAGS_URL = REPO_META.getGitHubBlobUrl('TAGS.md');
+    const GITHUB_TAXONOMY_URL = REPO_META.getGitHubBlobUrl('TAXONOMY.md');
     const GITHUB_CONTRIBUTING_URL = REPO_META.getGitHubBlobUrl('CONTRIBUTING.md');
 
     function initializeDocLinks() {
       const tagsLink = document.getElementById('hero-tags-link');
+      const taxonomyLink = document.getElementById('hero-taxonomy-link');
       const contributingLink = document.getElementById('hero-contributing-link');
       if (tagsLink) tagsLink.href = GITHUB_TAGS_URL;
+      if (taxonomyLink) taxonomyLink.href = GITHUB_TAXONOMY_URL;
       if (contributingLink) contributingLink.href = GITHUB_CONTRIBUTING_URL;
     }
 
-    // Paper category labels stay aligned with the repo taxonomy.
-    const PAPER_CATEGORY_OPTIONS = [
-      { label: 'Theoretical and Mechanical Analysis', category: 'analysis' },
-      { label: 'Architecture and Algorithm Designs', category: 'designs' },
-      { label: 'Applications Focused', category: 'applications' }
-    ];
-
-    const PAPER_CATEGORY_LOOKUP = Object.fromEntries(PAPER_CATEGORY_OPTIONS.map(function(option) {
-      return [option.label, option];
-    }));
-
-    const FALLBACK_MECHANISM_TAGS = [
-      'hierarchical-loop',
-      'flat-loop',
-      'parallel-loop',
-      'implicit-layer'
-    ];
-
-    const FALLBACK_FOCUS_TAGS = [
-      'objective-loss',
-      'training-algorithm',
-      'architecture',
-      'data',
-      'inference-algorithm'
-    ];
-
-    // Suggested-but-not-yet-observed domain tags belong in the frontend only.
-    const SUGGESTED_DOMAIN_TAGS = [
-      'efficient-loop'
-    ];
+    // Design axes in survey order. Scalar axes take exactly one value; list axes may be empty.
+    const SCALAR_AXES = ['loop_topology', 'sharing', 'depth_control'];
+    const LIST_AXES = ['claims', 'comparison'];
+    const AXIS_NOTES = {
+      loop_topology: 'Where the loop sits in the network.',
+      sharing: 'How weights are shared across iterations.',
+      depth_control: 'How the number of iterations is chosen.',
+      claims: 'What the paper claims looping buys. Optional; pick every claim it tests.',
+      comparison: 'How looped and untied models are compared. Optional; leave empty if they are not.'
+    };
 
     const STATE = {
       formKind: 'paper',
-      options: {
-        mechanism: [],
-        focus: [],
-        domain: []
-      },
-      selected: {
-        mechanism: new Set(),
-        focus: new Set(),
-        domain: new Set()
-      },
-      search: {
-        mechanism: '',
-        focus: '',
-        domain: ''
-      },
-      existingPaths: new Set()
+      taxonomy: null,
+      counts: {},
+      primarySection: '',
+      extraSections: [],
+      scalar: { loop_topology: '', sharing: '', depth_control: '' },
+      lists: { claims: new Set(), comparison: new Set() },
+      existingPaths: new Set(),
+      metadataLoading: true
     };
 
     function escapeHtml(value) {
@@ -1082,42 +1090,61 @@
       });
     }
 
-    /** Merge frontend-only suggestions into observed rows, preserving counts and stable display order. */
-    function mergeSuggestedCountedInventory(observedInventory, suggestedLabels) {
-      const rowsByLabel = new Map();
-      observedInventory.forEach(function(row) {
-        const key = row.label.toLowerCase();
-        if (!rowsByLabel.has(key)) {
-          rowsByLabel.set(key, { label: row.label, count: row.count });
-        }
+    /** Return whether a survey taxonomy carries every list and axis the pickers need. */
+    function isValidSurveyTaxonomy(taxonomy) {
+      if (!taxonomy || typeof taxonomy !== 'object') return false;
+      const listsOk = ['parts', 'chapters', 'sections'].every(function(key) {
+        return Array.isArray(taxonomy[key]) && taxonomy[key].length > 0;
       });
-      suggestedLabels.forEach(function(label) {
-        const normalizedLabel = String(label || '').trim();
-        if (!normalizedLabel) return;
-        const key = normalizedLabel.toLowerCase();
-        if (!rowsByLabel.has(key)) {
-          rowsByLabel.set(key, { label: normalizedLabel, count: 0 });
-        }
+      const sectionsOk = listsOk && taxonomy.sections.every(function(section) {
+        return section && typeof section.id === 'string' && typeof section.number === 'string'
+          && typeof section.chapter === 'string' && typeof section.title === 'string';
       });
-      return Array.from(rowsByLabel.values()).sort(function(a, b) {
-        const countDiff = b.count - a.count;
-        return countDiff !== 0 ? countDiff : a.label.localeCompare(b.label);
+      const axes = taxonomy.axes || {};
+      const axesOk = SCALAR_AXES.concat(LIST_AXES).every(function(axis) {
+        return axes[axis] && typeof axes[axis].label === 'string' && Array.isArray(axes[axis].values)
+          && axes[axis].values.length > 0 && axes[axis].values.every(function(value) { return typeof value === 'string'; });
       });
+      return sectionsOk && axesOk;
     }
 
-    function getSortedSelected(group) {
-      return Array.from(STATE.selected[group]).sort(function(a, b) {
-        return a.localeCompare(b);
+    /** Index inventory rows by value so pickers can show how often each value is used. */
+    function indexInventoryCounts(inventories) {
+      const counts = {};
+      ['survey_section'].concat(SCALAR_AXES, LIST_AXES).forEach(function(field) {
+        counts[field] = {};
+        (inventories && Array.isArray(inventories[field]) ? inventories[field] : []).forEach(function(row) {
+          counts[field][row.label] = row.count;
+        });
       });
+      return counts;
     }
 
-    function getFieldValue(group) {
-      const selected = getSortedSelected(group);
-      const manual = group === 'domain'
-        ? normalizeCommaSeparatedTags(getTrimmedValue('domain-tags-manual-input'))
-        : [];
-      const merged = mergeNormalizedTagLists(selected, manual);
-      return merged.length ? merged.join(', ') : '';
+    function getSection(sectionId) {
+      const sections = STATE.taxonomy ? STATE.taxonomy.sections : [];
+      return sections.find(function(section) { return section.id === sectionId; }) || null;
+    }
+
+    function formatSectionLabel(section) {
+      return section ? '§' + section.number + ' ' + section.title : '';
+    }
+
+    function getCount(field, value) {
+      return (STATE.counts[field] && STATE.counts[field][value]) || 0;
+    }
+
+    /** Return the ordered survey_section list: primary first, then extras in pick order. */
+    function getSurveySections() {
+      if (!STATE.primarySection) return [];
+      return [STATE.primarySection].concat(STATE.extraSections.filter(function(sectionId) {
+        return sectionId !== STATE.primarySection;
+      }));
+    }
+
+    /** Return the selected values of a list axis in vocabulary order. */
+    function getListAxisValues(axis) {
+      const values = STATE.taxonomy ? STATE.taxonomy.axes[axis].values : [];
+      return values.filter(function(value) { return STATE.lists[axis].has(value); });
     }
 
     function getTrimmedValue(id) {
@@ -1127,38 +1154,6 @@
 
     function normalizeSingleLineText(value) {
       return String(value || '').replace(/\s+/g, ' ').trim();
-    }
-
-    function normalizeCommaSeparatedTags(rawValue) {
-      const seen = new Set();
-      return String(rawValue || '')
-        .split(',')
-        .map(function(value) { return value.trim(); })
-        .filter(function(value) {
-          if (!value) return false;
-          const key = value.toLowerCase();
-          if (seen.has(key)) return false;
-          seen.add(key);
-          return true;
-        });
-    }
-
-    function mergeNormalizedTagLists() {
-      const seen = new Set();
-      return Array.from(arguments)
-        .flat()
-        .map(function(value) { return String(value || '').trim(); })
-        .filter(function(value) {
-          if (!value) return false;
-          const key = value.toLowerCase();
-          if (seen.has(key)) return false;
-          seen.add(key);
-          return true;
-        });
-    }
-
-    function getAliasFieldValue() {
-      return normalizeCommaSeparatedTags(getTrimmedValue('alias-tags-manual-input')).join(', ');
     }
 
     function normalizeAuthors(rawValue) {
@@ -1242,25 +1237,32 @@
       });
     }
 
-    function buildSnippet() {
-      const lines = [];
-      const mechanism = getFieldValue('mechanism');
-      const focus = getFieldValue('focus');
-      const domain = getFieldValue('domain');
-      const alias = getAliasFieldValue();
-
-      if (mechanism) lines.push('mechanism_tags: ' + mechanism);
-      if (focus) lines.push('focus_tags: ' + focus);
-      if (domain) lines.push('domain_tags: ' + domain);
-      if (alias) lines.push('tags: ' + alias);
-
-      return lines.length
-        ? lines.join('\n')
-        : '# No tags selected yet. You can still continue without tags.';
+    function renderYamlInlineList(lines, key, items) {
+      if (!items.length) {
+        lines.push(key + ': []');
+        return;
+      }
+      renderYamlStringList(lines, key, items);
     }
 
-    function updateTagOutputs() {
-      updateGeneratedOutputs();
+    /** Return the survey taxonomy fields of the current entry as YAML lines. */
+    function buildTaxonomyLines(kind) {
+      const lines = [];
+      renderYamlStringList(lines, 'survey_section', getSurveySections());
+      if (kind !== 'paper') return lines;
+      SCALAR_AXES.forEach(function(axis) {
+        if (STATE.scalar[axis]) lines.push(axis + ': ' + yamlQuote(STATE.scalar[axis]));
+      });
+      LIST_AXES.forEach(function(axis) {
+        renderYamlInlineList(lines, axis, getListAxisValues(axis));
+      });
+      lines.push('survey_core: false');
+      return lines;
+    }
+
+    function buildSnippet() {
+      const lines = buildTaxonomyLines(STATE.formKind);
+      return lines.length ? lines.join('\n') : '# No survey section selected yet.';
     }
 
     function syncRequiredFieldStates() {
@@ -1292,163 +1294,155 @@
       });
     }
 
-    function toggleTag(group, label) {
-      const selected = STATE.selected[group];
-      if (selected.has(label)) {
-        selected.delete(label);
-      } else {
-        selected.add(label);
-      }
-      renderPicker(group);
-      updateTagOutputs();
-    }
-
-    function clearAllTags() {
-      STATE.selected.mechanism.clear();
-      STATE.selected.focus.clear();
-      STATE.selected.domain.clear();
-      const aliasInput = document.getElementById('alias-tags-manual-input');
-      const domainManualInput = document.getElementById('domain-tags-manual-input');
-      if (aliasInput) aliasInput.value = '';
-      if (domainManualInput) domainManualInput.value = '';
-      renderPicker('mechanism');
-      renderPicker('focus');
-      renderPicker('domain');
-      updateTagOutputs();
-    }
-
-    function getPickerMeta(group) {
-      return {
-        mechanism: {
-          title: 'Loop Mechanism',
-          note: 'Browser-facing loop-form tags: hierarchical-loop, flat-loop, parallel-loop, or implicit-layer.',
-          placeholder: 'Search loop mechanism…'
-        },
-        focus: {
-          title: 'Focus Tags',
-          note: 'Controlled vocabulary used directly by the build.',
-          placeholder: 'Search focus tags…'
-        },
-        domain: {
-          title: 'Domain Tags',
-          note: 'Browser-facing domain labels already used in the repo, plus suggested additions such as efficient-loop.',
-          placeholder: 'Search domain tags…'
-        }
-      }[group];
-    }
-
-    function getVisiblePickerOptions(group) {
-      const query = STATE.search[group].trim().toLowerCase();
-      return STATE.options[group].filter(function(item) {
-        return !query || item.label.toLowerCase().includes(query);
-      }).slice(0, 60);
-    }
-
-    function renderSelectedTagsHtml(group) {
-      const selected = STATE.selected[group];
-      return selected.size
-        ? getSortedSelected(group).map(function(label) {
-            return ''
-              + '<span class="tag-chip">'
-              + escapeHtml(label)
-              + '<button type="button" data-remove-tag="' + escapeHtml(label) + '" aria-label="Remove ' + escapeHtml(label) + '">✕</button>'
-              + '</span>';
-          }).join('')
-        : '<span class="empty-note">No tags selected yet.</span>';
-    }
-
-    function renderPickerMenuHtml(group) {
-      const selected = STATE.selected[group];
-      const visible = getVisiblePickerOptions(group);
-      return visible.length
-        ? visible.map(function(item) {
-            const selectedClass = selected.has(item.label) ? ' is-selected' : '';
-            return ''
-              + '<button type="button" class="tag-option' + selectedClass + '" data-tag-value="' + escapeHtml(item.label) + '">'
-              + '  <span>' + escapeHtml(item.label) + '</span>'
-              + '  <span class="tag-option-count">' + item.count + '</span>'
-              + '</button>';
-          }).join('')
-        : '<div class="empty-note">No matching tags.</div>';
-    }
-
-    function bindPickerMenuEvents(root, group) {
-      root.querySelectorAll('[data-tag-value]').forEach(function(button) {
-        button.addEventListener('click', function() {
-          toggleTag(group, button.dataset.tagValue);
-          STATE.search[group] = '';
-          renderPicker(group);
-        });
-      });
-    }
-
-    function refreshPickerMenu(group) {
-      const root = document.getElementById(group + '-picker');
-      if (!root) return;
-      const menu = root.querySelector('.tag-picker-menu');
-      if (!menu) return;
-      menu.innerHTML = renderPickerMenuHtml(group);
-      bindPickerMenuEvents(root, group);
-    }
-
-    function renderPicker(group) {
-      const root = document.getElementById(group + '-picker');
-      if (!root) return;
-
-      const meta = getPickerMeta(group);
-      const selected = STATE.selected[group];
-
-      root.innerHTML = ''
-        + '<div class="tag-picker-head">'
-        + '  <div class="tag-picker-title">' + escapeHtml(meta.title) + '</div>'
-        + '  <div class="tag-picker-note">' + selected.size + ' selected</div>'
-        + '</div>'
-        + '<input class="tag-picker-search" type="text" value="' + escapeHtml(STATE.search[group]) + '" placeholder="' + escapeHtml(meta.placeholder) + '" aria-label="' + escapeHtml(meta.title) + '" />'
-        + '<div class="tag-picker-note">' + escapeHtml(meta.note) + '</div>'
-        + '<div class="tag-selected-list">'
-        + renderSelectedTagsHtml(group)
-        + '</div>'
-        + '<div class="tag-picker-menu">'
-        + renderPickerMenuHtml(group)
-        + '</div>';
-
-      const searchInput = root.querySelector('.tag-picker-search');
-      if (searchInput) {
-        searchInput.addEventListener('input', function(event) {
-          STATE.search[group] = event.target.value;
-          refreshPickerMenu(group);
-        });
-      }
-
-      bindPickerMenuEvents(root, group);
-
-      root.querySelectorAll('[data-remove-tag]').forEach(function(button) {
-        button.addEventListener('click', function() {
-          toggleTag(group, button.dataset.removeTag);
-        });
-      });
-    }
-
-    function populatePaperCategoryOptions() {
-      const select = document.getElementById('category-select');
+    /** Render the chapter-grouped primary section select. */
+    function renderPrimarySectionSelect() {
+      const select = document.getElementById('primary-section-select');
       if (!select) return;
+      if (!STATE.taxonomy) {
+        select.innerHTML = '<option value="">Survey taxonomy unavailable</option>';
+        select.disabled = true;
+        return;
+      }
+      select.disabled = false;
+      select.innerHTML = '<option value="">Choose the primary survey section…</option>'
+        + STATE.taxonomy.chapters.map(function(chapter) {
+          const sections = STATE.taxonomy.sections.filter(function(section) { return section.chapter === chapter.number; });
+          return '<optgroup label="' + escapeHtml('§' + chapter.number + ' ' + chapter.title) + '">'
+            + sections.map(function(section) {
+              return '<option value="' + escapeHtml(section.id) + '">' + escapeHtml(formatSectionLabel(section))
+                + ' (' + getCount('survey_section', section.id) + ')</option>';
+            }).join('')
+            + '</optgroup>';
+        }).join('');
+      select.value = STATE.primarySection;
+    }
 
-      const currentValue = select.value;
-      select.innerHTML = '';
+    /** Render the chapter-grouped checklist of additional survey sections. */
+    function renderExtraSectionList() {
+      const list = document.getElementById('extra-sections-list');
+      const countEl = document.getElementById('extra-sections-count');
+      if (!list) return;
+      const extras = getSurveySections().slice(1);
+      if (countEl) countEl.textContent = extras.length + ' selected';
+      if (!STATE.taxonomy) {
+        list.innerHTML = '<div class="empty-note">Survey taxonomy unavailable.</div>';
+        return;
+      }
+      list.innerHTML = STATE.taxonomy.chapters.map(function(chapter) {
+        const sections = STATE.taxonomy.sections.filter(function(section) { return section.chapter === chapter.number; });
+        return '<div class="option-group-title">§' + escapeHtml(chapter.number) + ' ' + escapeHtml(chapter.title) + '</div>'
+          + sections.map(function(section) {
+            const isPrimary = section.id === STATE.primarySection;
+            const order = extras.indexOf(section.id);
+            const checked = isPrimary || order !== -1;
+            return '<label class="option-row' + (checked ? ' is-selected' : '') + (isPrimary ? ' is-disabled' : '') + '">'
+              + '<input type="checkbox" data-extra-section="' + escapeHtml(section.id) + '"' + (checked ? ' checked' : '') + (isPrimary ? ' disabled' : '') + ' />'
+              + '<span class="option-label">' + escapeHtml(formatSectionLabel(section))
+              + (isPrimary ? ' — primary' : (order !== -1 ? ' — #' + (order + 2) : '')) + '</span>'
+              + '<span class="option-count">' + getCount('survey_section', section.id) + '</span>'
+              + '</label>';
+          }).join('');
+      }).join('');
+    }
 
-      const placeholder = document.createElement('option');
-      placeholder.value = '';
-      placeholder.textContent = 'Choose the closest current paper category…';
-      placeholder.disabled = true;
-      placeholder.selected = !currentValue;
-      select.appendChild(placeholder);
+    /** Render one design-axis picker: a select for scalar axes, checkboxes for list axes. */
+    function renderAxisPicker(axis) {
+      const root = document.getElementById(axis + '-picker');
+      if (!root) return;
+      const axisMeta = STATE.taxonomy && STATE.taxonomy.axes[axis];
+      const title = axisMeta ? axisMeta.label : axis;
+      const isScalar = SCALAR_AXES.indexOf(axis) !== -1;
+      const inputId = axis + '-select';
+      let body;
+      if (!axisMeta) {
+        body = '<div class="empty-note">Survey taxonomy unavailable.</div>';
+      } else if (isScalar) {
+        body = '<select class="field-select" id="' + inputId + '" data-scalar-axis="' + axis + '">'
+          + '<option value="">Choose…</option>'
+          + axisMeta.values.map(function(value) {
+            return '<option value="' + escapeHtml(value) + '"' + (STATE.scalar[axis] === value ? ' selected' : '') + '>'
+              + escapeHtml(value) + ' (' + getCount(axis, value) + ')</option>';
+          }).join('')
+          + '</select>';
+      } else {
+        body = '<div class="option-list" role="group" aria-label="' + escapeHtml(title) + '">'
+          + axisMeta.values.map(function(value) {
+            const checked = STATE.lists[axis].has(value);
+            return '<label class="option-row' + (checked ? ' is-selected' : '') + '">'
+              + '<input type="checkbox" data-list-axis="' + axis + '" value="' + escapeHtml(value) + '"' + (checked ? ' checked' : '') + ' />'
+              + '<span class="option-label">' + escapeHtml(value) + '</span>'
+              + '<span class="option-count">' + getCount(axis, value) + '</span>'
+              + '</label>';
+          }).join('')
+          + '</div>';
+      }
+      const selectedNote = isScalar ? 'Required' : STATE.lists[axis].size + ' selected';
+      root.innerHTML = '<div class="picker-head">'
+        + (isScalar && axisMeta
+          ? '<label class="picker-title" for="' + inputId + '">' + escapeHtml(title) + '</label>'
+          : '<div class="picker-title">' + escapeHtml(title) + '</div>')
+        + '<div class="picker-note">' + escapeHtml(selectedNote) + '</div></div>'
+        + body
+        + '<div class="picker-note">' + escapeHtml(AXIS_NOTES[axis] || '') + '</div>';
+    }
 
-      PAPER_CATEGORY_OPTIONS.forEach(function(optionConfig) {
-        const option = document.createElement('option');
-        option.value = optionConfig.label;
-        option.textContent = optionConfig.label;
-        if (optionConfig.label === currentValue) option.selected = true;
-        select.appendChild(option);
+    function renderAllPickers() {
+      renderPrimarySectionSelect();
+      renderExtraSectionList();
+      SCALAR_AXES.concat(LIST_AXES).forEach(renderAxisPicker);
+      syncPickerValidity();
+    }
+
+    /** Mark required pickers that still need a value. */
+    function syncPickerValidity() {
+      const primary = document.getElementById('primary-section-picker');
+      if (primary) primary.classList.toggle('is-invalid', Boolean(STATE.taxonomy) && !STATE.primarySection);
+      SCALAR_AXES.forEach(function(axis) {
+        const root = document.getElementById(axis + '-picker');
+        if (root) root.classList.toggle('is-invalid', Boolean(STATE.taxonomy) && !STATE.scalar[axis]);
+      });
+    }
+
+    function clearTaxonomySelections() {
+      STATE.primarySection = '';
+      STATE.extraSections = [];
+      SCALAR_AXES.forEach(function(axis) { STATE.scalar[axis] = ''; });
+      LIST_AXES.forEach(function(axis) { STATE.lists[axis].clear(); });
+      renderAllPickers();
+      updateGeneratedOutputs();
+    }
+
+    /** Route picker changes into state; one delegated listener survives re-rendering. */
+    function wirePickers() {
+      document.getElementById('primary-section-select').addEventListener('change', function(event) {
+        STATE.primarySection = event.target.value;
+        STATE.extraSections = STATE.extraSections.filter(function(sectionId) { return sectionId !== STATE.primarySection; });
+        renderExtraSectionList();
+        syncPickerValidity();
+        updateGeneratedOutputs();
+      });
+      document.getElementById('extra-sections-list').addEventListener('change', function(event) {
+        const sectionId = event.target.dataset.extraSection;
+        if (!sectionId) return;
+        STATE.extraSections = STATE.extraSections.filter(function(id) { return id !== sectionId; });
+        if (event.target.checked) STATE.extraSections.push(sectionId);
+        renderExtraSectionList();
+        updateGeneratedOutputs();
+      });
+      document.getElementById('paper-axes-section').addEventListener('change', function(event) {
+        const scalarAxis = event.target.dataset.scalarAxis;
+        const listAxis = event.target.dataset.listAxis;
+        if (scalarAxis) {
+          STATE.scalar[scalarAxis] = event.target.value;
+        } else if (listAxis) {
+          if (event.target.checked) STATE.lists[listAxis].add(event.target.value);
+          else STATE.lists[listAxis].delete(event.target.value);
+          renderAxisPicker(listAxis);
+        } else {
+          return;
+        }
+        syncPickerValidity();
+        updateGeneratedOutputs();
       });
     }
 
@@ -1457,23 +1451,21 @@
       STATE.formKind = kind;
 
       const isPaper = kind === 'paper';
-      const categorySelect = document.getElementById('category-select');
 
       document.getElementById('kind-paper-btn').classList.toggle('is-active', isPaper);
       document.getElementById('kind-blog-btn').classList.toggle('is-active', !isPaper);
       document.getElementById('kind-paper-btn').setAttribute('aria-pressed', String(isPaper));
       document.getElementById('kind-blog-btn').setAttribute('aria-pressed', String(!isPaper));
 
-      document.getElementById('paper-category-field').hidden = !isPaper;
+      document.getElementById('paper-axes-section').hidden = !isPaper;
       document.getElementById('paper-code-field').hidden = !isPaper;
       document.getElementById('paper-openreview-field').hidden = !isPaper;
       document.getElementById('blog-github-field').hidden = isPaper;
       document.getElementById('blog-twitter-field').hidden = isPaper;
-      categorySelect.required = false;
 
       document.getElementById('kind-helper').innerHTML = isPaper
-        ? 'Paper submissions use <code>papers/&lt;arxiv_id&gt;.yaml</code> when possible, otherwise <code>papers/&lt;shortname&gt;.yaml</code>.'
-        : 'Blog submissions stay in the flat Blogs section and use filenames of the form <code>blogs/YYYY-MM-DD-shortname.yaml</code>.';
+        ? 'Paper submissions use <code>papers/&lt;arxiv_id&gt;.yaml</code> when possible, otherwise <code>papers/&lt;shortname&gt;.yaml</code>, and need survey sections plus every design axis.'
+        : 'Blog submissions stay in the flat Blogs section, list survey sections only, and use filenames of the form <code>blogs/YYYY-MM-DD-shortname.yaml</code>.';
 
       document.getElementById('resource-title-label').textContent = isPaper ? 'Paper Title' : 'Blog Title';
       document.getElementById('resource-title-note').textContent = isPaper
@@ -1506,25 +1498,14 @@
         project: getTrimmedValue('project-input'),
         github: getTrimmedValue('github-input'),
         twitter: getTrimmedValue('twitter-input'),
-        categoryLabel: getTrimmedValue('category-select'),
         description: normalizeSingleLineText(getTrimmedValue('description-input')),
-        mechanismTags: normalizeCommaSeparatedTags(getFieldValue('mechanism')),
-        focusTags: normalizeCommaSeparatedTags(getFieldValue('focus')),
-        domainTags: normalizeCommaSeparatedTags(getFieldValue('domain')),
-        aliasTags: normalizeCommaSeparatedTags(getAliasFieldValue())
+        addedDate: getLocalIsoDate(new Date())
       };
     }
 
-    function getCategoryConfig(values) {
-      return PAPER_CATEGORY_LOOKUP[values.categoryLabel] || null;
-    }
-
-    function getResolvedCategory(values) {
-      const categoryConfig = getCategoryConfig(values);
-      return categoryConfig ? {
-        category: categoryConfig.category,
-        foundation: Boolean(categoryConfig.foundation)
-      } : null;
+    /** Today's local calendar date, recorded as the repository intake date. */
+    function getLocalIsoDate(date) {
+      return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
     }
 
     function computeShortname(values) {
@@ -1564,26 +1545,20 @@
       return links;
     }
 
-    function buildPaperYaml(values) {
-      const resolvedCategory = getResolvedCategory(values);
-      if (!resolvedCategory) {
-        return '# Choose one of the canonical paper categories before generating YAML.';
-      }
-
+    /** Fields shared by papers and blogs, in catalog order. */
+    function buildCommonHeaderLines(values) {
       const lines = [];
       lines.push('title: ' + yamlQuote(values.title));
       renderYamlStringList(lines, 'authors', values.authors);
       lines.push('year: ' + Number(values.publishedDate.slice(0, 4)));
       lines.push('published_date: ' + yamlQuote(values.publishedDate));
+      lines.push('added_date: ' + yamlQuote(values.addedDate));
       lines.push('venue: ' + yamlQuote(values.venue));
-      lines.push('category: ' + yamlQuote(resolvedCategory.category));
-      if (resolvedCategory.foundation) {
-        lines.push('foundation: true');
-      }
-      renderYamlStringList(lines, 'mechanism_tags', values.mechanismTags);
-      renderYamlStringList(lines, 'domain_tags', values.domainTags);
-      renderYamlStringList(lines, 'tags', values.aliasTags);
-      renderYamlStringList(lines, 'focus_tags', values.focusTags);
+      return lines;
+    }
+
+    function buildPaperYaml(values) {
+      const lines = buildCommonHeaderLines(values).concat(buildTaxonomyLines('paper'));
       lines.push('desc: ' + yamlQuote(values.description));
       lines.push('links:');
       buildPrimaryPaperLinks(values).forEach(function(entry) {
@@ -1593,16 +1568,7 @@
     }
 
     function buildBlogYaml(values) {
-      const lines = [];
-      lines.push('title: ' + yamlQuote(values.title));
-      renderYamlStringList(lines, 'authors', values.authors);
-      lines.push('year: ' + Number(values.publishedDate.slice(0, 4)));
-      lines.push('published_date: ' + yamlQuote(values.publishedDate));
-      lines.push('venue: ' + yamlQuote(values.venue));
-      renderYamlStringList(lines, 'mechanism_tags', values.mechanismTags);
-      renderYamlStringList(lines, 'domain_tags', values.domainTags);
-      renderYamlStringList(lines, 'tags', values.aliasTags);
-      renderYamlStringList(lines, 'focus_tags', values.focusTags);
+      const lines = buildCommonHeaderLines(values).concat(buildTaxonomyLines('blog'));
       lines.push('desc: ' + yamlQuote(values.description));
       lines.push('links:');
       lines.push('  blog: ' + yamlQuote(values.primaryLink));
@@ -1624,8 +1590,17 @@
       if (!values.primaryLink) return 'Please enter the primary link.';
       if (!values.description) return 'Please enter the one-line description.';
       if (!computeShortname(values)) return 'Could not derive a valid shortname from the current inputs.';
-      if (values.kind === 'paper' && !getResolvedCategory(values)) {
-        return 'Please choose one of the canonical paper categories.';
+      if (!STATE.taxonomy) {
+        return STATE.metadataLoading
+          ? 'Loading the survey taxonomy…'
+          : 'The survey taxonomy could not be loaded, so survey fields cannot be generated.';
+      }
+      if (!STATE.primarySection) return 'Please choose the primary survey section.';
+      if (values.kind === 'paper') {
+        const missingAxis = SCALAR_AXES.find(function(axis) { return !STATE.scalar[axis]; });
+        if (missingAxis) {
+          return 'Please choose a ' + STATE.taxonomy.axes[missingAxis].label.toLowerCase() + ' value (use unspecified if the paper does not say).';
+        }
       }
       return '';
     }
@@ -1684,8 +1659,8 @@
       }
     }
 
-    async function copyTagBlock() {
-      return copyTextValue(buildSnippet(), 'Copied the generated tag block.');
+    async function copyTaxonomyBlock() {
+      return copyTextValue(buildSnippet(), 'Copied the generated taxonomy fields.');
     }
 
     async function copyYamlPreview() {
@@ -1731,8 +1706,7 @@
     function resetSubmissionForm() {
       const form = document.getElementById('submission-form');
       if (form) form.reset();
-      clearAllTags();
-      populatePaperCategoryOptions();
+      clearTaxonomySelections();
       setResourceKind('paper');
       document.getElementById('yaml-preview-output').value = '# Fill the required fields above to generate YAML.';
       document.getElementById('target-path-output').value = '# Fill the required fields above to generate a file path.';
@@ -1741,23 +1715,19 @@
       document.getElementById('path-status-output').value = '# Waiting for required fields';
       document.getElementById('github-repo-url-output').value = GITHUB_REPO_BASE;
       setActionDisabled(true);
-      setStatus('Reset the form and cleared all selected tags.', 'warning');
+      setStatus('Reset the form and cleared every survey selection.', 'warning');
     }
 
     function wireForm() {
-      document.getElementById('copy-tag-block-btn').addEventListener('click', copyTagBlock);
-      document.getElementById('clear-tags-btn').addEventListener('click', function() {
-        clearAllTags();
-        setStatus('Cleared selected tags.', 'warning');
+      document.getElementById('copy-taxonomy-block-btn').addEventListener('click', copyTaxonomyBlock);
+      document.getElementById('clear-taxonomy-btn').addEventListener('click', function() {
+        clearTaxonomySelections();
+        setStatus('Cleared the survey sections and design axes.', 'warning');
       });
       document.getElementById('copy-target-path-btn').addEventListener('click', copyTargetPath);
       document.getElementById('copy-yaml-btn').addEventListener('click', copyYamlPreview);
       document.getElementById('open-github-repo-btn').addEventListener('click', openGitHubRepoForFork);
       document.getElementById('reset-form-btn').addEventListener('click', resetSubmissionForm);
-      document.getElementById('alias-tags-manual-input').addEventListener('input', updateTagOutputs);
-      document.getElementById('alias-tags-manual-input').addEventListener('change', updateTagOutputs);
-      document.getElementById('domain-tags-manual-input').addEventListener('input', updateTagOutputs);
-      document.getElementById('domain-tags-manual-input').addEventListener('change', updateTagOutputs);
       document.getElementById('published-date-picker-btn').addEventListener('click', openPublishedDatePicker);
       document.getElementById('published-date-input').addEventListener('input', syncPublishedDateNativeInput);
       document.getElementById('published-date-input').addEventListener('change', syncPublishedDateNativeInput);
@@ -1770,57 +1740,58 @@
       });
     }
 
-    async function loadTagData() {
+    /** Fetch one JSON file, rejecting HTTP errors. */
+    async function fetchJson(path) {
+      const response = await fetch(path);
+      if (!response.ok) throw new Error(path + ' returned HTTP ' + response.status);
+      return response.json();
+    }
+
+    /** Load the survey taxonomy, value counts and existing paths; fall back to papers.json's taxonomy. */
+    async function loadSubmissionMetadata() {
       try {
-        const response = await fetch('submission-meta.json');
-        if (!response.ok) throw new Error('submission-meta.json returned HTTP ' + response.status);
-        const data = await response.json();
-        const inventories = data.tag_inventories || {};
-        if (!Array.isArray(data.existing_paths)
-          || !isValidCountedInventory(inventories.mechanism)
-          || !isValidCountedInventory(inventories.focus)
-          || !isValidCountedInventory(inventories.domain)) {
+        STATE.metadataLoading = true;
+        const data = await fetchJson('submission-meta.json');
+        const inventories = data.inventories || {};
+        const inventoriesOk = ['survey_section'].concat(SCALAR_AXES, LIST_AXES).every(function(field) {
+          return isValidCountedInventory(inventories[field]);
+        });
+        if (!Array.isArray(data.existing_paths) || !isValidSurveyTaxonomy(data.survey_taxonomy) || !inventoriesOk) {
           throw new Error('submission-meta.json has an invalid schema');
         }
-
         STATE.existingPaths = new Set(data.existing_paths);
-        STATE.options.mechanism = inventories.mechanism;
-        STATE.options.focus = inventories.focus;
-        STATE.options.domain = mergeSuggestedCountedInventory(inventories.domain, SUGGESTED_DOMAIN_TAGS);
-        renderPicker('mechanism');
-        renderPicker('focus');
-        renderPicker('domain');
-        updateTagOutputs();
-        setStatus('Loaded existing tags and filenames from submission metadata. Fill the form to generate a YAML draft, then copy the path and YAML into your fork for the PR flow.', 'success');
+        STATE.taxonomy = data.survey_taxonomy;
+        STATE.counts = indexInventoryCounts(inventories);
+        STATE.metadataLoading = false;
+        renderAllPickers();
+        updateGeneratedOutputs();
+        setStatus('Loaded the survey taxonomy and existing filenames from submission metadata. Fill the form to generate a YAML draft, then copy the path and YAML into your fork for the PR flow.', 'success');
       } catch (error) {
-        STATE.options.mechanism = FALLBACK_MECHANISM_TAGS.map(function(tag) {
-          return { label: tag, count: 0 };
-        });
-        STATE.options.focus = FALLBACK_FOCUS_TAGS.map(function(tag) {
-          return { label: tag, count: 0 };
-        });
-        STATE.options.domain = SUGGESTED_DOMAIN_TAGS.map(function(tag) {
-          return { label: tag, count: 0 };
-        });
-        renderPicker('mechanism');
-        renderPicker('focus');
-        renderPicker('domain');
-        updateTagOutputs();
         const reason = error instanceof Error ? error.message : 'unknown error';
-        setStatus('Could not load submission metadata (' + reason + '). Mechanism and focus tags still work, domain tags fall back to seeded suggestions, and duplicate filename checks are unavailable in this mode.', 'warning');
+        try {
+          const catalog = await fetchJson('papers.json');
+          if (!isValidSurveyTaxonomy(catalog.survey_taxonomy)) throw new Error('papers.json has no survey taxonomy');
+          STATE.taxonomy = catalog.survey_taxonomy;
+        } catch (fallbackError) {
+          STATE.taxonomy = null;
+        }
+        STATE.counts = indexInventoryCounts({});
+        STATE.metadataLoading = false;
+        renderAllPickers();
+        updateGeneratedOutputs();
+        setStatus(STATE.taxonomy
+          ? 'Could not load submission metadata (' + reason + '). The survey pickers use the catalog taxonomy without usage counts, and duplicate filename checks are unavailable.'
+          : 'Could not load the survey taxonomy (' + reason + '). Prepare the survey fields by hand using TAGS.md and TAXONOMY.md.', 'warning');
       }
     }
 
     initializeDocLinks();
-    populatePaperCategoryOptions();
-    renderPicker('mechanism');
-    renderPicker('focus');
-    renderPicker('domain');
+    renderAllPickers();
     setActionDisabled(true);
-    updateTagOutputs();
     setResourceKind('paper');
     wireForm();
-    loadTagData();
+    wirePickers();
+    loadSubmissionMetadata();
   </script>
 </body>
 </html>

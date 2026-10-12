@@ -425,7 +425,10 @@ def normalize_survey_fields(data: dict, source: str, required: tuple[str, ...] =
     first. Fields named in ``required`` must be present; other missing fields
     are omitted from the result.
     """
-    missing = [field for field in required if field not in data or data.get(field) is None]
+    missing = [
+        field for field in required
+        if data.get(field) is None or (isinstance(data.get(field), str) and not data[field].strip())
+    ]
     if missing:
         raise ValueError(f"{source}: missing required {', '.join(missing)}")
     result: dict = {}

@@ -35,8 +35,11 @@ UNSAFE_FINDING_CODES = frozenset(
 COMMIT_RE = re.compile(r"[0-9a-fA-F]{40}")
 GENERATOR_METADATA = {
     "path": "scripts/build_catalog_risk_report.py",
-    "version": 2,
+    "version": 3,
 }
+# Single-valued survey design axes whose "unspecified" value triggers P1 review.
+DESIGN_AXES = ("loop_topology", "sharing", "depth_control")
+UNSPECIFIED = "unspecified"
 
 
 class CatalogRiskReportError(ValueError):
@@ -61,8 +64,8 @@ def _validate_catalog_commit(value: str) -> str:
     return value
 
 
-def _string_tags(record: dict, field: str) -> tuple[str, ...]:
-    """Return string tag items without inventing values for malformed lists."""
+def _string_list(record: dict, field: str) -> tuple[str, ...]:
+    """Return string list items without inventing values for malformed lists."""
     value = record.get(field)
     if not isinstance(value, list):
         return ()
@@ -201,11 +204,10 @@ def build_catalog_risk_report(
     findings_by_id: dict[str, list[Finding]] = defaultdict(list)
     for finding in ordered_findings:
         findings_by_id[Path(finding.source).stem].append(finding)
-    tag_frequency = Counter(
-        tag
+    section_frequency = Counter(
+        section
         for _, record in records
-        for field in ("domain_tags", "tags")
-        for tag in _string_tags(record, field)
+        for section in set(_string_list(record, "survey_section"))
     )
     canonical_ids = frozenset(path.stem for path, _ in records)
     seeds = frozenset(
@@ -216,26 +218,22 @@ def build_catalog_risk_report(
     for path, record in records:
         paper_id = path.stem
         paper_findings = findings_by_id[paper_id]
-        mechanisms = _string_tags(record, "mechanism_tags")
+        unspecified_axes = [
+            axis for axis in DESIGN_AXES if record.get(axis) == UNSPECIFIED
+        ]
         reasons = [f"auditor:{finding.code}" for finding in paper_findings]
         if paper_id in seeds:
             reasons.append("manual-scope-review-seed")
-        if len(mechanisms) > 1:
-            reasons.append("multiple-mechanism-tags")
+        reasons.extend(f"unspecified-axis:{axis}" for axis in unspecified_axes)
         reasons.extend(
-            f"singleton-domain-tag:{tag}"
-            for tag in _string_tags(record, "domain_tags")
-            if tag_frequency[tag] == 1
-        )
-        reasons.extend(
-            f"singleton-alias-tag:{tag}"
-            for tag in _string_tags(record, "tags")
-            if tag_frequency[tag] == 1
+            f"singleton-survey-section:{section}"
+            for section in _string_list(record, "survey_section")
+            if section_frequency[section] == 1
         )
         reasons = sorted(set(reasons))
         if any(finding.severity == "error" for finding in paper_findings):
             priority = "P0"
-        elif paper_id in seeds or len(mechanisms) > 1:
+        elif paper_id in seeds or unspecified_axes:
             priority = "P1"
         elif any(finding.severity == "warning" for finding in paper_findings) or any(
             reason.startswith("singleton-") for reason in reasons
@@ -266,11 +264,11 @@ def build_catalog_risk_report(
         "auditor_findings": [asdict(item) for item in ordered_findings],
         "priority_rules": {
             "P0": "Paper has at least one auditor finding with severity error.",
-            "P1": "Paper is not P0 and either has more than one mechanism_tags value or is in the manual scope-review seed set.",
-            "P2": "Paper is not P0 or P1 and either has an auditor warning or uses a domain_tags or tags value whose exact full-catalog frequency is one.",
+            "P1": "Paper is not P0 and either is in the manual scope-review seed set or has loop_topology, sharing, or depth_control set to unspecified.",
+            "P2": "Paper is not P0 or P1 and either has an auditor warning or lists a survey_section value that no other canonical paper lists.",
             "P3": "Paper does not match P0, P1, or P2.",
             "manual_scope_review_seeds": sorted(seeds),
-            "singleton_frequency": f"Exact, case-sensitive tag values counted in one combined domain_tags plus tags frequency table across all {paper_count} canonical paper records.",
+            "singleton_frequency": f"Number of canonical paper records, out of {paper_count}, whose survey_section list contains the exact section id (each paper counted once per section).",
             "reason_order": "Reasons are unique and sorted lexicographically.",
         },
         "batches": batches,
@@ -301,15 +299,15 @@ def render_catalog_risk_markdown(report: dict) -> str:
         "",
         "This is a deterministic review queue for the canonical papers/*.yaml catalog. It combines the read-only structural auditor with explicit risk heuristics; it does not establish that a paper is in scope, that its description is faithful, or that its taxonomy is semantically correct.",
         "",
-        f"At this snapshot, scripts/audit_catalog.py reports **{counts['error']} errors / {counts['warning']} warnings**. Every semantic conclusion still requires manual review against the primary paper source. This inventory does not auto-fix YAML and must not be used as evidence for automatic tag or content changes.",
+        f"At this snapshot, scripts/audit_catalog.py reports **{counts['error']} errors / {counts['warning']} warnings**. Every semantic conclusion still requires manual review against the primary paper source. This inventory does not auto-fix YAML and must not be used as evidence for automatic taxonomy or content changes.",
         "",
         "## Priority rules",
         "",
         "- **P0:** at least one auditor error.",
-        "- **P1:** not P0, and either more than one mechanism_tags value or membership in the manual scope-review seed set.",
-        "- **P2:** not P0/P1, and either an auditor warning or an exact domain_tags/tags value that occurs once in the full catalog.",
+        "- **P1:** not P0, and either membership in the manual scope-review seed set or a loop_topology, sharing, or depth_control value of `unspecified`.",
+        "- **P2:** not P0/P1, and either an auditor warning or a survey_section that no other paper in the catalog lists.",
         "- **P3:** all remaining papers.",
-        f"- Reasons are deduplicated and sorted lexicographically. Singleton frequency uses one combined domain_tags plus tags table and is exact and case-sensitive across all {paper_count} canonical records; the two axes are not counted separately.",
+        f"- Reasons are deduplicated and sorted lexicographically. Section frequency counts, across all {paper_count} canonical records, how many papers list each exact survey_section id.",
         "",
         f"Batch sizes: **P0 {len(batches['P0'])} / P1 {len(batches['P1'])} / P2 {len(batches['P2'])} / P3 {len(batches['P3'])}**.",
         "",
@@ -346,13 +344,13 @@ def render_catalog_risk_markdown(report: dict) -> str:
     lines.extend(
         [
             "",
-            "P1 reasons are review triggers, not evidence of an error. In particular, multiple mechanism tags can be legitimate when the paper genuinely combines mechanisms.",
+            "P1 reasons are review triggers, not evidence of an error. In particular, `unspecified` is legitimate when the paper genuinely does not pin down that design axis.",
             "",
             "## P2 and P3 coverage",
             "",
             f"### P2 — {len(batches['P2'])} papers",
             "",
-            "Warnings and singleton vocabulary require human judgment. A singleton tag can be precise and valid; frequency alone is never a reason to rename or remove it.",
+            "Warnings and singleton survey sections require human judgment. A paper can be the only entry in a valid section; frequency alone is never a reason to reclassify it.",
             "",
         ]
     )
@@ -375,8 +373,8 @@ def render_catalog_risk_markdown(report: dict) -> str:
             "## Review order and evidence requirement",
             "",
             "1. **P0:** resolve structural blockers only after checking the primary source and recording evidence.",
-            "2. **P1:** review manual scope seeds and multi-mechanism classifications against the paper method, equations, and experiments.",
-            "3. **P2:** adjudicate auditor warnings and singleton vocabulary; preserve intentional venue-year differences and precise rare tags.",
+            "2. **P1:** review manual scope seeds and `unspecified` design axes against the paper method, equations, and experiments.",
+            "3. **P2:** adjudicate auditor warnings and singleton survey sections; preserve intentional venue-year differences and precise rare sections.",
             "4. **P3:** complete the remaining paper-by-paper content and taxonomy review.",
             "",
             "For every paper, use the canonical primary paper rather than a title, search snippet, run name, or this heuristic report. Record source version, locator, scope evidence, taxonomy rationale, and content checks in audits/papers before changing canonical metadata. No item in this report authorizes an automatic fix.",

@@ -12,30 +12,20 @@ scope:
   evidence: "The prelude-recur-coda architecture applies the same learned recurrent block r times between non-recurrent input and output blocks in one forward computation."
   locator: "Section 3.1; Section 3.2, Equation 1; Section 3.3, Equation 3"
 taxonomy:
-  category:
-    value: analysis
-    rationale: "The paper derives and empirically fits iso-depth scaling laws that quantify the value of recurrent passes relative to unique depth and compute."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "A single recurrent block is reused along one un-nested depth axis."
-  focus_tags:
-    values:
-      - architecture
-    rationale: "The analysis varies unique and recurrent architectural depth while controlling effective depth and compute."
-  domain_tags:
-    values:
-      - language-modeling
-      - scaling
-      - efficiency
-    rationale: "The scaling-law experiments study language models and compare recurrence, unique depth, and training FLOPs."
-  tags:
-    values:
-      - looped-llm
-      - depth-scaling
-      - scaling-laws
-      - iso-depth
-    rationale: "These aliases name the evaluated model family and the paper's iso-depth scaling analysis."
+      - scaling/compute-optimal
+      - understanding/why
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: prelude-core-coda
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): A single recurrent block is reused along one un-nested depth axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): A single recurrent block is reused along one un-nested depth axis."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

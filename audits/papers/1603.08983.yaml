@@ -12,29 +12,20 @@ scope:
   evidence: "ACT uses the same learned recurrent state-transition function for a variable number of internal computation steps between receiving an input and emitting an output."
   locator: "Section 2, page 3, Equations 3-9; Figure 2; Section 2.1, Equations 10-12"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces the Adaptive Computation Time algorithm and recurrent computation design."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "One state-transition function is reused along a single adaptive-computation axis."
-  focus_tags:
-    values:
-      - objective-loss
-      - architecture
-      - training-algorithm
-      - inference-algorithm
-    rationale: "ACT defines a ponder-cost objective, changes recurrent computation, trains halting probabilities differentiably, and selects the number of inference steps."
-  domain_tags:
-    values:
-      - sequence-modeling
-      - efficiency
-    rationale: "The method targets recurrent sequence models and allocates computation adaptively per input."
-  tags:
-    values:
-      - ACT
-    rationale: "ACT is the abbreviation introduced by the paper."
+      - foundations/recurrence
+      - architecture/depth-control
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One state-transition function is reused along a single adaptive-computation axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One state-transition function is reused along a single adaptive-computation axis."
+  depth_control:
+    value: adaptive-halting
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

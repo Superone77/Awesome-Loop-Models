@@ -12,32 +12,21 @@ scope:
   evidence: "An attractor module repeatedly applies the same learned operator through an Anderson solver until a fixed point is reached."
   locator: "Figure 1, page 1; Sections 3.1-3.2, pages 4-5"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces the Attractor Model architecture and its implicit training method."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-      - implicit-layer
-    rationale: "The learned attractor operator is repeatedly evaluated and solved to a fixed point."
-  focus_tags:
-    values:
-      - architecture
-      - training-algorithm
-      - inference-algorithm
-    rationale: "The work covers architecture, implicit differentiation, and convergence-adaptive forward solution."
-  domain_tags:
-    values:
-      - language-modeling
-      - reasoning
-      - scaling
-      - efficiency
-    rationale: "The experiments span language pretraining, small-model reasoning, scale comparisons, and compute/memory tradeoffs."
-  tags:
-    values:
-      - looped-transformer
-      - looped-llm
-    rationale: "These aliases place Attractor Models in the looped Transformer and language-model families."
+      - training/supervision-optimization
+      - architecture/topology
+      - capabilities/efficiency
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: implicit-fixed-point
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop, implicit-layer): The learned attractor operator is repeatedly evaluated and solved to a fixed point."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop, implicit-layer): The learned attractor operator is repeatedly evaluated and solved to a fixed point."
+  depth_control:
+    value: convergence
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

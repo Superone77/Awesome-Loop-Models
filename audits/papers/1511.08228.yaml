@@ -12,26 +12,20 @@ scope:
   evidence: "The input initializes the state once, after which the same learned CGRU blocks are reused over recurrent computation steps."
   locator: "Section 2, pages 2-3, state-update and final-state equations"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces the Neural GPU recurrent convolutional architecture."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "One stack of shared convolutional recurrent units is applied repeatedly."
-  focus_tags:
-    values:
-      - architecture
-      - training-algorithm
-    rationale: "The work contributes both the recurrent design and its training procedure for long algorithmic sequences."
-  domain_tags:
-    values:
-      - algorithmic-reasoning
-    rationale: "The model learns algorithms including addition and multiplication."
-  tags:
-    values:
-      - Neural GPU
-    rationale: "Neural GPU is the official architecture name."
+      - foundations/algorithmic
+      - capabilities/generalization
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One stack of shared convolutional recurrent units is applied repeatedly."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One stack of shared convolutional recurrent units is applied repeatedly."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

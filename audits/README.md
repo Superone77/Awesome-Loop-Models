@@ -7,15 +7,20 @@ network.
 
 Findings have two severities:
 
-- `error` means the catalog has an invalid structure, identity, URL, or
-  controlled tag. Any error makes the command exit with status 1.
-- `warning` marks a year/date discrepancy, cross-axis tag collision, or prose
-  soft-limit issue that needs human judgment. A warning-only run exits with
-  status 0.
+- `error` means the catalog has an invalid structure, identity, URL, a retired
+  taxonomy field (`category`, `category_path`, `subcategory`, `foundation`,
+  `mechanism_tags`, `focus_tags`, `domain_tags`, `tags`, `family_tags`), or a
+  missing or invalid survey field. Every paper needs `survey_section` (a
+  non-empty list, primary first), `loop_topology`, `sharing`, `depth_control`,
+  `claims`, and `comparison`, using only the values in `scripts/taxonomy.py`;
+  `survey_core` is an optional boolean. Any error makes the command exit with
+  status 1.
+- `warning` marks a year/date discrepancy or prose soft-limit issue that needs
+  human judgment. A warning-only run exits with status 0.
 
 The auditor deliberately has no auto-fix mode. In particular, it does not
-decide whether a paper is in scope, verify claims in `desc`, or infer semantic
-categories and tags. Those decisions require checking the primary paper source
+decide whether a paper is in scope, verify claims in `desc`, or infer survey
+sections or design-axis values. Those decisions require checking the primary paper source
 and recording the evidence separately.
 
 Run it from the repository root:
@@ -36,11 +41,18 @@ python3 scripts/audit_catalog.py --root /path/to/Awesome-Loop-Models --format hu
 `scripts/build_catalog_risk_report.py` turns the raw canonical catalog and the
 auditor findings into `audits/catalog-risk-report.json` and
 `audits/catalog-risk-report.md`. It writes those reports but never modifies
-`papers/*.yaml`. Reproduce the checked-in 2026-07-10 snapshot with:
+`papers/*.yaml`. Generate a snapshot of the current catalog with:
 
 ```bash
-python3 scripts/build_catalog_risk_report.py --generated-on 2026-07-10 --catalog-commit 6b460f1cbd8d033fe0d356b9125bc40b18d1083f
+python3 scripts/build_catalog_risk_report.py --generated-on YYYY-MM-DD --catalog-commit "$(git rev-parse HEAD)"
 ```
+
+The checked-in `audits/catalog-risk-report.{json,md}` is a historical
+2026-07-10 snapshot of catalog commit
+`6b460f1cbd8d033fe0d356b9125bc40b18d1083f`, produced by generator v2 under the
+retired category/tag taxonomy. It is kept unchanged as provenance; reproducing
+it requires checking out that commit, including its generator. Generator v3
+(below) applies the survey-taxonomy rules.
 
 Both snapshot arguments are required provenance: `--generated-on` must be an
 ISO calendar date and `--catalog-commit` must be a valid full 40-hex commit in
@@ -57,10 +69,11 @@ distinct; each report is fully prepared in its destination directory before
 the generated files replace their targets.
 
 The priority queue is deterministic. P0 contains auditor errors; P1 contains
-non-P0 manual scope-review seeds or papers with multiple mechanism tags; P2
-contains remaining auditor warnings or singleton vocabulary; and P3 contains
-the rest. Singleton frequency is exact and case-sensitive in one combined
-`domain_tags` plus `tags` table, not separate per-axis tables. The generator
+non-P0 manual scope-review seeds or papers whose `loop_topology`, `sharing`, or
+`depth_control` is `unspecified`; P2 contains remaining papers with auditor
+warnings or a `survey_section` that no other paper lists; and P3 contains the
+rest. Section frequency counts each paper once per exact section id, whether
+the section is primary or secondary. The generator
 checks that every canonical ID occurs exactly once in both the paper rows and
 the disjoint priority batches. Auditor findings are retained, including P0
 errors, but malformed or non-mapping raw YAML fails generation because it
@@ -88,8 +101,12 @@ Each record contains only these top-level fields:
 - non-empty `reviewer` provenance and `confidence` (`low`, `medium`, or `high`);
 - a `scope` verdict, written evidence, and a locator pointing to a section,
   page, figure, table, or equation;
-- `taxonomy` entries for `category`, `mechanism_tags`, `focus_tags`,
-  `domain_tags`, and optional aliases in `tags`, each with a rationale;
+- `taxonomy` entries for `survey_section` (`values`, primary first) and the
+  single-valued design axes `loop_topology`, `sharing`, and `depth_control`
+  (`value`), each with a `rationale`. Values must come from
+  `scripts/taxonomy.py`. `claims` and `comparison` are not audited here. A
+  `remove` record may omit the `taxonomy` block, since a removed paper has no
+  canonical survey fields to compare against;
 - `content_checks` for `title_authors`, `publication`, `description`, and
   `links`, each with a status and evidence;
 - a string list of `unresolved_questions`.
@@ -100,9 +117,22 @@ strict-scope record requires an `in-scope` verdict; a canonical paper marked
 `catalog_fit: adjacent` instead requires an evidenced `out-of-scope` verdict
 while remaining verified and visible. Both require medium or high confidence,
 verified content checks, no unresolved questions, and taxonomy values that
-exactly match the current canonical paper. Tag-array order is ignored during
-that comparison; values are not normalized. A `remove` decision requires an
-evidenced `out-of-scope` verdict.
+match the current canonical paper: the same primary `survey_section`, the same
+set of sections (secondary order is ignored), and identical design-axis values.
+Values are not normalized. A `remove` decision requires an evidenced
+`out-of-scope` verdict.
+
+The `taxonomy` blocks of the records that predate the survey taxonomy were
+migrated mechanically on 2026-10-12: values were copied from the canonical
+paper YAML, and each rationale says it was migrated from the legacy
+category/tag classification and not re-verified against the primary source.
+Where the legacy loop-mechanism rationale described the loop, it is quoted,
+labelled as legacy, in the `loop_topology` and `sharing` rationales. Those
+records keep `status: verified` because their scope and content checks were
+verified, but their taxonomy rationales are not primary-source evidence until a
+reviewer replaces them. The three removal tombstones dropped their legacy
+taxonomy blocks; their `scope.evidence` already records why each paper was
+removed.
 
 Run the ledger validator from the repository root:
 

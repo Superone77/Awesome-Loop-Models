@@ -12,32 +12,20 @@ scope:
   evidence: "Ouro repeats the same K-layer learned stack R times, with gating over the recurrent depth."
   locator: "Section 3.1, Figure 3 and Equation 1; Section 3.2, Equation 3"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces pretrained Looped Language Models and loop-depth scaling."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "One learned stack is reused over a single recurrent-depth axis."
-  focus_tags:
-    values:
-      - objective-loss
-      - architecture
-      - training-algorithm
-      - inference-algorithm
-    rationale: "The work covers the LoopLM design, entropy objective, large-scale pretraining, and adaptive-depth execution."
-  domain_tags:
-    values:
-      - language-modeling
-      - reasoning
-      - efficiency
-      - adaptive-compute
-    rationale: "Ouro is a language/reasoning model whose recurrent depth provides efficient adaptive computation."
-  tags:
-    values:
-      - Ouro
-      - LoopLM
-    rationale: "Ouro and LoopLM are official model/family identifiers."
+      - capabilities/efficiency
+      - architecture/depth-control
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One learned stack is reused over a single recurrent-depth axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One learned stack is reused over a single recurrent-depth axis."
+  depth_control:
+    value: adaptive-halting
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

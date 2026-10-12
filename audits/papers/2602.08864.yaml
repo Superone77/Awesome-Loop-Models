@@ -12,29 +12,21 @@ scope:
   evidence: "ANIRA repeatedly applies one shared recurrent Transformer core while varying per-token computation depth."
   locator: "Section 3.1, pages 2-3, Figure 1 and Equation 2; Section 3.2, Equations 3-7"
 taxonomy:
-  category:
-    value: analysis
-    rationale: "The authors position ANIRA as a controlled framework for measuring dynamic compute allocation."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "One shared core is repeated over a flat recurrent-depth axis."
-  focus_tags:
-    values:
-      - architecture
-      - inference-algorithm
-    rationale: "The controlled architecture exposes and measures per-token variable-depth inference."
-  domain_tags:
-    values:
-      - language-modeling
-      - algorithmic-reasoning
-      - efficiency
-      - adaptive-compute
-    rationale: "The study analyzes adaptive compute on language and algorithmic inputs."
-  tags:
-    values:
-      - ANIRA
-    rationale: "ANIRA is the paper's experimental framework name."
+      - understanding/failure-modes
+      - architecture/depth-control
+      - understanding/why
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One shared core is repeated over a flat recurrent-depth axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One shared core is repeated over a flat recurrent-depth axis."
+  depth_control:
+    value: adaptive-halting
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

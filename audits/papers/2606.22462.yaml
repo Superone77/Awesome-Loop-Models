@@ -12,28 +12,20 @@ scope:
   evidence: "AdaR repeatedly applies the same learned recurrent message-passing layer, conditioned on the step, within one graph-model forward computation."
   locator: "Figure 2; Section 3.2, Equation 2; Section 3.3, Equation 4"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces an adaptive recurrent graph architecture."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "A single message-passing update is reused sequentially without a nested recurrence."
-  focus_tags:
-    values:
-      - architecture
-      - inference-algorithm
-      - training-algorithm
-    rationale: "AdaR changes the recurrent architecture and learns a policy that controls computation during training and test-time inference."
-  domain_tags:
-    values:
-      - graph-data
-      - efficiency
-    rationale: "The evaluated tasks use graph data and the method allocates test-time computation adaptively."
-  tags:
-    values:
-      - AdaR
-    rationale: "AdaR is the method name used by the paper."
+      - applications/graphs-science
+      - scaling/test-time
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): A single message-passing update is reused sequentially without a nested recurrence."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): A single message-passing update is reused sequentially without a nested recurrence."
+  depth_control:
+    value: convergence
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

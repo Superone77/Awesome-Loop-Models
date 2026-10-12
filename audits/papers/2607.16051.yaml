@@ -12,21 +12,21 @@ scope:
   evidence: "Loopie repeatedly reuses compact Transformer blocks over recurrent depth within each model forward pass."
   locator: "Abstract; Section 2.4"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces and scales a family of looped MoE Transformer designs."
-  mechanism_tags:
-    values: [flat-loop]
-    rationale: "The same block is reused along one recurrent-depth axis."
-  focus_tags:
-    values: [architecture, training-algorithm]
-    rationale: "The main contributions are the Loopie architecture family and its hardware-aware pretraining recipe."
-  domain_tags:
-    values: [language-modeling, reasoning, scaling, efficiency, memory-efficiency]
-    rationale: "The work evaluates scaled language modeling and reasoning while reporting wall-clock and activation-memory benefits."
-  tags:
-    values: [Loopie, MoE]
-    rationale: "Loopie is the model family and MoE identifies the official mixture-of-experts variants."
+  survey_section:
+    values:
+      - scaling/compute-optimal
+      - architecture/hybrid
+      - systems/batching-parallel
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The same block is reused along one recurrent-depth axis."
+  sharing:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The same block is reused along one recurrent-depth axis."
+  depth_control:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

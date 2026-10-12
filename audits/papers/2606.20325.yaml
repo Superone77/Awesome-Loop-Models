@@ -14,24 +14,6 @@ scope:
     does not add recurrent-depth or within-forward latent-depth reuse beyond
     standard temporal recurrence, which the catalog explicitly excludes.
   locator: "Section 2, Definition 2.1, Equations 3-4; Definition 2.2, Equation 5; Section 3, Theorem 3.1, Equation 8"
-taxonomy:
-  category:
-    value: analysis
-    rationale: "The paper is approximation theory, but catalog taxonomy is inapplicable after the scope failure."
-  mechanism_tags:
-    values: []
-    rationale: "Standard sequence-time recurrence is not a qualifying loop mechanism in this repository."
-  focus_tags:
-    values:
-      - inference-algorithm
-    rationale: "Runtime controls approximation accuracy, but this does not satisfy the catalog boundary."
-  domain_tags:
-    values:
-      - theory
-    rationale: "The contribution is a continuous-function approximation theorem."
-  tags:
-    values: []
-    rationale: "No catalog alias is retained for the removed paper."
 content_checks:
   title_authors:
     status: verified

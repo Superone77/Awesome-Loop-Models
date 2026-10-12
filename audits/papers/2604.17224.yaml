@@ -12,26 +12,20 @@ scope:
   evidence: "LASER operates on activations produced while the TRM backbone reuses learned modules across nested recursive unrolling in one forward process."
   locator: "Section 1, first two paragraphs; Section 3.3, Algorithm 1"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces a low-rank activation-compression method for training recursive models."
-  mechanism_tags:
+  survey_section:
     values:
-      - hierarchical-loop
-    rationale: "The target TRM backbone uses nested recursive computation."
-  focus_tags:
-    values:
-      - training-algorithm
-    rationale: "LASER compresses stored training activations and reconstructs them for the backward pass."
-  domain_tags:
-    values:
-      - efficiency
-    rationale: "The primary objective is reducing recursive-training activation memory."
-  tags:
-    values:
-      - TRM
-      - activation-compression
-    rationale: "These identify the audited backbone and the proposed efficiency technique."
+      - systems/kv-memory
+      - understanding/interpretability
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: hierarchical
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: hierarchical-loop): The target TRM backbone uses nested recursive computation."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: hierarchical-loop): The target TRM backbone uses nested recursive computation."
+  depth_control:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

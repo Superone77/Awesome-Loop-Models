@@ -12,21 +12,19 @@ scope:
   evidence: "SCSE repeatedly reuses the same Transformer block over recurrent depth while preserving an input-conditioned source state."
   locator: "Abstract; Section 2.1"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces source-centered state evolution as a reusable looped-Transformer architecture."
-  mechanism_tags:
-    values: [flat-loop]
-    rationale: "One parameter-shared block is reused along a single loop-depth axis."
-  focus_tags:
-    values: [architecture, inference-algorithm]
-    rationale: "The work introduces the recurrent state update and evaluates calibrated depth selection."
-  domain_tags:
-    values: [language-modeling, scaling]
-    rationale: "Experiments cover language modeling, completion, and loop-depth/model-scale behavior; no reasoning task is evaluated."
-  tags:
-    values: []
-    rationale: "No optional alias is needed."
+  survey_section:
+    values:
+      - architecture/residual-init
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One parameter-shared block is reused along a single loop-depth axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One parameter-shared block is reused along a single loop-depth axis."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

@@ -12,15 +12,19 @@ import xml.etree.ElementTree as ET
 from datetime import date, datetime
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from taxonomy import (  # noqa: E402
+    VALID_CLAIMS,
+    VALID_COMPARISONS,
+    VALID_DEPTH_CONTROLS,
+    VALID_LOOP_TOPOLOGIES,
+    VALID_SHARING_SCHEMES,
+    VALID_SURVEY_SECTIONS,
+)
+
 NS = {"a": "http://www.w3.org/2005/Atom"}
 ROOT = Path(__file__).resolve().parents[1]
 PAPERS_DIR = ROOT / "papers"
-VALID_MECHANISM_TAGS = (
-    "hierarchical-loop",
-    "flat-loop",
-    "parallel-loop",
-    "implicit-layer",
-)
 
 
 def yaml_quote(value: str) -> str:
@@ -109,18 +113,23 @@ def render_yaml(data: dict, args: argparse.Namespace) -> str:
     if args.added_date:
         lines.append(f"added_date: {yaml_quote(args.added_date)}")
     lines.append(f"venue: {args.venue}")
-    lines.append(f"category: {args.category}")
-    lines.append("mechanism_tags:")
-    for item in args.mechanism_tags:
+    if args.catalog_fit:
+        lines.append(f"catalog_fit: {args.catalog_fit}")
+    lines.append("survey_section:")
+    for item in dict.fromkeys(args.survey_sections):
         lines.append(f"- {item}")
-    if args.domain_tags:
-        lines.append("domain_tags:")
-        for item in args.domain_tags:
-            lines.append(f"- {item}")
-    if args.tags:
-        lines.append("tags:")
-        for item in args.tags:
-            lines.append(f"- {item}")
+    lines.append(f"loop_topology: {args.loop_topology}")
+    lines.append(f"sharing: {args.sharing}")
+    lines.append(f"depth_control: {args.depth_control}")
+    for field, values in (("claims", args.claims), ("comparison", args.comparison)):
+        unique = list(dict.fromkeys(values))
+        if unique:
+            lines.append(f"{field}:")
+            lines.extend(f"- {item}" for item in unique)
+        else:
+            lines.append(f"{field}: []")
+    if args.survey_core:
+        lines.append("survey_core: true")
     desc = args.desc or first_sentence(data["summary"])
     lines.append(f"desc: {wrap_desc(desc)}")
     lines.append("links:")
@@ -135,10 +144,21 @@ def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("arxiv_id", help="arXiv ID, e.g. 2604.11791")
     p.add_argument("--venue", default="arXiv")
-    p.add_argument("--category", required=True, choices=["analysis", "designs", "applications"])
-    p.add_argument("--mechanism-tag", action="append", required=True, choices=VALID_MECHANISM_TAGS, dest="mechanism_tags")
-    p.add_argument("--domain-tag", action="append", default=[], dest="domain_tags")
-    p.add_argument("--tag", action="append", default=[], dest="tags")
+    p.add_argument(
+        "--section",
+        action="append",
+        required=True,
+        choices=VALID_SURVEY_SECTIONS,
+        dest="survey_sections",
+        help="Survey section id; repeat for several, primary first",
+    )
+    p.add_argument("--loop-topology", required=True, choices=VALID_LOOP_TOPOLOGIES)
+    p.add_argument("--sharing", required=True, choices=VALID_SHARING_SCHEMES)
+    p.add_argument("--depth-control", required=True, choices=VALID_DEPTH_CONTROLS)
+    p.add_argument("--claim", action="append", default=[], choices=VALID_CLAIMS, dest="claims")
+    p.add_argument("--comparison", action="append", default=[], choices=VALID_COMPARISONS)
+    p.add_argument("--survey-core", action="store_true", help="Mark the paper as survey_core: true")
+    p.add_argument("--catalog-fit", choices=["adjacent"], help="Emit catalog_fit: adjacent (strict is the default)")
     p.add_argument("--desc", help="Curated one-line description; defaults to first abstract sentence")
     p.add_argument("--added-date", default=date.today().isoformat(), help="Repo intake date in YYYY-MM-DD; defaults to today")
     p.add_argument("--metrics-updated", help="Optional YYYY-MM-DD stamp")

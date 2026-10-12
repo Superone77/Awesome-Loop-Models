@@ -12,32 +12,20 @@ scope:
   evidence: "EqR explicitly reuses weight-tied high- and low-level updates over nested recurrent iterations within one forward computation."
   locator: "Section 2, Equation 1; Section 3; Figure 4; Section 5, Algorithm 1"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces Equilibrium Reasoners and their segmented training method."
-  mechanism_tags:
+  survey_section:
     values:
-      - hierarchical-loop
-      - flat-loop
-    rationale: >-
-      Learned high/low updates are explicitly unrolled in a nested schedule;
-      the method does not use DEQ root solving or implicit differentiation.
-  focus_tags:
-    values:
-      - architecture
-      - training-algorithm
-      - inference-algorithm
-    rationale: "The work contributes the recurrent design, truncated/segmented training, and depth/breadth test-time execution."
-  domain_tags:
-    values:
-      - reasoning
-      - algorithmic-reasoning
-      - scaling
-    rationale: "The paper studies reasoning tasks and scales test-time recurrent depth and independent restarts."
-  tags:
-    values:
-      - EqR
-    rationale: "EqR is the official method abbreviation."
+      - scaling/test-time
+      - training/supervision-optimization
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: hierarchical-loop, flat-loop): Learned high/low updates are explicitly unrolled in a nested schedule; the method does not use DEQ root solving or implicit differentiation."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: hierarchical-loop, flat-loop): Learned high/low updates are explicitly unrolled in a nested schedule; the method does not use DEQ root solving or implicit differentiation."
+  depth_control:
+    value: convergence
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

@@ -3,6 +3,6 @@ contact_links:
   - name: Submission Guide
     url: {{PUBLIC_SUBMIT_URL}}
     about: Choose Paper vs Blog, generate the YAML path/content, then copy it into your fork and open a pull request.
-  - name: TAGS.md
+  - name: Taxonomy vocabulary (TAGS.md)
     url: {{PUBLIC_TAGS_URL}}
-    about: Reuse an existing focus/domain/alias tag whenever possible.
+    about: The controlled survey sections and design-axis values every entry must use.

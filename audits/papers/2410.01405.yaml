@@ -12,29 +12,20 @@ scope:
   evidence: "The theoretical model composes one shared Transformer r times, and TMLT conditions per-loop scaling on timestep encodings."
   locator: "Section 2.2; Section 4.2"
 taxonomy:
-  category:
-    value: analysis
-    rationale: "The primary contribution is expressive-power theory plus an analyzed architectural remedy."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "One Transformer is repeatedly composed over a flat recurrence axis."
-  focus_tags:
-    values:
-      - architecture
-    rationale: "The constructive enhancement changes timestep-conditioned loop scaling."
-  domain_tags:
-    values:
-      - language-modeling
-      - reasoning
-      - theory
-    rationale: "The work develops theory for looped Transformer reasoning/function approximation in language-model architectures."
-  tags:
-    values:
-      - looped-transformer
-      - timestep-encoding
-      - TMLT
-    rationale: "These aliases identify the model family, mechanism, and proposed Timestep-Modulated model."
+      - capabilities/expressivity
+      - architecture/sharing
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One Transformer is repeatedly composed over a flat recurrence axis."
+  sharing:
+    value: partial-adapter
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One Transformer is repeatedly composed over a flat recurrence axis."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

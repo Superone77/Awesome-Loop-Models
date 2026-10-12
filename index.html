@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Awesome Loop Models</title>
   <link rel="icon" type="image/png" href="assets/favicon.png" />
-  <script src="assets/reading-desk.js?v=4"></script>
+  <script src="assets/reading-desk.js?v=5"></script>
   <style>
     /* ── Light theme (default) ── */
     :root {
@@ -21,8 +21,8 @@
       --text: #111111;
       --text-muted: #555555;
       --text-dim: rgba(17, 17, 17, 0.48);
-      --tag-bg: transparent;
-      --tag-border: rgba(17, 17, 17, 0.14);
+      --chip-bg: transparent;
+      --chip-border: rgba(17, 17, 17, 0.14);
       --search-bg: #ffffff;
       --card-hover: rgba(17, 17, 17, 0.025);
       --scrollbar-thumb: rgba(17,17,17,0.16);
@@ -49,8 +49,8 @@
         --text: #dadadb;
         --text-muted: #c4c4c5;
         --text-dim: #9b9c9d;
-        --tag-bg: transparent;
-        --tag-border: rgba(255,255,255,0.14);
+        --chip-bg: transparent;
+        --chip-border: rgba(255,255,255,0.14);
         --search-bg: #1d1e20;
         --card-hover: rgba(255,255,255,0.035);
         --scrollbar-thumb: rgba(230,237,243,0.18);
@@ -88,7 +88,6 @@
     body,
     main,
     .sidebar,
-    .mobile-directory-body,
     .paper-table-shell {
       scrollbar-width: thin;
       scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
@@ -97,7 +96,6 @@
     body::-webkit-scrollbar,
     main::-webkit-scrollbar,
     .sidebar::-webkit-scrollbar,
-    .mobile-directory-body::-webkit-scrollbar,
     .paper-table-shell::-webkit-scrollbar {
       width: 8px;
       height: 8px;
@@ -106,7 +104,6 @@
     body::-webkit-scrollbar-track,
     main::-webkit-scrollbar-track,
     .sidebar::-webkit-scrollbar-track,
-    .mobile-directory-body::-webkit-scrollbar-track,
     .paper-table-shell::-webkit-scrollbar-track {
       background: var(--scrollbar-track);
     }
@@ -114,7 +111,6 @@
     body::-webkit-scrollbar-thumb,
     main::-webkit-scrollbar-thumb,
     .sidebar::-webkit-scrollbar-thumb,
-    .mobile-directory-body::-webkit-scrollbar-thumb,
     .paper-table-shell::-webkit-scrollbar-thumb {
       background: var(--scrollbar-thumb);
       border-radius: 999px;
@@ -125,7 +121,6 @@
     body::-webkit-scrollbar-thumb:hover,
     main::-webkit-scrollbar-thumb:hover,
     .sidebar::-webkit-scrollbar-thumb:hover,
-    .mobile-directory-body::-webkit-scrollbar-thumb:hover,
     .paper-table-shell::-webkit-scrollbar-thumb:hover {
       background: var(--scrollbar-thumb-hover);
     }
@@ -505,117 +500,6 @@
       line-height: 1.5;
     }
 
-    .sidebar-nav {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .tree-node {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-
-    .tree-node.tree-hidden {
-      display: none;
-    }
-
-    .tree-row {
-      display: grid;
-      grid-template-columns: auto minmax(0, 1fr);
-      align-items: center;
-      gap: 6px;
-    }
-
-    .tree-toggle,
-    .tree-spacer {
-      width: 16px;
-      height: 16px;
-      flex-shrink: 0;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .tree-toggle {
-      border: 0;
-      background: transparent;
-      color: var(--text-dim);
-      cursor: pointer;
-      transition: transform 0.18s ease, color 0.18s ease;
-      padding: 0;
-      font-size: 13px;
-      line-height: 1;
-    }
-
-    .tree-toggle:hover {
-      color: var(--accent);
-    }
-
-    .tree-node:not(.is-open) > .tree-row .tree-toggle {
-      transform: rotate(-90deg);
-    }
-
-    .tree-link {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 4px 0 4px 2px;
-      border: 0;
-      border-radius: 0;
-      color: var(--text-muted);
-      text-decoration: none;
-      transition: color 0.18s ease;
-    }
-
-    .tree-link:hover {
-      color: var(--accent);
-    }
-
-    .tree-link.active {
-      color: var(--accent);
-      font-weight: 700;
-    }
-
-    .tree-label {
-      display: inline-flex;
-      align-items: center;
-      gap: 0;
-      min-width: 0;
-      font-size: 12.5px;
-      font-weight: 600;
-    }
-
-    .tree-count {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 28px;
-      padding: 2px 8px;
-      border-radius: 8px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      color: var(--text-dim);
-      font-size: 11px;
-      font-weight: 600;
-      flex-shrink: 0;
-    }
-
-    .tree-children {
-      display: none;
-      margin-left: 7px;
-      padding-left: 10px;
-      border-left: 1px solid rgba(9,105,218,0.14);
-    }
-
-    .tree-node.is-open > .tree-children {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
     /* ── Main ── */
     main {
       flex: 1;
@@ -688,12 +572,12 @@
       display: none;
     }
 
-    /* ── Category Section ── */
-    .category {
+    /* ── Resource group (Blogs) ── */
+    .resource-group {
       margin-bottom: 42px;
     }
 
-    .category-header {
+    .resource-group-header {
       display: flex;
       align-items: center;
       gap: 12px;
@@ -704,30 +588,19 @@
       background: linear-gradient(180deg, var(--surface), rgba(255,255,255,0));
     }
 
-    .category-icon {
-      width: 34px;
-      height: 34px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 9px;
-      background: rgba(9,105,218,0.08);
-      font-size: 18px;
-    }
-
-    .category-title {
+    .resource-group-title {
       font-size: 18px;
       font-weight: 700;
       color: var(--text);
     }
 
-    .category-desc {
+    .resource-group-desc {
       font-size: 12px;
       color: var(--text-muted);
       margin-top: 2px;
     }
 
-    .category-count {
+    .resource-group-count {
       margin-left: auto;
       font-size: 11.5px;
       color: var(--text-dim);
@@ -737,56 +610,10 @@
       padding: 4px 10px;
     }
 
-    .category-body {
+    .resource-group-body {
       display: flex;
       flex-direction: column;
       gap: 16px;
-    }
-
-    .category-node {
-      margin-left: calc(var(--depth, 0) * 14px);
-      padding: 16px 18px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background:
-        linear-gradient(180deg, rgba(9,105,218,0.02), transparent),
-        var(--surface);
-    }
-
-    .category-node-header {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-
-    .category-node-title {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text);
-    }
-
-    .category-node-desc {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 3px;
-    }
-
-    .category-node-count {
-      margin-left: auto;
-      font-size: 10.5px;
-      color: var(--text-dim);
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 3px 8px;
-      white-space: nowrap;
-    }
-
-    .category-node-body {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
     }
 
     /* ── Paper Card ── */
@@ -854,7 +681,7 @@
       flex-shrink: 0;
     }
 
-    .foundation-badge,
+    .survey-core-badge,
     .catalog-fit-badge {
       display: inline-flex;
       align-items: center;
@@ -869,10 +696,11 @@
       flex-shrink: 0;
     }
 
-    .foundation-badge {
-      border-color: rgba(130,80,223,0.28);
-      background: rgba(130,80,223,0.08);
-      color: var(--accent3);
+    .survey-core-badge {
+      border-color: var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      font-weight: 600;
     }
 
     .catalog-fit-badge {
@@ -930,24 +758,24 @@
       margin-bottom: 6px;
     }
 
-    .paper-tags {
+    .paper-chips {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
       margin-bottom: 8px;
     }
 
-    .paper-tag,
-    .tag-filter-chip {
+    .paper-chip,
+    .facet-filter-chip {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
       max-width: 100%;
       padding: 2px 7px;
-      border: 1px solid var(--tag-border);
+      border: 1px solid var(--chip-border);
       border-radius: 8px;
-      background: var(--tag-bg);
+      background: var(--chip-bg);
       color: var(--accent);
       font-size: 11px;
       font-weight: 600;
@@ -960,7 +788,7 @@
       transition: transform 0.12s ease, border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
     }
 
-    .tag-filter-chip-count {
+    .facet-filter-chip-count {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -975,79 +803,38 @@
       flex-shrink: 0;
     }
 
-    .paper-tag {
+    .paper-chip {
       appearance: none;
       text-decoration: none;
     }
 
-    span.paper-tag {
+    span.paper-chip {
       cursor: default;
     }
 
-    a.paper-tag:hover,
-    .tag-filter-chip:hover {
+    a.paper-chip:hover,
+    .facet-filter-chip:hover {
       transform: translateY(-1px);
       border-color: var(--accent);
     }
 
-    a.paper-tag:focus-visible,
-    .tag-filter-chip:focus-visible {
+    a.paper-chip:focus-visible,
+    .facet-filter-chip:focus-visible {
       outline: 2px solid var(--accent);
       outline-offset: 2px;
     }
 
-    .tag-filter-chip:disabled {
+    .facet-filter-chip:disabled {
       cursor: not-allowed;
       opacity: 0.72;
       transform: none;
     }
 
-    .paper-tag-mechanism,
-    .tag-filter-chip[data-tag-group="mechanism"] {
-      color: var(--accent3);
-      border-color: rgba(130,80,223,0.24);
-      background: rgba(130,80,223,0.08);
-    }
-
-    .paper-tag-domain,
-    .tag-filter-chip[data-tag-group="domain"] {
-      color: var(--text-muted);
-      background: transparent;
-    }
-
-    .paper-tag-focus,
-    .tag-filter-chip[data-tag-group="focus"] {
-      color: var(--accent2);
-      border-color: rgba(63,185,80,0.28);
-      background: rgba(63,185,80,0.08);
-    }
-
-    .paper-tag.is-active,
-    .tag-filter-chip.is-active {
+    .paper-chip.is-active,
+    .facet-filter-chip.is-active {
       background: var(--accent);
       border-color: var(--accent);
       color: #ffffff;
-    }
-
-    .paper-tag[data-tag-group="mechanism"].is-active,
-    .tag-filter-chip[data-tag-group="mechanism"].is-active {
-      background: var(--accent3);
-      border-color: var(--accent3);
-      color: #ffffff;
-    }
-
-    .paper-tag[data-tag-group="focus"].is-active,
-    .tag-filter-chip[data-tag-group="focus"].is-active {
-      background: var(--accent2);
-      border-color: var(--accent2);
-      color: #ffffff;
-    }
-
-    .paper-tag[data-tag-group="domain"].is-active,
-    .tag-filter-chip[data-tag-group="domain"].is-active {
-      background: var(--surface2);
-      border-color: var(--text-muted);
-      color: var(--text);
     }
 
     .paper-desc {
@@ -1950,37 +1737,29 @@
         width: 140px;
         min-height: 32px;
       }
-      .sort-btn, .date-clear-btn, .tag-filter-toggle {
+      .sort-btn, .date-clear-btn, .facet-filter-toggle {
         min-height: 32px;
       }
-      .tag-filter-shell {
+      .facet-filter-shell {
         margin-top: 8px;
       }
-      .tag-filter-toggle,
-      .tag-filter-panel {
+      .facet-filter-toggle,
+      .facet-filter-panel {
         width: 100%;
         min-width: 0;
       }
-      .tag-filter-toggle {
+      .facet-filter-toggle {
         padding: 7px 10px;
         font-size: 12px;
       }
-      .tag-filter-panel {
+      .facet-filter-panel {
         padding: 12px;
       }
-      .mobile-directory {
-        display: block;
-        margin-bottom: 14px;
-      }
-      .category-header {
+      .resource-group-header {
         padding: 16px;
       }
-      .category-count {
+      .resource-group-count {
         display: none;
-      }
-      .category-node {
-        margin-left: 0;
-        padding: 14px;
       }
     }
 
@@ -2149,15 +1928,15 @@
       flex-wrap: wrap;
     }
 
-    /* ── Tag Filter ── */
-    .tag-filter-shell {
+    /* ── Design-axis filter ── */
+    .facet-filter-shell {
       margin-top: 12px;
       display: grid;
       gap: 10px;
       justify-items: center;
     }
 
-    .tag-filter-toggle {
+    .facet-filter-toggle {
       display: inline-flex;
       align-items: center;
       justify-content: space-between;
@@ -2176,38 +1955,38 @@
       transition: border-color 0.15s ease, transform 0.12s ease;
     }
 
-    .tag-filter-toggle:hover {
+    .facet-filter-toggle:hover {
       border-color: var(--accent);
       transform: translateY(-1px);
     }
 
-    .tag-filter-header,
-    .tag-filter-active-list {
+    .facet-filter-header,
+    .facet-filter-active-list {
       display: flex;
       align-items: center;
       flex-wrap: wrap;
       gap: 8px;
     }
 
-    .tag-filter-header {
+    .facet-filter-header {
       width: 100%;
       min-width: 0;
     }
 
-    .tag-filter-active-list {
+    .facet-filter-active-list {
       min-width: 0;
     }
 
-    .tag-filter-active-list[hidden] {
+    .facet-filter-active-list[hidden] {
       display: none;
     }
 
-    .tag-filter-active-item {
+    .facet-filter-active-item {
       cursor: default;
       white-space: nowrap;
     }
 
-    .tag-filter-active-remove {
+    .facet-filter-active-remove {
       display: inline-grid;
       place-items: center;
       width: 24px;
@@ -2224,24 +2003,24 @@
       cursor: pointer;
     }
 
-    .tag-filter-active-remove:hover {
+    .facet-filter-active-remove:hover {
       background: rgba(255,255,255,0.2);
     }
 
-    .tag-filter-active-remove:focus-visible {
+    .facet-filter-active-remove:focus-visible {
       outline: 2px solid var(--text);
       outline-offset: 2px;
     }
 
-    .tag-filter-caret {
+    .facet-filter-caret {
       transition: transform 0.18s ease;
     }
 
-    .tag-filter-toggle[aria-expanded="true"] .tag-filter-caret {
+    .facet-filter-toggle[aria-expanded="true"] .facet-filter-caret {
       transform: rotate(180deg);
     }
 
-    .tag-filter-panel {
+    .facet-filter-panel {
       width: min(920px, 100%);
       border: 1px solid var(--border);
       border-radius: 14px;
@@ -2249,7 +2028,7 @@
       padding: 14px 15px;
     }
 
-    .tag-filter-panel[hidden] {
+    .facet-filter-panel[hidden] {
       display: none;
     }
 
@@ -2283,7 +2062,7 @@
       justify-content: flex-start;
     }
 
-    .filter-sidebar-tag-shell {
+    .filter-sidebar-facet-shell {
       margin-top: 2px;
       padding-top: 8px;
       border-top: 1px solid var(--border);
@@ -2291,14 +2070,14 @@
       gap: 8px;
     }
 
-    .filter-sidebar-tag-shell .tag-filter-toggle,
-    .filter-sidebar-tag-shell .tag-filter-panel {
+    .filter-sidebar-facet-shell .facet-filter-toggle,
+    .filter-sidebar-facet-shell .facet-filter-panel {
       min-width: 0;
       max-width: none;
       width: 100%;
     }
 
-    .filter-sidebar-tag-shell .tag-filter-toggle {
+    .filter-sidebar-facet-shell .facet-filter-toggle {
       width: auto;
       padding: 0;
       border: 0;
@@ -2309,13 +2088,13 @@
       min-height: 0;
     }
 
-    .filter-sidebar-tag-shell .tag-filter-toggle:hover {
+    .filter-sidebar-facet-shell .facet-filter-toggle:hover {
       border-color: transparent;
       transform: none;
       color: var(--accent);
     }
 
-    .filter-sidebar-tag-shell .tag-filter-panel {
+    .filter-sidebar-facet-shell .facet-filter-panel {
       border: 0;
       border-radius: 0;
       background: transparent;
@@ -2340,7 +2119,7 @@
       font-size: 11.5px;
     }
 
-    .tag-filter-head {
+    .facet-filter-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -2349,23 +2128,23 @@
       margin-bottom: 12px;
     }
 
-    .tag-filter-hint {
+    .facet-filter-hint {
       font-size: 12px;
       color: var(--text-muted);
       line-height: 1.5;
     }
 
-    .tag-filter-groups {
+    .facet-filter-groups {
       display: grid;
       gap: 14px;
     }
 
-    .tag-filter-group {
+    .facet-filter-group {
       display: grid;
       gap: 8px;
     }
 
-    .tag-filter-group-title {
+    .facet-filter-group-title {
       font-size: 11px;
       font-weight: 700;
       letter-spacing: 0.9px;
@@ -2373,7 +2152,7 @@
       color: var(--accent);
     }
 
-    .tag-filter-chip-list {
+    .facet-filter-chip-list {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
@@ -2388,22 +2167,18 @@
         width: 136px;
         min-height: 34px;
       }
-      .sort-btn, .date-clear-btn, .tag-filter-toggle {
+      .sort-btn, .date-clear-btn, .facet-filter-toggle {
         min-height: 34px;
       }
-      .tag-filter-toggle,
-      .tag-filter-panel {
+      .facet-filter-toggle,
+      .facet-filter-panel {
         width: 100%;
       }
-      .category-header {
+      .resource-group-header {
         padding: 16px;
       }
-      .category-count {
+      .resource-group-count {
         display: none;
-      }
-      .category-node {
-        margin-left: 0;
-        padding: 14px;
       }
     }
 
@@ -2438,61 +2213,6 @@
         font-size: 11px;
       }
       .date-input { width: 132px; }
-      .mobile-directory-toggle {
-        padding: 12px 14px;
-      }
-      .mobile-directory-hint {
-        font-size: 10px;
-      }
-    }
-
-    .mobile-directory {
-      display: none;
-      margin-bottom: 20px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: var(--surface);
-      overflow: hidden;
-    }
-
-    .mobile-directory-toggle {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 14px 16px;
-      border: 0;
-      background: transparent;
-      color: var(--text);
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      text-align: left;
-    }
-
-    .mobile-directory-hint {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-    }
-
-    .mobile-directory-body {
-      display: none;
-      padding: 0 14px 14px;
-      border-top: 1px solid var(--border);
-    }
-
-    .mobile-directory.is-open .mobile-directory-body {
-      display: block;
-    }
-
-    @media (max-width: 768px) {
-      .mobile-directory {
-        display: block;
-      }
     }
 
     .layout.table-view-active {
@@ -2619,7 +2339,7 @@
       line-height: 1.5;
     }
 
-    .paper-table-tags {
+    .paper-table-chips {
       display: flex;
       flex-wrap: wrap;
       gap: 4px;
@@ -2854,22 +2574,22 @@
         width: 140px;
         min-height: 32px;
       }
-      .sort-btn, .date-clear-btn, .tag-filter-toggle {
+      .sort-btn, .date-clear-btn, .facet-filter-toggle {
         min-height: 32px;
       }
-      .tag-filter-shell {
+      .facet-filter-shell {
         margin-top: 8px;
       }
-      .tag-filter-toggle,
-      .tag-filter-panel {
+      .facet-filter-toggle,
+      .facet-filter-panel {
         width: 100%;
         min-width: 0;
       }
-      .tag-filter-toggle {
+      .facet-filter-toggle {
         padding: 7px 10px;
         font-size: 12px;
       }
-      .tag-filter-panel {
+      .facet-filter-panel {
         padding: 12px;
       }
       .header-inner {
@@ -2955,28 +2675,15 @@
       .daily-watch-countdown {
         padding: 7px 10px;
       }
-      .mobile-directory {
-        display: block;
-        margin-bottom: 12px;
-      }
-      .category-header {
+      .resource-group-header {
         padding: 12px 14px;
         margin-bottom: 12px;
       }
-      .category-desc,
-      .category-node-desc {
+      .resource-group-desc {
         display: none;
       }
-      .category-count,
-      .category-node-count {
+      .resource-group-count {
         display: none;
-      }
-      .category-node {
-        margin-left: 0;
-        padding: 12px;
-      }
-      .category-node-header {
-        margin-bottom: 10px;
       }
     }
 
@@ -3012,12 +2719,6 @@
         font-size: 11px;
       }
       .date-input { width: 132px; }
-      .mobile-directory-toggle {
-        padding: 10px 12px;
-      }
-      .mobile-directory-hint {
-        font-size: 10px;
-      }
     }
 
     @media (max-width: 768px) {
@@ -3070,16 +2771,12 @@
         min-width: 0;
       }
 
-      .filter-sidebar-tag-shell {
+      .filter-sidebar-facet-shell {
         width: 100%;
       }
 
-      .tag-filter-chip-list {
+      .facet-filter-chip-list {
         gap: 6px;
-      }
-
-      .tag-chip {
-        max-width: 100%;
       }
     }
 
@@ -3139,7 +2836,7 @@
       min-width: 0;
     }
 
-    .paper-tag-overflow:focus-visible {
+    .paper-chip-overflow:focus-visible {
       outline: 2px solid var(--accent);
       outline-offset: 2px;
     }
@@ -3148,13 +2845,13 @@
       min-width: 0;
     }
 
-    .paper-tag-overflow {
+    .paper-chip-overflow {
       display: none;
       align-items: center;
       justify-content: center;
       min-height: 22px;
       padding: 2px 7px;
-      border: 1px dashed var(--tag-border);
+      border: 1px dashed var(--chip-border);
       border-radius: 8px;
       background: transparent;
       color: var(--text-muted);
@@ -3165,7 +2862,7 @@
       white-space: nowrap;
     }
 
-    .paper-tag-overflow:hover {
+    .paper-chip-overflow:hover {
       border-color: var(--accent);
       color: var(--accent);
     }
@@ -3197,35 +2894,28 @@
         margin-top: 8px;
       }
 
-      #papers-panel[data-card-density="compact"] .category {
+      #papers-panel[data-card-density="compact"] .resource-group {
         margin-bottom: 28px;
       }
 
-      #papers-panel[data-card-density="compact"] .category-header {
+      #papers-panel[data-card-density="compact"] .resource-group-header {
         gap: 10px;
         margin-bottom: 10px;
         padding: 11px 14px;
         border-radius: 9px;
       }
 
-      #papers-panel[data-card-density="compact"] .category-icon {
-        width: 30px;
-        height: 30px;
-        border-radius: 8px;
-        font-size: 16px;
-      }
-
-      #papers-panel[data-card-density="compact"] .category-title {
+      #papers-panel[data-card-density="compact"] .resource-group-title {
         font-size: 16px;
         line-height: 1.25;
       }
 
-      #papers-panel[data-card-density="compact"] .category-copy {
+      #papers-panel[data-card-density="compact"] .resource-group-copy {
         min-width: 0;
         flex: 1 1 auto;
       }
 
-      #papers-panel[data-card-density="compact"] .category-desc {
+      #papers-panel[data-card-density="compact"] .resource-group-desc {
         max-width: 920px;
         margin-top: 1px;
         overflow: hidden;
@@ -3235,18 +2925,8 @@
         white-space: nowrap;
       }
 
-      #papers-panel[data-card-density="compact"] .category-body,
-      #papers-panel[data-card-density="compact"] .category-node-body {
+      #papers-panel[data-card-density="compact"] .resource-group-body {
         gap: 8px;
-      }
-
-      #papers-panel[data-card-density="compact"] .category-node {
-        padding: 10px 12px;
-        border-radius: 8px;
-      }
-
-      #papers-panel[data-card-density="compact"] .category-node-header {
-        margin-bottom: 8px;
       }
 
       #papers-panel[data-card-density="compact"] .papers-grid {
@@ -3297,27 +2977,27 @@
       }
 
       #papers-panel[data-card-density="compact"] .paper-metrics,
-      #papers-panel[data-card-density="compact"] .paper-tags {
+      #papers-panel[data-card-density="compact"] .paper-chips {
         margin: 0;
         gap: 4px;
       }
 
       #papers-panel[data-card-density="compact"] .metric-badge,
-      #papers-panel[data-card-density="compact"] .paper-tag {
+      #papers-panel[data-card-density="compact"] .paper-chip {
         padding: 1px 6px;
         font-size: 10px;
         line-height: 1.25;
       }
 
-      #papers-panel[data-card-density="compact"] .paper-tags > .paper-tag:nth-child(n+5) {
+      #papers-panel[data-card-density="compact"] .paper-chips > .paper-chip:nth-child(n+5) {
         display: none;
       }
 
-      #papers-panel[data-card-density="compact"] .paper-card.show-all-tags .paper-tags > .paper-tag {
+      #papers-panel[data-card-density="compact"] .paper-card.show-all-chips .paper-chips > .paper-chip {
         display: inline-flex;
       }
 
-      #papers-panel[data-card-density="compact"] .paper-tag-overflow {
+      #papers-panel[data-card-density="compact"] .paper-chip-overflow {
         display: inline-flex;
       }
 
@@ -3575,32 +3255,12 @@
       font-size: 13px;
     }
 
-    .tree-link {
-      min-height: 36px;
-      color: var(--text-muted);
-      font-family: var(--font-body);
-    }
-
-    .tree-link.active {
-      color: var(--text);
-      text-decoration: underline;
-      text-underline-offset: 0.3em;
-    }
-
-    .tree-count {
-      border: 0;
-      border-radius: 0;
-      background: transparent;
-      color: var(--text-dim);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .category {
+    .resource-group {
       margin-bottom: 46px;
     }
 
-    .category-header,
-    #papers-panel[data-card-density="compact"] .category-header {
+    .resource-group-header,
+    #papers-panel[data-card-density="compact"] .resource-group-header {
       margin-bottom: 0;
       padding: 0 0 14px;
       border: 0;
@@ -3609,19 +3269,15 @@
       background: transparent;
     }
 
-    .category-icon {
-      display: none;
-    }
-
-    .category-title,
-    #papers-panel[data-card-density="compact"] .category-title {
+    .resource-group-title,
+    #papers-panel[data-card-density="compact"] .resource-group-title {
       font-family: var(--font-display);
       font-size: 24px;
       line-height: 1.25;
     }
 
-    .category-desc,
-    #papers-panel[data-card-density="compact"] .category-desc {
+    .resource-group-desc,
+    #papers-panel[data-card-density="compact"] .resource-group-desc {
       max-width: 780px;
       margin-top: 4px;
       font-size: 14px;
@@ -3629,25 +3285,10 @@
       white-space: normal;
     }
 
-    .category-count,
-    .category-node-count {
+    .resource-group-count {
       border: 0;
       background: transparent;
       color: var(--text-dim);
-    }
-
-    .category-node,
-    #papers-panel[data-card-density="compact"] .category-node {
-      margin-left: calc(var(--depth, 0) * 10px);
-      padding: 18px 0 0;
-      border: 0;
-      border-radius: 0;
-      background: transparent;
-    }
-
-    .category-node-header,
-    #papers-panel[data-card-density="compact"] .category-node-header {
-      margin-bottom: 8px;
     }
 
     .papers-grid,
@@ -3693,11 +3334,11 @@
       line-height: 1.55;
     }
 
-    .paper-tag,
-    .tag-filter-chip,
+    .paper-chip,
+    .facet-filter-chip,
     .metric-badge,
     .paper-venue,
-    .foundation-badge,
+    .survey-core-badge,
     .catalog-fit-badge {
       border-radius: var(--radius-sm);
       box-shadow: none;
@@ -3940,8 +3581,8 @@
       grid-column: 1 / -1;
     }
 
-    .stats-composition-card,
-    .stats-mechanism-card,
+    .stats-chapter-card,
+    .stats-topology-card,
     .stats-directions-card {
       grid-column: span 4;
     }
@@ -4033,8 +3674,7 @@
     .stats-range-button:focus-visible,
     .stats-direction-tabs button:focus-visible,
     .stats-panel .timeline-chart:focus-visible,
-    a.stats-distribution-row:focus-visible,
-    .stats-category-legend a:focus-visible {
+    a.stats-distribution-row:focus-visible {
       outline: 2px solid var(--stats-data-1);
       outline-offset: 2px;
     }
@@ -4252,79 +3892,6 @@
       to { stroke-dashoffset: 0; }
     }
 
-    .stats-category-composition {
-      display: grid;
-      gap: 18px;
-    }
-
-    .stats-category-total {
-      display: flex;
-      align-items: baseline;
-      gap: 8px;
-      color: var(--text-muted);
-      font-size: 14px;
-    }
-
-    .stats-category-total strong {
-      color: var(--text);
-      font-family: var(--font-display);
-      font-size: 32px;
-      line-height: 1;
-    }
-
-    .stats-category-stack {
-      display: flex;
-      gap: 2px;
-      height: 14px;
-      overflow: hidden;
-      border-radius: 4px;
-    }
-
-    .stats-category-stack span {
-      min-width: 4px;
-      height: 100%;
-    }
-
-    .stats-category-legend {
-      display: grid;
-    }
-
-    .stats-category-legend a {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 0;
-      border-top: 1px solid var(--border);
-      color: var(--text);
-      font-size: 14px;
-      text-decoration: none;
-    }
-
-    .stats-category-legend a:first-child {
-      border-top: 0;
-    }
-
-    .stats-category-legend a:hover span span {
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-
-    .stats-category-legend a > span {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-    }
-
-    .stats-category-legend i {
-      flex: 0 0 auto;
-      width: 10px;
-      height: 10px;
-      border-radius: 3px;
-    }
-
-    .stats-category-legend strong,
     .stats-distribution-value {
       color: var(--text);
       font-size: 14px;
@@ -4332,7 +3899,6 @@
       white-space: nowrap;
     }
 
-    .stats-category-legend strong small,
     .stats-distribution-value small {
       margin-left: 6px;
       color: var(--text-muted);
@@ -4406,11 +3972,11 @@
     }
 
     @media (max-width: 1100px) {
-      .stats-composition-card {
+      .stats-chapter-card {
         grid-column: 1 / -1;
       }
 
-      .stats-mechanism-card,
+      .stats-topology-card,
       .stats-directions-card {
         grid-column: span 6;
       }
@@ -4670,7 +4236,7 @@
       }
     }
   </style>
-  <link rel="stylesheet" href="assets/reading-desk.css?v=5" />
+  <link rel="stylesheet" href="assets/reading-desk.css?v=6" />
 </head>
 <body class="reading-desk">
 
@@ -4690,6 +4256,11 @@
         <button type="button" class="top-level-tab" id="stats-tab" role="tab" aria-controls="stats-panel" aria-selected="false" tabindex="-1">Stats</button>
         <button type="button" class="top-level-tab" id="blogs-tab" role="tab" aria-controls="papers-panel" aria-selected="false" tabindex="-1">Blogs</button>
       </div>
+
+      <nav class="survey-nav" id="survey-nav" aria-label="Survey chapters" hidden>
+        <div class="survey-nav-title">Survey chapters</div>
+        <ol class="survey-nav-list" id="survey-nav-list"></ol>
+      </nav>
 
     <section class="desk-watch" aria-label="Catalog watch">
     <div class="daily-status-row">
@@ -4762,7 +4333,7 @@
     <div class="filter-sidebar-toggle-row">
       <button type="button" class="filter-sidebar-toggle" id="filter-sidebar-toggle" aria-expanded="false" aria-controls="filter-sidebar-panel">
         <span>Filters</span>
-        <span class="filter-sidebar-toggle-meta" id="filter-sidebar-summary">Category, date, tags</span>
+        <span class="filter-sidebar-toggle-meta" id="filter-sidebar-summary">Section, axes, date</span>
       </button>
       <label class="desk-sort">Sort
         <select id="desk-sort" aria-label="Sort resources" onchange="setSort(this.value)">
@@ -4772,7 +4343,7 @@
       </label>
       <label class="desk-view"><span class="sr-only">View</span>
         <select id="desk-view" aria-label="Resource view" onchange="setView(this.value)">
-          <option value="category">List</option><option value="table">Table</option>
+          <option value="list">List</option><option value="table">Table</option>
         </select>
       </label>
       <button type="button" id="desk-show-details" class="desk-show-details" aria-controls="paper-detail" hidden>Show details</button>
@@ -4781,17 +4352,18 @@
       <div class="filter-sidebar-header">
         <div>
           <div class="filter-sidebar-title">Filters</div>
-          <div class="filter-sidebar-subtitle">Publication date, tags, and display options.</div>
+          <div class="filter-sidebar-subtitle">Survey section, design axes, publication date, and display options.</div>
         </div>
         <button type="button" class="filter-sidebar-close" id="filter-sidebar-close" aria-label="Close filters">✕</button>
       </div>
       <div class="filter-sidebar-body">
         <div class="controls-bar filter-sidebar-controls">
-          <div class="category-filter-bar">
-            <label for="category-filter" class="sort-label">Category</label>
-            <select id="category-filter" onchange="setCategoryFilter(this.value)">
-              <option value="">All categories</option>
+          <div class="section-filter-bar">
+            <label for="section-filter" class="sort-label">Survey section</label>
+            <select id="section-filter" onchange="setSectionFilter(this.value)">
+              <option value="">All survey sections</option>
             </select>
+            <p class="section-filter-note">Matches primary and secondary placements; the list still files each paper under its primary section.</p>
           </div>
           <div class="sort-bar">
             <span class="sort-label">Sort by:</span>
@@ -4817,23 +4389,23 @@
           </div>
           <div class="view-toggle-bar">
             <span class="sort-label">View:</span>
-            <button type="button" class="sort-btn active" id="view-category-toggle" data-view="category" aria-pressed="true" onclick="setView('category')">List view</button>
+            <button type="button" class="sort-btn active" id="view-list-toggle" data-view="list" aria-pressed="true" onclick="setView('list')">List view</button>
             <button type="button" class="sort-btn" id="view-table-toggle" data-view="table" aria-pressed="false" onclick="setView('table')">Table view</button>
           </div>
         </div>
-        <div class="tag-filter-shell filter-sidebar-tag-shell">
-          <div class="tag-filter-header">
-            <button type="button" class="tag-filter-toggle" id="tag-filter-toggle" aria-expanded="false" aria-controls="tag-filter-panel">
-              <span>Tags filter</span>
-              <span class="tag-filter-caret" aria-hidden="true">⌄</span>
+        <div class="facet-filter-shell filter-sidebar-facet-shell">
+          <div class="facet-filter-header">
+            <button type="button" class="facet-filter-toggle" id="facet-filter-toggle" aria-expanded="false" aria-controls="facet-filter-panel">
+              <span>Design axes</span>
+              <span class="facet-filter-caret" aria-hidden="true">⌄</span>
             </button>
-            <div class="tag-filter-active-list" id="tag-filter-summary" role="list" aria-label="Active tag filters" aria-live="polite" hidden></div>
+            <div class="facet-filter-active-list" id="facet-filter-summary" role="list" aria-label="Active design-axis filters" aria-live="polite" hidden></div>
           </div>
-          <div class="tag-filter-panel" id="tag-filter-panel" hidden>
-            <div class="tag-filter-head">
-              <div class="tag-filter-hint">Click tags to filter. Click an active tag again to clear it. Multiple selected tags use AND.</div>
+          <div class="facet-filter-panel" id="facet-filter-panel" hidden>
+            <div class="facet-filter-head">
+              <div class="facet-filter-hint">Values within one axis match any of them; different axes must all match. Click an active value again to clear it.</div>
             </div>
-            <div class="tag-filter-groups" id="tag-filter-groups"></div>
+            <div class="facet-filter-groups" id="facet-filter-groups"></div>
           </div>
         </div>
       </div>
@@ -4856,8 +4428,8 @@
                 <th scope="col"><div class="table-sort-header"><button type="button" class="sort-btn table-sort-btn" data-sort="date" onclick="setSort('date')">Date</button><button type="button" class="table-sort-direction-btn" data-sort="date" data-direction="desc" onclick="toggleSortDirection('date')" aria-label="Toggle Date sort direction" aria-pressed="false">↕</button></div></th>
                 <th scope="col">Venue</th>
                 <th scope="col">Links</th>
-                <th scope="col">Focus</th>
-                <th scope="col">Domains</th>
+                <th scope="col">Survey section</th>
+                <th scope="col">Design axes</th>
                 <th scope="col"><div class="table-sort-header"><button type="button" class="sort-btn table-sort-btn" data-sort="citations" onclick="setSort('citations')">Citations</button><button type="button" class="table-sort-direction-btn" data-sort="citations" data-direction="desc" onclick="toggleSortDirection('citations')" aria-label="Toggle Citations sort direction" aria-pressed="false">↕</button></div></th>
                 <th scope="col"><div class="table-sort-header"><button type="button" class="sort-btn table-sort-btn" data-sort="stars" onclick="setSort('stars')">Stars</button><button type="button" class="table-sort-direction-btn" data-sort="stars" data-direction="desc" onclick="toggleSortDirection('stars')" aria-label="Toggle Stars sort direction" aria-pressed="false">↕</button></div></th>
               </tr>
@@ -4942,22 +4514,22 @@
       </div>
 
       <div class="stats-dashboard-grid stats-dashboard-secondary stats-landscape-secondary">
-        <article class="stats-dashboard-card stats-composition-card" aria-labelledby="catalog-composition-heading">
+        <article class="stats-dashboard-card stats-chapter-card" aria-labelledby="chapter-mix-heading">
           <header class="stats-card-header">
-            <div class="stats-section-index">Primary taxonomy</div>
-            <h3 id="catalog-composition-heading">Category mix</h3>
-            <p>One primary category per catalog paper.</p>
+            <div class="stats-section-index">Survey structure</div>
+            <h3 id="chapter-mix-heading">Survey chapters</h3>
+            <p>Each paper counts once, under the chapter of its primary section.</p>
           </header>
-          <div class="stats-category-composition" id="stats-category-distribution" aria-live="polite"></div>
+          <div id="stats-chapter-distribution" aria-live="polite"></div>
         </article>
 
-        <article class="stats-dashboard-card stats-mechanism-card" aria-labelledby="mechanism-heading">
+        <article class="stats-dashboard-card stats-topology-card" aria-labelledby="topology-heading">
           <header class="stats-card-header">
-            <div class="stats-section-index">Structural choices</div>
-            <h3 id="mechanism-heading">Loop mechanisms</h3>
-            <p>Multi-label; shares can total more than 100%.</p>
+            <div class="stats-section-index">Design axis</div>
+            <h3 id="topology-heading">Loop topology</h3>
+            <p>Where the loop sits; one value per paper.</p>
           </header>
-          <div id="stats-mechanism-distribution" aria-live="polite"></div>
+          <div id="stats-topology-distribution" aria-live="polite"></div>
         </article>
 
         <article class="stats-dashboard-card stats-directions-card" aria-labelledby="active-directions-heading">
@@ -4965,11 +4537,11 @@
             <div>
               <div class="stats-section-index">Recent 90-day window</div>
               <h3 id="active-directions-heading">Active directions</h3>
-              <p>Top tags among papers from the latest 90 days.</p>
+              <p>Most frequent survey sections and claims among papers from the latest 90 days.</p>
             </div>
-            <div class="stats-direction-tabs" role="group" aria-label="Active direction taxonomy">
-              <button type="button" data-stats-direction="focus" aria-pressed="true">Focus</button>
-              <button type="button" data-stats-direction="domain" aria-pressed="false">Domain</button>
+            <div class="stats-direction-tabs" role="group" aria-label="Active direction grouping">
+              <button type="button" data-stats-direction="section" aria-pressed="true">Sections</button>
+              <button type="button" data-stats-direction="claims" aria-pressed="false">Claims</button>
             </div>
           </header>
           <div id="stats-active-directions" aria-live="polite"></div>
@@ -5230,7 +4802,7 @@ function aggregateWeeklySeries(dailySeries) {
     var days = daily.slice(start, start + 7);
     var first = days[0] || {};
     var last = days[days.length - 1] || {};
-    weeks.push({
+    weeks.push( {
       key: first.key,
       label: first.label,
       endKey: last.key,
@@ -5813,15 +5385,18 @@ function renderStatsSparkline(container, values) {
  * Render a catalog distribution as readable labels, counts, percentages, and bars.
  * @param {HTMLElement|null} container Distribution container.
  * @param {{totalPapers: number, assignmentCount: number, rows: Array<Object>}} distribution Distribution data.
- * @param {{limit?: number, tagGroup?: string}=} options Optional row limit and taxonomy link group.
+ * @param {{limit?: number, facetGroup?: string, anchorFor?: function(Object): string}=} options
+ *   Optional row limit, filter link group, or survey-anchor builder for unfiltered list links.
  * @returns {void}
  */
 function renderStatsDistribution(container, distribution, options) {
   if (!container) return;
   container.replaceChildren();
+  var settings = options || {};
   var data = distribution && Array.isArray(distribution.rows) ? distribution : { rows: [] };
-  var requestedLimit = options && Number.isFinite(options.limit) ? Math.max(0, Math.floor(options.limit)) : data.rows.length;
-  var tagGroup = options && options.tagGroup;
+  var requestedLimit = Number.isFinite(settings.limit) ? Math.max(0, Math.floor(settings.limit)) : data.rows.length;
+  var facetGroup = settings.facetGroup || '';
+  var anchorFor = typeof settings.anchorFor === 'function' ? settings.anchorFor : null;
   var rows = data.rows.slice(0, requestedLimit);
   if (rows.length === 0) {
     var emptyState = document.createElement('p');
@@ -5837,14 +5412,20 @@ function renderStatsDistribution(container, distribution, options) {
   rows.forEach(function(row) {
     var listItem = document.createElement('div');
     listItem.setAttribute('role', 'listitem');
-    var item = tagGroup ? document.createElement('a') : listItem;
+    var isLink = Boolean(facetGroup || anchorFor);
+    var item = isLink ? document.createElement('a') : listItem;
     item.className = 'stats-distribution-row';
-    if (tagGroup) {
-      var tagKey = buildTagEntry(tagGroup, row.key).key;
-      item.setAttribute('href', getTagDrilldownHref(tagKey));
-      item.setAttribute('data-tag-key', tagKey);
-      item.setAttribute('data-tag-group', tagGroup);
-      item.setAttribute('aria-label', 'View ' + row.count + ' papers tagged ' + getTagDrilldownGroupLabel(tagGroup) + ': ' + row.label);
+    if (facetGroup) {
+      item.setAttribute('href', getFacetOnlyHref(facetGroup, row.key));
+      item.setAttribute('data-facet-group', facetGroup);
+      item.setAttribute('data-facet-value', row.key);
+      item.setAttribute('data-facet-reset', 'true');
+      item.setAttribute('aria-label', 'View ' + row.count + ' papers with ' + getFacetGroupLabel(facetGroup) + ': ' + row.label);
+    } else if (anchorFor) {
+      var anchor = anchorFor(row);
+      item.setAttribute('href', '?#' + anchor);
+      item.setAttribute('data-survey-anchor', anchor);
+      item.setAttribute('aria-label', 'Browse ' + row.count + ' papers in ' + row.label);
     } else {
       item.setAttribute('aria-label', row.label + ': ' + row.count + ' papers, ' + row.percentage + ' percent');
     }
@@ -5866,89 +5447,30 @@ function renderStatsDistribution(container, distribution, options) {
     bar.style.width = Math.max(1, Math.min(100, row.percentage)).toFixed(1) + '%';
     track.appendChild(bar);
     item.append(label, value, track);
-    if (tagGroup) listItem.appendChild(item);
+    if (isLink) listItem.appendChild(item);
     list.appendChild(listItem);
   });
   container.appendChild(list);
 }
 
-/** Render the mutually exclusive primary category distribution as a stacked share bar and legend. */
-function renderStatsCategoryComposition(container, distribution) {
-  if (!container) return;
-  container.replaceChildren();
-  var data = distribution && Array.isArray(distribution.rows) ? distribution : { totalPapers: 0, rows: [] };
-  if (!data.rows.length || !data.totalPapers) {
-    var emptyState = document.createElement('p');
-    emptyState.className = 'stats-empty-block';
-    emptyState.textContent = 'No category data is available.';
-    container.appendChild(emptyState);
-    return;
-  }
-
-  var colors = ['var(--stats-data-1)', 'var(--stats-data-2)', 'var(--stats-data-3)'];
-  var total = document.createElement('p');
-  total.className = 'stats-category-total';
-  var totalValue = document.createElement('strong');
-  totalValue.textContent = data.totalPapers.toLocaleString('en-US');
-  var totalLabel = document.createElement('span');
-  totalLabel.textContent = 'papers across ' + data.rows.length + ' categories';
-  total.append(totalValue, totalLabel);
-
-  var stack = document.createElement('div');
-  stack.className = 'stats-category-stack';
-  stack.setAttribute('role', 'img');
-  stack.setAttribute('aria-label', data.rows.map(function(row) {
-    return row.label + ': ' + row.count + ' papers';
-  }).join('; '));
-  data.rows.forEach(function(row, index) {
-    var segment = document.createElement('span');
-    segment.style.flex = row.count + ' 1 0';
-    segment.style.background = colors[index % colors.length];
-    segment.title = row.label + ' · ' + row.count;
-    stack.appendChild(segment);
-  });
-
-  var legend = document.createElement('div');
-  legend.className = 'stats-category-legend';
-  legend.setAttribute('role', 'list');
-  data.rows.forEach(function(row, index) {
-    var link = document.createElement('a');
-    link.href = '#section-' + row.key;
-    link.setAttribute('role', 'listitem');
-    link.setAttribute('aria-label', 'Browse ' + row.count + ' papers in ' + row.label);
-    var name = document.createElement('span');
-    var swatch = document.createElement('i');
-    swatch.style.background = colors[index % colors.length];
-    swatch.setAttribute('aria-hidden', 'true');
-    var text = document.createElement('span');
-    text.textContent = row.label;
-    name.append(swatch, text);
-    var value = document.createElement('strong');
-    value.textContent = row.count.toLocaleString('en-US');
-    var share = document.createElement('small');
-    share.textContent = row.percentage.toFixed(1) + '%';
-    value.appendChild(share);
-    link.append(name, value);
-    legend.appendChild(link);
-  });
-
-  container.append(total, stack, legend);
+/** Label survey sections by number and title; other groups keep their controlled values. */
+function getStatsDirectionLabels(group) {
+  if (group !== 'section') return {};
+  return SURVEY.sections.reduce(function(labels, section) {
+    labels[section.id] = formatSectionLabel(section);
+    return labels;
+  }, {});
 }
 
-/** Return the catalog field name for a supported Stats taxonomy group. */
-function getStatsTaxonomyField(group) {
-  return group === 'domain' ? 'domain_tags' : 'focus_tags';
-}
-
-/** Render the current Top-6 recent Focus or Domain direction ranking. */
+/** Render the current Top-6 recent survey-section or claim ranking. */
 function renderStatsActiveDirections() {
   var container = document.getElementById('stats-active-directions');
   if (!container || !CATALOG_DATA_READY) return;
-  renderStatsDistribution(
-    container,
-    buildRecentStatsDistribution(ALL_PAPERS, getStatsTaxonomyField(CURRENT_STATS_DIRECTION_GROUP), 90, 6),
-    { tagGroup: CURRENT_STATS_DIRECTION_GROUP }
-  );
+  var group = CURRENT_STATS_DIRECTION_GROUP;
+  var distribution = buildRecentStatsDistribution(ALL_PAPERS, group === 'section' ? 'survey_section' : 'claims', 90, 6);
+  var labels = getStatsDirectionLabels(group);
+  distribution.rows.forEach(function(row) { row.label = labels[row.key] || row.key; });
+  renderStatsDistribution(container, distribution, { facetGroup: group });
 }
 
 /** Register the Stats direction tabs once. */
@@ -5957,7 +5479,7 @@ function initStatsTaxonomyInteractions() {
   STATS_TAXONOMY_LISTENERS_BOUND = true;
   document.querySelectorAll('[data-stats-direction]').forEach(function(button) {
     button.addEventListener('click', function() {
-      CURRENT_STATS_DIRECTION_GROUP = button.dataset.statsDirection === 'domain' ? 'domain' : 'focus';
+      CURRENT_STATS_DIRECTION_GROUP = button.dataset.statsDirection === 'claims' ? 'claims' : 'section';
       document.querySelectorAll('[data-stats-direction]').forEach(function(option) {
         option.setAttribute('aria-pressed', option.dataset.statsDirection === CURRENT_STATS_DIRECTION_GROUP ? 'true' : 'false');
       });
@@ -6120,19 +5642,21 @@ function renderStatsPanel() {
   }
 
   renderReleasePulse();
-  var categoryLabels = Object.keys(CATEGORIES).reduce(function(labels, key) {
-    labels[key] = CATEGORIES[key] && CATEGORIES[key].title ? CATEGORIES[key].title : key;
+  var chapterLabels = SURVEY.chapters.reduce(function(labels, chapter) {
+    labels[chapter.number] = '§' + chapter.number + ' ' + chapter.title;
     return labels;
   }, {});
-  renderStatsCategoryComposition(
-    document.getElementById('stats-category-distribution'),
-    buildStatsDistribution(ALL_PAPERS, 'category', categoryLabels)
-  );
-  renderStatsDistribution(
-    document.getElementById('stats-mechanism-distribution'),
-    buildStatsDistribution(ALL_PAPERS, 'mechanism_tags'),
-    { tagGroup: 'mechanism' }
-  );
+  var chapterDistribution = buildStatsDistribution(ALL_PAPERS, '_primaryChapter', chapterLabels);
+  chapterDistribution.rows.sort(function(left, right) { return Number(left.key) - Number(right.key); });
+  renderStatsDistribution(document.getElementById('stats-chapter-distribution'), chapterDistribution, {
+    anchorFor: function(row) { return getChapterDomId(row.key); }
+  });
+  var topologyValues = getAxisValues('loop_topology');
+  var topologyDistribution = buildStatsDistribution(ALL_PAPERS, 'loop_topology', topologyValues.reduce(function(labels, value) {
+    labels[value] = value;
+    return labels;
+  }, {}));
+  renderStatsDistribution(document.getElementById('stats-topology-distribution'), topologyDistribution, { facetGroup: 'loop_topology' });
   renderStatsActiveDirections();
   if (status) status.hidden = true;
   HAS_RENDERED_STATS = true;
@@ -6361,11 +5885,21 @@ function renderCatalogFitNoteHtml(paper) {
     : '';
 }
 
-/** Render table metadata as the same native tag links used by paper cards. */
-function renderTableTagLinksHtml(paper, group) {
-  const entries = (paper._tagEntries || []).filter(function(entry) { return entry.group === group; });
+/** Render the primary section in full and secondary placements by number in the table. */
+function renderTableSectionHtml(paper) {
+  const sections = paper._sections || [];
+  return sections.length
+    ? '<div class="paper-table-chips">' + sections.map(function(sectionId, index) {
+      return renderSectionBadgeHtml(sectionId, index === 0, index > 0);
+    }).join('') + '</div>'
+    : formatTableText('');
+}
+
+/** Render the specified design axes as the same filter links used by paper cards. */
+function renderTableAxesHtml(paper) {
+  const entries = getVisibleAxisEntries(paper);
   return entries.length
-    ? '<div class="paper-table-tags">' + entries.map(function(entry) { return renderPaperTagHtml(entry, 'paper-tag-' + group); }).join('') + '</div>'
+    ? '<div class="paper-table-chips">' + entries.map(function(entry) { return renderAxisChipHtml(entry); }).join('') + '</div>'
     : formatTableText('');
 }
 
@@ -6374,7 +5908,7 @@ function renderTableRow(paper, query) {
   const paperId = escapeHtml(paper.id || '');
   const detailRowId = 'paper-table-detail-' + paperId;
   const mustReadMarkerHtml = paper.must_read ? '<span class="must-read-marker" aria-label="Must read">🌟</span>' : '';
-  const foundationBadgeHtml = paper.foundation ? '<span class="foundation-badge">Foundation</span>' : '';
+  const surveyCoreBadgeHtml = renderSurveyCoreBadgeHtml(paper);
   const catalogFitBadgeHtml = renderCatalogFitBadgeHtml(paper);
   const catalogFitNoteHtml = renderCatalogFitNoteHtml(paper);
   const paperDisplayDate = getPaperDisplayDate(paper);
@@ -6384,8 +5918,8 @@ function renderTableRow(paper, query) {
       + escapeHtml([getPaperVenueLabel(paper), paperDisplayDate || ''].filter(Boolean).join(' · '))
       + '</span>');
   }
-  if (paper._categoryTrailLabel) {
-    detailMetaParts.push('<span class="paper-table-detail-pill">' + escapeHtml(paper._categoryTrailLabel) + '</span>');
+  if (paper._sectionLabel) {
+    detailMetaParts.push('<span class="paper-table-detail-pill">' + escapeHtml(paper._sectionLabel) + '</span>');
   }
   if (paper._addedDate) {
     detailMetaParts.push('<span class="paper-table-detail-pill">Added ' + escapeHtml(paper._addedDate) + '</span>');
@@ -6401,12 +5935,12 @@ function renderTableRow(paper, query) {
     + '</div>';
 
   return '<tr class="paper-table-row' + (expanded ? ' is-expanded' : '') + '" data-paper-id="' + paperId + '">'
-    + '<td class="paper-table-title-cell"><button type="button" class="paper-table-disclosure" data-paper-id="' + paperId + '" aria-expanded="' + (expanded ? 'true' : 'false') + '" aria-controls="' + detailRowId + '"><span class="paper-table-title-wrap"><span class="paper-table-caret">' + (expanded ? '⌄' : '▸') + '</span><span class="paper-table-title-text">' + mustReadMarkerHtml + '<span>' + highlightQuery(paper.title, query) + '</span>' + foundationBadgeHtml + catalogFitBadgeHtml + '</span></span></button></td>'
+    + '<td class="paper-table-title-cell"><button type="button" class="paper-table-disclosure" data-paper-id="' + paperId + '" aria-expanded="' + (expanded ? 'true' : 'false') + '" aria-controls="' + detailRowId + '"><span class="paper-table-title-wrap"><span class="paper-table-caret">' + (expanded ? '⌄' : '▸') + '</span><span class="paper-table-title-text">' + mustReadMarkerHtml + '<span>' + highlightQuery(paper.title, query) + '</span>' + surveyCoreBadgeHtml + catalogFitBadgeHtml + '</span></span></button></td>'
     + '<td class="paper-table-number">' + formatTableText(getPaperDisplayDate(paper)) + '</td>'
     + '<td><span class="paper-venue ' + (paper.venueClass || 'venue-arxiv') + '">' + escapeHtml(getPaperVenueLabel(paper) || '—') + '</span></td>'
     + '<td class="paper-table-links-cell">' + compactLinksHtml + '</td>'
-    + '<td class="paper-table-meta-cell">' + renderTableTagLinksHtml(paper, 'focus') + '</td>'
-    + '<td class="paper-table-meta-cell">' + renderTableTagLinksHtml(paper, 'domain') + '</td>'
+    + '<td class="paper-table-meta-cell">' + renderTableSectionHtml(paper) + '</td>'
+    + '<td class="paper-table-meta-cell">' + renderTableAxesHtml(paper) + '</td>'
     + '<td class="paper-table-number">' + formatTableNumber(paper.citations) + renderInfluenceBadgeHtml(paper) + '</td>'
     + '<td class="paper-table-number">' + formatTableNumber(paper.github_stars) + '</td>'
     + '</tr>'
@@ -6422,16 +5956,56 @@ function renderTableView(query, papers) {
 }
 
 // ── Render a single paper card ────────────────────────────────────────────────
-/** Render a paper tag as a link only when the Papers route has matching records. */
-function renderPaperTagHtml(entry, extraClass) {
-  const classes = ['paper-tag'];
-  if (extraClass) classes.push(extraClass);
-  if (ACTIVE_TAG_FILTERS.has(entry.key)) classes.push('is-active');
-  const label = escapeHtml(entry.displayLabel || entry.label);
-  if (!getPaperCountForTagKey(entry.key)) {
-    return '<span class="' + classes.join(' ') + '">' + label + '</span>';
-  }
-  return '<a href="' + escapeHtml(getTagDrilldownHref(getTagDrilldownKeysWith(entry.key))) + '" class="' + classes.join(' ') + '" data-tag-key="' + escapeHtml(entry.key) + '" data-tag-group="' + escapeHtml(entry.group) + '">' + label + '</a>';
+/** Short axis prefixes keep card chips unambiguous ("full" sharing vs. "fixed" depth). */
+const AXIS_CHIP_PREFIXES = {
+  loop_topology: 'Topology',
+  sharing: 'Sharing',
+  depth_control: 'Depth',
+  claims: 'Claim',
+  comparison: 'Compared'
+};
+
+/** Render one survey-section badge; it links to the section filter when papers carry it. */
+function renderSectionBadgeHtml(sectionId, isPrimary, numberOnly) {
+  const section = SECTION_BY_ID[sectionId];
+  if (!section) return '';
+  const classes = ['paper-section-badge', isPrimary ? 'is-primary' : 'is-secondary'];
+  if (ACTIVE_SECTION_FILTER === sectionId || ACTIVE_SECTION_FILTER === section.chapter) classes.push('is-active');
+  const title = (isPrimary ? 'Primary survey section: ' : 'Also discussed in: ') + formatSectionLabel(section);
+  const text = '<span class="paper-section-number">§' + escapeHtml(section.number) + '</span>'
+    + (numberOnly ? '' : '<span class="paper-section-title">' + escapeHtml(section.title) + '</span>');
+  return '<a href="' + escapeHtml(getFacetDrilldownHref('section', sectionId)) + '" class="' + classes.join(' ')
+    + '" data-facet-group="section" data-facet-value="' + escapeHtml(sectionId) + '" title="' + escapeHtml(title) + '"'
+    + (numberOnly ? ' aria-label="' + escapeHtml(title) + '"' : '') + '>' + text + '</a>';
+}
+
+/** Render every survey section of a record, primary first. */
+function renderSectionBadgesHtml(paper) {
+  const sections = paper._sections || [];
+  return sections.length
+    ? '<div class="paper-sections">' + sections.map(function(sectionId, index) {
+      return renderSectionBadgeHtml(sectionId, index === 0, false);
+    }).join('') + '</div>'
+    : '';
+}
+
+/** Render a design-axis value as a cumulative filter link. */
+function renderAxisChipHtml(entry, omitPrefix) {
+  const classes = ['paper-chip', 'paper-chip-axis'];
+  if (isFacetActive(entry.group, entry.value)) classes.push('is-active');
+  const groupLabel = getFacetGroupLabel(entry.group);
+  return '<a href="' + escapeHtml(getFacetDrilldownHref(entry.group, entry.value)) + '" class="' + classes.join(' ')
+    + '" data-facet-group="' + escapeHtml(entry.group) + '" data-facet-value="' + escapeHtml(entry.value)
+    + '" title="' + escapeHtml(groupLabel + ': ' + entry.value) + '">'
+    + (omitPrefix ? '' : '<span class="paper-chip-prefix">' + escapeHtml(AXIS_CHIP_PREFIXES[entry.group] || groupLabel) + '</span>')
+    + escapeHtml(entry.value) + '</a>';
+}
+
+/** Mark survey-core references with a quiet label. */
+function renderSurveyCoreBadgeHtml(paper) {
+  return paper.survey_core === true
+    ? '<span class="survey-core-badge" title="A core reference of the Looped Models Survey">Survey core</span>'
+    : '';
 }
 
 /** Keep card content identical while CSS reflows it with the available list width. */
@@ -6440,9 +6014,9 @@ function renderCard(paper, query) {
   const linksHtml = renderPaperLinksHtml(paper);
   const thumbnailUrl = getReadingDeskThumbnailUrl(paper);
   const metricsHtml = renderMetricsHtml(paper);
-  const tags = paper._tagEntries || [];
+  const axes = getVisibleAxisEntries(paper);
   const badgesHtml = (paper.must_read ? '<span class="desk-must-read">Must read</span>' : '')
-    + (paper.foundation ? '<span class="foundation-badge">Foundation</span>' : '') + renderCatalogFitBadgeHtml(paper);
+    + renderSurveyCoreBadgeHtml(paper) + renderCatalogFitBadgeHtml(paper);
   return '<article class="paper-card" data-id="' + escapeHtml(paper.id) + '">'
     + (thumbnailUrl || metricsHtml ? '<div class="desk-card-visual">' : '')
     + (thumbnailUrl ? '<a class="desk-card-preview" href="' + escapeHtml(getPrimaryPaperUrl(paper) || thumbnailUrl)
@@ -6455,19 +6029,21 @@ function renderCard(paper, query) {
     + '<span class="paper-venue ' + escapeHtml(paper.venueClass || 'venue-arxiv') + '">' + escapeHtml(getPaperVenueLabel(paper) || 'Unspecified venue') + '</span></div>'
     + '<div class="paper-meta">' + highlightQuery(escapeHtml(paper._authorsText), query)
     + '<span class="desk-card-date"> · <time>' + escapeHtml(getPaperDisplayDate(paper)) + '</time></span></div>'
+    + renderSectionBadgesHtml(paper)
     + '<div class="desk-card-signals">'
-    + '<div class="paper-tags" id="desk-card-tags-' + escapeHtml(paper.id) + '">'
-    + tags.map(function(entry) { return renderPaperTagHtml(entry, 'paper-tag-' + entry.group); }).join('')
-    + (tags.length > 4 ? '<button type="button" class="paper-tag-overflow" data-extra-tags="' + (tags.length - 4)
-      + '" aria-expanded="false" aria-controls="desk-card-tags-' + escapeHtml(paper.id) + '">+' + (tags.length - 4) + ' tags</button>' : '')
-    + '</div>' + badgesHtml + '</div>'
+    + (axes.length ? '<div class="paper-chips" id="desk-card-axes-' + escapeHtml(paper.id) + '">'
+      + axes.map(function(entry) { return renderAxisChipHtml(entry); }).join('')
+      + (axes.length > 4 ? '<button type="button" class="paper-chip-overflow" data-extra-chips="' + (axes.length - 4)
+        + '" aria-expanded="false" aria-controls="desk-card-axes-' + escapeHtml(paper.id) + '">+' + (axes.length - 4) + ' more</button>' : '')
+      + '</div>' : '')
+    + badgesHtml + '</div>'
     + (paper.desc ? '<p class="desk-card-summary">' + highlightQuery(escapeHtml(paper.desc), query) + '</p>' : '')
     + '<div class="desk-card-scope">' + renderCatalogFitNoteHtml(paper) + '</div>'
     + (linksHtml ? '<div class="paper-links desk-list-links">' + linksHtml + '</div>' : '')
     + '</div></article>';
 }
 
-// ── State & Category Tree ────────────────────────────────────────────────────
+// ── State & Survey Taxonomy ──────────────────────────────────────────────────
 let CURRENT_SORT = 'date';
 let SORT_DIRECTIONS = {
   date: 'desc',
@@ -6477,21 +6053,16 @@ let SORT_DIRECTIONS = {
 let ALL_PAPERS = [];
 let ALL_BLOGS = [];
 let ALL_RESOURCES = [];
-let CATEGORIES = {};
+let SURVEY = { parts: [], chapters: [], sections: [], axes: {} };
+let SECTION_BY_ID = {};
+let CHAPTER_BY_NUMBER = {};
 let BLOG_SECTION_META = { title: 'Blogs', desc: '' };
-let DIRECT_PAPERS_BY_NODE = {};
-let NODE_COUNTS = {};
-let SECTION_OBSERVER = null;
-let ACTIVE_TAG_FILTERS = new Set();
-let ACTIVE_CATEGORY_FILTER = '';
-let URL_TAG_FILTER_KEYS = new Set();
-let ROUTE_OWNED_TAG_FILTER_KEYS = new Set();
-let HAS_RESTORED_TAG_DRILLDOWN_URL = false;
-let LAST_RESTORED_SEARCH_QUERY = '';
-let TAG_FILTER_GROUPS = [];
-let TAG_FILTER_LOOKUP = {};
-let TAG_FILTER_OPEN = false;
-let TAG_DRILLDOWN_INTERACTIONS_BOUND = false;
+let SURVEY_CHAPTER_OBSERVER = null;
+let ACTIVE_SECTION_FILTER = '';
+let ACTIVE_FACET_FILTERS = {};
+let FACET_FILTER_GROUPS = [];
+let FACET_FILTER_OPEN = false;
+let FACET_LINK_INTERACTIONS_BOUND = false;
 let ACCEPTED_ONLY = false;
 let HIGH_INFLUENCE_ONLY = false;
 let NEWLY_ARRIVED_ONLY = false;
@@ -6507,12 +6078,12 @@ let CURRENT_STATS_RANGE = '1y';
 let STATS_RANGE_LISTENERS_BOUND = false;
 let STATS_RELEASE_CHART_RESIZE_OBSERVER = null;
 let LAST_STATS_RELEASE_CHART_WIDTH = 0;
-let CURRENT_STATS_DIRECTION_GROUP = 'focus';
+let CURRENT_STATS_DIRECTION_GROUP = 'section';
 let STATS_TAXONOMY_LISTENERS_BOUND = false;
 let STATS_DAILY_RELEASES = [];
 let STATS_MONTHLY_RELEASES = [];
 let CATALOG_GENERATED_AT = '';
-let CURRENT_VIEW = 'category';
+let CURRENT_VIEW = 'list';
 let FILTER_SIDEBAR_OPEN = false;
 let EXPANDED_TABLE_ROWS = new Set();
 let RESEARCH_PROMPT_LANGUAGE = 'en';
@@ -6807,7 +6378,7 @@ function normalizeTopLevelTab(tab) {
 }
 
 /**
- * Maps the current URL fragment to a top-level tab without consuming category hashes.
+ * Maps the current URL fragment to a top-level tab without consuming survey anchors.
  * @param {string} hash URL fragment, including the leading hash marker.
  * @returns {'papers'|'stats'|'blogs'} The tab represented by the fragment.
  */
@@ -6816,71 +6387,133 @@ function getTopLevelTabFromHash(hash) {
   return hash === '#stats' ? 'stats' : 'papers';
 }
 
-/**
- * Returns the valid paper-backed tag keys from the current Papers URL.
- * @returns {Set<string>} Canonical tag keys, or an empty set for an invalid route.
- */
-function getTagDrilldownKeysFromUrl() {
-  const hash = window.location.hash;
-  if (getTopLevelTabFromHash(hash) !== 'papers') return new Set();
-  if (hash !== '#papers' && !hash.startsWith('#section-')) return new Set();
-  const tagKeys = new URLSearchParams(window.location.search).getAll('tag').filter(Boolean);
-  const uniqueTagKeys = new Set(tagKeys);
-  const hasInvalidTag = Array.from(uniqueTagKeys).some(function(tagKey) {
-    return !/^(mechanism|focus|domain)::[^:]+$/.test(tagKey)
-      || !TAG_FILTER_LOOKUP[tagKey]
-      || !getPaperCountForTagKey(tagKey);
-  });
-  return hasInvalidTag ? new Set() : uniqueTagKeys;
+/** Design-axis filter groups in survey order; the section filter is single-valued. */
+const FACET_GROUPS = ['loop_topology', 'sharing', 'depth_control', 'claims', 'comparison'];
+
+/** Return the reader-facing label for a filter group. */
+function getFacetGroupLabel(group) {
+  if (group === 'section') return 'Survey section';
+  const axis = SURVEY.axes && SURVEY.axes[group];
+  return (axis && axis.label) || group;
 }
 
-/** Return whether two tag-key sets contain the same values. */
-function tagKeySetsEqual(left, right) {
-  return left.size === right.size && Array.from(left).every(function(tagKey) { return right.has(tagKey); });
+/** Return the controlled values of one design axis. */
+function getAxisValues(group) {
+  const axis = SURVEY.axes && SURVEY.axes[group];
+  return axis && Array.isArray(axis.values) ? axis.values : [];
 }
 
-/** Return the reader-facing singular label for a supported taxonomy group. */
-function getTagDrilldownGroupLabel(group) {
-  if (group === 'mechanism') return 'Loop mechanism';
-  if (group === 'focus') return 'Focus';
-  if (group === 'domain') return 'Domain';
-  return 'Tag';
+/** Return whether a section-filter value names a known chapter or section. */
+function isValidSectionFilter(value) {
+  return Boolean(value) && (Object.prototype.hasOwnProperty.call(SECTION_BY_ID, value)
+    || Object.prototype.hasOwnProperty.call(CHAPTER_BY_NUMBER, value));
 }
 
-/** Build the native, shareable Papers URL for one or more taxonomy tags. */
-function getTagDrilldownHref(tagKeys) {
+/** Return whether a design-axis value is currently selected. */
+function isFacetActive(group, value) {
+  return Boolean(ACTIVE_FACET_FILTERS[group] && ACTIVE_FACET_FILTERS[group].has(value));
+}
+
+/** Count selected design-axis values across every group. */
+function getActiveFacetCount() {
+  return FACET_GROUPS.reduce(function(total, group) {
+    return total + (ACTIVE_FACET_FILTERS[group] ? ACTIVE_FACET_FILTERS[group].size : 0);
+  }, 0);
+}
+
+/** Serialize section, design-axis and query state as shareable URL parameters. */
+function buildFilterSearchParams(sectionFilter, facetFilters, query) {
   const params = new URLSearchParams();
-  const keys = typeof tagKeys === 'string' ? [tagKeys] : Array.from(tagKeys || []);
-  keys.filter(Boolean).forEach(function(tagKey) { params.append('tag', String(tagKey)); });
-  return '?' + params.toString() + '#papers';
-}
-
-/** Count paper records carrying a tag without including blog resources. */
-function getPaperCountForTagKey(tagKey) {
-  return ALL_PAPERS.filter(function(paper) {
-    return paper._tagKeySet && paper._tagKeySet.has(tagKey);
-  }).length;
-}
-
-/** Append a paper-backed tag to the currently active AND filter keys. */
-function getTagDrilldownKeysWith(tagKey) {
-  const tagKeys = Array.from(ACTIVE_TAG_FILTERS).filter(function(activeTagKey) {
-    return getPaperCountForTagKey(activeTagKey) > 0;
+  if (query) params.set('q', query);
+  if (sectionFilter) params.set('section', sectionFilter);
+  FACET_GROUPS.forEach(function(group) {
+    const selected = facetFilters[group];
+    if (!selected) return;
+    getAxisValues(group).forEach(function(value) {
+      if (selected.has(value)) params.append(group, value);
+    });
   });
-  if (!tagKeys.includes(tagKey)) tagKeys.push(tagKey);
-  return tagKeys;
+  return params;
 }
 
-/** Enter a cumulative tag route without carrying transient non-tag filters. */
-function navigateToTagDrilldown(tagKey) {
-  if (!TAG_FILTER_LOOKUP[tagKey] || !getPaperCountForTagKey(tagKey)) return;
-  const nextTagKeys = getTagDrilldownKeysWith(tagKey);
-  ACTIVE_TAG_FILTERS.forEach(function(activeTagKey) {
-    if (!getPaperCountForTagKey(activeTagKey)) ACTIVE_TAG_FILTERS.delete(activeTagKey);
+/** Copy the active design-axis filters so link targets never mutate live state. */
+function cloneFacetFilters() {
+  const copy = {};
+  FACET_GROUPS.forEach(function(group) {
+    if (ACTIVE_FACET_FILTERS[group] && ACTIVE_FACET_FILTERS[group].size) copy[group] = new Set(ACTIVE_FACET_FILTERS[group]);
   });
-  ACTIVE_CATEGORY_FILTER = '';
-  const categoryFilter = document.getElementById('category-filter');
-  if (categoryFilter) categoryFilter.value = '';
+  return copy;
+}
+
+/** Return the current tab hash used by in-list filter links. */
+function getCatalogTabHash() {
+  return ACTIVE_TOP_LEVEL_TAB === 'blogs' ? '#blogs' : '#papers';
+}
+
+/** Build a cumulative link: sections replace the section filter, axis values are added. */
+function getFacetDrilldownHref(group, value) {
+  const facets = cloneFacetFilters();
+  let section = ACTIVE_SECTION_FILTER;
+  if (group === 'section') {
+    section = value;
+  } else {
+    if (!facets[group]) facets[group] = new Set();
+    facets[group].add(value);
+  }
+  const query = new URLSearchParams(window.location.search).get('q') || '';
+  return '?' + buildFilterSearchParams(section, facets, query).toString() + getCatalogTabHash();
+}
+
+/** Build a fresh Papers link carrying only one filter, used by Stats rows. */
+function getFacetOnlyHref(group, value) {
+  const facets = {};
+  if (group !== 'section') facets[group] = new Set([value]);
+  return '?' + buildFilterSearchParams(group === 'section' ? value : '', facets, '').toString() + '#papers';
+}
+
+/** Read validated section, design-axis and query state from the current URL. */
+function readFiltersFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const section = params.get('section') || '';
+  const facets = {};
+  FACET_GROUPS.forEach(function(group) {
+    const allowed = new Set(getAxisValues(group));
+    const values = params.getAll(group).filter(function(value) { return allowed.has(value); });
+    if (values.length) facets[group] = new Set(values);
+  });
+  return {
+    section: isValidSectionFilter(section) ? section : '',
+    facets: facets,
+    query: params.get('q') || ''
+  };
+}
+
+/** Mirror filter state into the URL; links push history while panel edits replace it. */
+function syncFiltersToUrl(mode) {
+  const nextUrl = new URL(window.location.href);
+  const query = nextUrl.searchParams.get('q') || '';
+  nextUrl.search = buildFilterSearchParams(ACTIVE_SECTION_FILTER, ACTIVE_FACET_FILTERS, query).toString();
+  if (nextUrl.href === window.location.href) return;
+  if (mode === 'push') window.history.pushState(window.history.state, '', nextUrl);
+  else window.history.replaceState(window.history.state, '', nextUrl);
+}
+
+/** Apply section, design-axis and query state from the URL and re-render once. */
+function restoreFiltersFromUrl() {
+  if (!CATALOG_DATA_READY) return;
+  const state = readFiltersFromUrl();
+  ACTIVE_SECTION_FILTER = state.section;
+  ACTIVE_FACET_FILTERS = state.facets;
+  const searchInput = document.getElementById('search');
+  if (searchInput) searchInput.value = state.query;
+  const sectionSelect = document.getElementById('section-filter');
+  if (sectionSelect) sectionSelect.value = ACTIVE_SECTION_FILTER;
+  updateFacetFilterUI();
+  doSearch(state.query);
+}
+
+/** Reset filters that are not part of a Stats drilldown, so its count matches the list. */
+function clearTransientFilters() {
   const startDate = document.getElementById('publication-date-start');
   const endDate = document.getElementById('publication-date-end');
   if (startDate) startDate.value = '';
@@ -6891,46 +6524,16 @@ function navigateToTagDrilldown(tagKey) {
   HAS_CODE_ONLY = false;
   HAS_COMMENTS_ONLY = false;
   updateQuickFilterButtons();
-  const nextUrl = new URL(getTagDrilldownHref(nextTagKeys), window.location.href);
-  window.history.pushState(window.history.state, '', nextUrl);
-  setTopLevelTab('papers', { updateHash: false, userInitiated: true });
-  restoreTagDrilldownFromUrl();
-  const tagFilterToggle = document.getElementById('tag-filter-toggle');
-  if (tagFilterToggle) window.requestAnimationFrame(function() { tagFilterToggle.focus(); });
 }
 
-/** Restores cumulative tag filters and free-text query from the current URL. */
-function restoreTagDrilldownFromUrl() {
-  if (!CATALOG_DATA_READY) return;
-  const searchInput = document.getElementById('search');
-  const nextTagKeys = getTagDrilldownKeysFromUrl();
-  const nextQuery = new URLSearchParams(window.location.search).get('q') || '';
-  const stateIsCurrent = HAS_RESTORED_TAG_DRILLDOWN_URL
-    && tagKeySetsEqual(nextTagKeys, URL_TAG_FILTER_KEYS)
-    && nextQuery === LAST_RESTORED_SEARCH_QUERY
-    && Array.from(nextTagKeys).every(function(tagKey) { return ACTIVE_TAG_FILTERS.has(tagKey); })
-    && (!searchInput || searchInput.value === nextQuery);
-  if (stateIsCurrent) return;
-
-  ROUTE_OWNED_TAG_FILTER_KEYS.forEach(function(tagKey) { ACTIVE_TAG_FILTERS.delete(tagKey); });
-  URL_TAG_FILTER_KEYS = nextTagKeys;
-  ROUTE_OWNED_TAG_FILTER_KEYS = new Set();
-  URL_TAG_FILTER_KEYS.forEach(function(tagKey) {
-    if (ACTIVE_TAG_FILTERS.has(tagKey)) return;
-    ACTIVE_TAG_FILTERS.add(tagKey);
-    ROUTE_OWNED_TAG_FILTER_KEYS.add(tagKey);
-  });
-
-  HAS_RESTORED_TAG_DRILLDOWN_URL = true;
-  LAST_RESTORED_SEARCH_QUERY = nextQuery;
-  if (searchInput) searchInput.value = nextQuery;
-  if (URL_TAG_FILTER_KEYS.size) {
-    setFilterSidebarOpen(true);
-    setTagFilterOpen(false);
-  } else {
-    updateTagFilterUI();
-  }
-  doSearch(nextQuery);
+/** Follow a section or design-axis link without reloading the page. */
+function navigateToFacetLink(link) {
+  const nextUrl = new URL(link.getAttribute('href'), window.location.href);
+  if (link.dataset.facetReset === 'true') clearTransientFilters();
+  window.history.pushState(window.history.state, '', nextUrl);
+  setTopLevelTab(getTopLevelTabFromHash(nextUrl.hash), { updateHash: false, userInitiated: true });
+  if (CURRENT_VIEW === 'table' && link.dataset.facetReset === 'true') setView('list');
+  restoreFiltersFromUrl();
 }
 
 /** Synchronizes top-level tab controls and panels with the active tab state. */
@@ -6956,6 +6559,7 @@ function applyTopLevelTab() {
     papersPanel.setAttribute('aria-labelledby', isBlogs ? 'blogs-tab' : 'papers-tab');
   }
   if (statsPanel) statsPanel.hidden = !isStats;
+  if (CATALOG_DATA_READY) renderSectionFilter();
   const heading = document.getElementById('catalog-heading');
   if (heading) heading.textContent = isBlogs ? 'Blogs' : 'Papers';
   const search = document.getElementById('search');
@@ -7017,43 +6621,61 @@ function handleTopLevelTabKeydown(event) {
   nextTab.focus();
 }
 
+/** Return the DOM id of a survey chapter heading in the list view. */
+function getChapterDomId(chapterNumber) {
+  return 'chapter-' + chapterNumber;
+}
+
+/** Return the DOM id of a survey section heading in the list view. */
+function getSectionDomId(section) {
+  return 'section-' + String(section.number).replace(/\./g, '-');
+}
+
 /**
- * Restore legacy category links as a filter on the unified paper list.
- * @param {string} hash URL fragment that may identify a catalog category.
+ * Scroll the list view to a survey part, chapter or section anchor.
+ * @param {string} hash URL fragment such as #chapter-4 or #section-4-5.
  * @returns {void}
  */
-function restoreCategoryHashPosition(hash) {
-  if (hash === '#section-blogs') return;
-  if (!CATALOG_DATA_READY || typeof hash !== 'string' || !hash.startsWith('#section-')) return;
-  const category = hash.slice('#section-'.length).split('__')[0];
-  if (!Object.prototype.hasOwnProperty.call(CATEGORIES, category)) return;
-  if (CURRENT_VIEW === 'table') setView('category');
-  if (ACTIVE_CATEGORY_FILTER !== category) setCategoryFilter(category);
+function restoreSurveyHashPosition(hash) {
+  if (!CATALOG_DATA_READY || typeof hash !== 'string') return;
+  if (!/^#(?:part-[\w-]+|chapter-\d+|section-\d+-\d+)$/.test(hash)) return;
+  if (CURRENT_VIEW === 'table') setView('list');
   window.requestAnimationFrame(function() {
     if (window.location.hash !== hash || ACTIVE_TOP_LEVEL_TAB !== 'papers') return;
-    scrollToSection('papers-grid');
+    const targetId = hash.slice(1);
+    activateSurveyNavLink(targetId);
+    scrollToSection(targetId);
   });
 }
 
 /**
- * Reveals the Papers tab and routes a directory selection through category hash restoration.
- * @param {string} sectionId Catalog section element identifier.
+ * Reveal the Papers list and scroll to a survey anchor chosen from navigation.
+ * @param {string} targetId Survey anchor element identifier.
  * @returns {void}
  */
-function navigateToPaperSection(sectionId) {
-  if (typeof sectionId !== 'string' || !sectionId) return;
-  if (sectionId === 'section-blogs') {
-    setTopLevelTab('blogs', { userInitiated: true });
-    return;
-  }
-  if (CURRENT_VIEW === 'table') setView('category');
+function navigateToSurveyAnchor(targetId) {
+  if (typeof targetId !== 'string' || !targetId) return;
+  if (CURRENT_VIEW === 'table') setView('list');
   setTopLevelTab('papers', { updateHash: false, userInitiated: true });
-  const nextHash = '#' + sectionId;
+  const nextHash = '#' + targetId;
   if (window.location.hash === nextHash) {
-    restoreCategoryHashPosition(nextHash);
+    restoreSurveyHashPosition(nextHash);
     return;
   }
   window.location.hash = nextHash;
+}
+
+/** Open the unfiltered list at a survey anchor, so Stats chapter counts match what is shown. */
+function navigateToUnfilteredSurveyAnchor(targetId) {
+  const nextUrl = new URL(window.location.href);
+  nextUrl.search = '';
+  nextUrl.hash = '#' + targetId;
+  clearTransientFilters();
+  window.history.pushState(window.history.state, '', nextUrl);
+  if (CURRENT_VIEW === 'table') setView('list');
+  setTopLevelTab('papers', { updateHash: false, userInitiated: true });
+  restoreFiltersFromUrl();
+  restoreSurveyHashPosition(nextUrl.hash);
 }
 
 /** Registers pointer, keyboard, and browser-history behavior for the top-level tabs. */
@@ -7067,10 +6689,12 @@ function initTopLevelTabInteractions() {
 
   window.addEventListener('hashchange', function() {
     setTopLevelTab(getTopLevelTabFromHash(window.location.hash), { updateHash: false });
-    restoreTagDrilldownFromUrl();
-    restoreCategoryHashPosition(window.location.hash);
+    restoreSurveyHashPosition(window.location.hash);
   });
-  window.addEventListener('popstate', restoreTagDrilldownFromUrl);
+  window.addEventListener('popstate', function() {
+    setTopLevelTab(getTopLevelTabFromHash(window.location.hash), { updateHash: false });
+    restoreFiltersFromUrl();
+  });
 }
 
 /**
@@ -7089,83 +6713,45 @@ initTopLevelTabInteractions();
 setTopLevelTab(getTopLevelTabFromHash(window.location.hash), { updateHash: false });
 initResearchPrompt();
 
-const TAG_GROUP_LABELS = {
-  mechanism: 'Loop Mechanism',
-  focus: 'Focus Tags',
-  domain: 'Domain Tags'
-};
-
-const FOCUS_TAG_ORDER = [
-  'objective-loss',
-  'training-algorithm',
-  'architecture',
-  'data',
-  'inference-algorithm'
-];
-
-function normalizeTagList(raw) {
-  return (raw || [])
-    .map(function(tag) { return String(tag || '').trim(); })
-    .filter(Boolean);
-}
-
-function uniqueTagList(tags) {
-  return tags.filter(function(tag, idx) {
-    const tagLower = tag.toLowerCase();
-    return tags.findIndex(function(other) { return other.toLowerCase() === tagLower; }) === idx;
-  });
-}
-
-function buildTagEntry(group, label) {
-  return {
-    group: group,
-    label: label,
-    displayLabel: label,
-    key: group + '::' + label.toLowerCase(),
-    searchLabel: label.toLowerCase()
+/** Index the survey parts, chapters and sections published in papers.json. */
+function setSurveyTaxonomy(taxonomy) {
+  const source = taxonomy && typeof taxonomy === 'object' ? taxonomy : {};
+  SURVEY = {
+    parts: Array.isArray(source.parts) ? source.parts : [],
+    chapters: Array.isArray(source.chapters) ? source.chapters : [],
+    sections: Array.isArray(source.sections) ? source.sections : [],
+    axes: source.axes && typeof source.axes === 'object' ? source.axes : {}
   };
+  SECTION_BY_ID = {};
+  CHAPTER_BY_NUMBER = {};
+  SURVEY.sections.forEach(function(section) { SECTION_BY_ID[section.id] = section; });
+  SURVEY.chapters.forEach(function(chapter) { CHAPTER_BY_NUMBER[chapter.number] = chapter; });
 }
 
-function getPaperTagEntries(paper) {
-  const mechanismTags = uniqueTagList(normalizeTagList(paper.mechanism_tags)).map(function(tag) {
-    return buildTagEntry('mechanism', tag);
-  });
-  const focusTags = uniqueTagList(normalizeTagList(paper.focus_tags)).filter(function(tag) {
-    return !mechanismTags.some(function(mechanismTag) { return mechanismTag.label.toLowerCase() === tag.toLowerCase(); });
-  }).map(function(tag) {
-    return buildTagEntry('focus', tag);
-  });
-  const domainTags = uniqueTagList(normalizeTagList(paper.domain_tags)).filter(function(tag) {
-    return !mechanismTags.some(function(mechanismTag) { return mechanismTag.label.toLowerCase() === tag.toLowerCase(); })
-      && !focusTags.some(function(focusTag) { return focusTag.label.toLowerCase() === tag.toLowerCase(); });
-  }).map(function(tag) {
-    return buildTagEntry('domain', tag);
-  });
-  return mechanismTags.concat(focusTags, domainTags);
+/** Format a section as "§4.5 Controlling recurrence depth". */
+function formatSectionLabel(section) {
+  return section ? '§' + section.number + ' ' + section.title : '';
 }
 
-function getCategoryTrailTitles(pathParts) {
-  if (!pathParts.length) return [];
-  let current = CATEGORIES[pathParts[0]];
-  const titles = [];
-  if (!current) return pathParts.slice();
-  titles.push(current.title || pathParts[0]);
-  for (let idx = 1; idx < pathParts.length; idx++) {
-    const segment = pathParts[idx];
-    current = current && current.children ? current.children[segment] : null;
-    titles.push((current && current.title) || segment.replace(/_/g, ' '));
-  }
-  return titles;
+/** Split "Part III. Building, ..." into its numeral label and title. */
+function splitPartTitle(part) {
+  const match = /^(Part\s+[IVXLC]+)\.?\s*(.*)$/.exec(String(part && part.title || ''));
+  return match ? { label: match[1], title: match[2] } : { label: '', title: String(part && part.title || '') };
 }
 
-function getPaperCategoryLabels(paper) {
-  if (paper.entry_type === 'blog') {
-    const blogLabel = BLOG_SECTION_META.title || 'Blogs';
-    return { category: blogLabel, trail: blogLabel };
-  }
-  const titles = getCategoryTrailTitles(getPaperPath(paper));
-  const category = titles[0] || '';
-  return { category: category, trail: category };
+/** Return a record's controlled values for one design axis, as an array. */
+function getPaperAxisValues(paper, group) {
+  const raw = paper[group];
+  const values = Array.isArray(raw) ? raw : (typeof raw === 'string' && raw ? [raw] : []);
+  const allowed = new Set(getAxisValues(group));
+  return values.filter(function(value, index) {
+    return allowed.has(value) && values.indexOf(value) === index;
+  });
+}
+
+/** Return design-axis entries worth showing on a card; "unspecified" adds no information. */
+function getVisibleAxisEntries(paper) {
+  return (paper._axisEntries || []).filter(function(entry) { return entry.value !== 'unspecified'; });
 }
 
 // papers.json omits an AlphaXiv link that equals the one derived from the arXiv
@@ -7187,91 +6773,52 @@ function preparePaperRecord(paper) {
   const authors = Array.isArray(paper.authors_list) && paper.authors_list.length
     ? paper.authors_list.join(', ')
     : (Array.isArray(paper.authors) ? paper.authors.join(', ') : String(paper.authors || ''));
-  const tagEntries = getPaperTagEntries(paper);
-  const categoryLabels = getPaperCategoryLabels(paper);
+  const rawSections = Array.isArray(paper.survey_section) ? paper.survey_section : [];
+  const sections = rawSections.filter(function(sectionId, index) {
+    return Object.prototype.hasOwnProperty.call(SECTION_BY_ID, sectionId) && rawSections.indexOf(sectionId) === index;
+  });
+  const primary = SECTION_BY_ID[sections[0]] || null;
   paper.entry_type = paper.entry_type || 'paper';
   paper._authorsText = authors;
-  paper._tagEntries = tagEntries;
-  paper._tagKeySet = new Set(tagEntries.map(function(entry) { return entry.key; }));
-  paper._categoryLabel = categoryLabels.category;
-  paper._categoryTrailLabel = categoryLabels.trail;
-  paper._mechanismLabel = normalizeTagList(paper.mechanism_tags).join(' · ');
-  paper._focusLabel = normalizeTagList(paper.focus_tags).join(' · ');
-  paper._domainLabel = normalizeTagList(paper.domain_tags).join(' · ');
+  paper._sections = sections;
+  paper._sectionSet = new Set(sections);
+  paper._chapterSet = new Set(sections.map(function(sectionId) { return SECTION_BY_ID[sectionId].chapter; }));
+  paper._primarySection = primary ? primary.id : '';
+  paper._primaryChapter = primary ? primary.chapter : '';
+  paper._sectionLabel = formatSectionLabel(primary);
+  paper._axisEntries = paper.entry_type === 'blog' ? [] : [].concat.apply([], FACET_GROUPS.map(function(group) {
+    return getPaperAxisValues(paper, group).map(function(value) { return { group: group, value: value }; });
+  }));
   paper._addedDate = typeof paper.added_date === 'string' ? paper.added_date.trim() : '';
   paper._searchText = [
     paper.title || '',
     authors,
     paper.venue || '',
     paper.desc || '',
-    tagEntries.map(function(entry) { return entry.label; }).join(' '),
-    paper._categoryTrailLabel,
-    paper._mechanismLabel,
-    paper._focusLabel,
-    paper._domainLabel,
+    sections.map(function(sectionId) { return formatSectionLabel(SECTION_BY_ID[sectionId]); }).join(' '),
+    paper._axisEntries.map(function(entry) { return entry.value; }).join(' '),
+    paper.survey_core === true ? 'survey core' : '',
     paper.catalog_fit === 'adjacent' ? 'adjacent work ' + CATALOG_ADJACENT_NOTE : '',
     paper._addedDate
   ].join(' ').toLowerCase();
   return paper;
 }
 
-function sortGroupTags(groupId, tags) {
-  return tags.slice().sort(function(a, b) {
-    const countDiff = b.count - a.count;
-    if (countDiff !== 0) return countDiff;
-
-    if (groupId === 'focus') {
-      const aIdx = FOCUS_TAG_ORDER.indexOf(a.label);
-      const bIdx = FOCUS_TAG_ORDER.indexOf(b.label);
-      const aRank = aIdx === -1 ? Number.MAX_SAFE_INTEGER : aIdx;
-      const bRank = bIdx === -1 ? Number.MAX_SAFE_INTEGER : bIdx;
-      if (aRank !== bRank) return aRank - bRank;
-    }
-
-    return a.label.localeCompare(b.label);
-  });
-}
-
-function buildTagFilterGroups(papers) {
-  const grouped = {
-    mechanism: new Map(),
-    focus: new Map(),
-    domain: new Map()
-  };
-
-  papers.forEach(function(paper) {
-    const seen = new Set();
-    (paper._tagEntries || []).forEach(function(entry) {
-      if (seen.has(entry.key)) return;
-      seen.add(entry.key);
-      if (!grouped[entry.group].has(entry.key)) {
-        grouped[entry.group].set(entry.key, {
-          key: entry.key,
-          label: entry.label,
-          displayLabel: entry.displayLabel,
-          group: entry.group,
-          count: 0
-        });
-      }
-      grouped[entry.group].get(entry.key).count += 1;
-    });
-  });
-
-  TAG_FILTER_LOOKUP = {};
-
-  return Object.keys(TAG_GROUP_LABELS).map(function(groupId) {
-    const tags = sortGroupTags(groupId, Array.from(grouped[groupId].values()));
-    tags.forEach(function(tag) {
-      TAG_FILTER_LOOKUP[tag.key] = tag;
+/** Count each design-axis value across papers, keeping the controlled vocabulary order. */
+function buildFacetFilterGroups(papers) {
+  return FACET_GROUPS.map(function(group) {
+    const counts = {};
+    papers.forEach(function(paper) {
+      getPaperAxisValues(paper, group).forEach(function(value) { counts[value] = (counts[value] || 0) + 1; });
     });
     return {
-      id: groupId,
-      title: TAG_GROUP_LABELS[groupId],
-      tags: tags
+      id: group,
+      title: getFacetGroupLabel(group),
+      values: getAxisValues(group)
+        .filter(function(value) { return counts[value]; })
+        .map(function(value) { return { value: value, count: counts[value] }; })
     };
-  }).filter(function(group) {
-    return group.tags.length > 0;
-  });
+  }).filter(function(group) { return group.values.length > 0; });
 }
 
 function paperMatchesQuery(paper, query) {
@@ -7279,79 +6826,59 @@ function paperMatchesQuery(paper, query) {
   return (paper._searchText || '').includes(query);
 }
 
-function paperMatchesTagFilters(paper) {
-  if (ACTIVE_TAG_FILTERS.size === 0) return true;
-  return Array.from(ACTIVE_TAG_FILTERS).every(function(tagKey) {
-    return paper._tagKeySet && paper._tagKeySet.has(tagKey);
+/** Match any selected value within an axis and every axis with a selection. */
+function paperMatchesFacetFilters(paper) {
+  return FACET_GROUPS.every(function(group) {
+    const selected = ACTIVE_FACET_FILTERS[group];
+    if (!selected || selected.size === 0) return true;
+    return getPaperAxisValues(paper, group).some(function(value) { return selected.has(value); });
   });
 }
 
-function setTagFilterOpen(isOpen) {
-  TAG_FILTER_OPEN = Boolean(isOpen);
-  updateTagFilterUI();
+function setFacetFilterOpen(isOpen) {
+  FACET_FILTER_OPEN = Boolean(isOpen);
+  updateFacetFilterUI();
 }
 
-/** Remove one active tag while preserving every other AND condition. */
-function removeTagFilter(tagKey) {
-  if (!ACTIVE_TAG_FILTERS.has(tagKey)) return;
-  ACTIVE_TAG_FILTERS.delete(tagKey);
-  if (URL_TAG_FILTER_KEYS.has(tagKey)) {
-    const nextUrl = new URL(window.location.href);
-    nextUrl.searchParams.delete('tag');
-    URL_TAG_FILTER_KEYS.forEach(function(urlTagKey) {
-      if (urlTagKey !== tagKey) nextUrl.searchParams.append('tag', urlTagKey);
-    });
-    nextUrl.hash = '#papers';
-    window.history.pushState(window.history.state, '', nextUrl);
-    setTopLevelTab('papers', { updateHash: false, userInitiated: true });
-    restoreTagDrilldownFromUrl();
-    return;
-  }
-  updateTagFilterUI();
+/** Toggle one design-axis value, keeping the URL shareable. */
+function toggleFacetFilter(group, value) {
+  if (FACET_GROUPS.indexOf(group) === -1 || getAxisValues(group).indexOf(value) === -1) return;
+  if (!ACTIVE_FACET_FILTERS[group]) ACTIVE_FACET_FILTERS[group] = new Set();
+  if (ACTIVE_FACET_FILTERS[group].has(value)) ACTIVE_FACET_FILTERS[group].delete(value);
+  else ACTIVE_FACET_FILTERS[group].add(value);
+  if (!ACTIVE_FACET_FILTERS[group].size) delete ACTIVE_FACET_FILTERS[group];
+  syncFiltersToUrl('replace');
+  updateFacetFilterUI();
   doSearch(document.getElementById('search').value || '');
 }
 
-function toggleTagFilter(tagKey) {
-  if (!tagKey) return;
-  if (ACTIVE_TAG_FILTERS.has(tagKey)) {
-    removeTagFilter(tagKey);
-    return;
-  }
-  ACTIVE_TAG_FILTERS.add(tagKey);
-  updateTagFilterUI();
-  doSearch(document.getElementById('search').value || '');
-}
-
-/** Render each active tag as an independent filter with its own remove button. */
-function renderActiveTagFiltersHtml() {
-  return Array.from(ACTIVE_TAG_FILTERS).map(function(tagKey) {
-    const entry = TAG_FILTER_LOOKUP[tagKey];
-    if (!entry) return '';
-    const label = entry.displayLabel || entry.label || tagKey;
-    const count = URL_TAG_FILTER_KEYS.has(tagKey) ? getPaperCountForTagKey(tagKey) : entry.count;
-    return '<span class="paper-tag is-active tag-filter-active-item" data-tag-group="' + escapeHtml(entry.group) + '" role="listitem">'
-      + '<span class="tag-filter-chip-label">' + escapeHtml(label) + '</span>'
-      + '<span class="tag-filter-chip-count">' + escapeHtml(count) + '</span>'
-      + '<button type="button" class="tag-filter-active-remove" data-remove-tag-key="' + escapeHtml(tagKey) + '" aria-label="Remove ' + escapeHtml(getTagDrilldownGroupLabel(entry.group)) + ' filter: ' + escapeHtml(label) + '"><span aria-hidden="true">×</span></button>'
-      + '</span>';
+/** Render each active design-axis value as an independent filter with its own remove button. */
+function renderActiveFacetFiltersHtml() {
+  return FACET_GROUPS.map(function(group) {
+    const selected = ACTIVE_FACET_FILTERS[group];
+    if (!selected) return '';
+    const groupLabel = getFacetGroupLabel(group);
+    return getAxisValues(group).filter(function(value) { return selected.has(value); }).map(function(value) {
+      return '<span class="paper-chip is-active facet-filter-active-item" data-facet-group="' + escapeHtml(group) + '" role="listitem">'
+        + '<span class="facet-filter-chip-label"><span class="paper-chip-prefix">' + escapeHtml(AXIS_CHIP_PREFIXES[group] || groupLabel) + '</span>' + escapeHtml(value) + '</span>'
+        + '<button type="button" class="facet-filter-active-remove" data-remove-facet-group="' + escapeHtml(group) + '" data-remove-facet-value="' + escapeHtml(value) + '" aria-label="Remove ' + escapeHtml(groupLabel) + ' filter: ' + escapeHtml(value) + '"><span aria-hidden="true">×</span></button>'
+        + '</span>';
+    }).join('');
   }).join('');
 }
 
-function renderTagFilterGroups() {
-  const container = document.getElementById('tag-filter-groups');
+function renderFacetFilterGroups() {
+  const container = document.getElementById('facet-filter-groups');
   if (!container) return;
-  container.innerHTML = TAG_FILTER_GROUPS.map(function(group) {
-    return '<section class="tag-filter-group">'
-      + '<div class="tag-filter-group-title">' + escapeHtml(group.title) + '</div>'
-      + '<div class="tag-filter-chip-list">'
-      + group.tags.map(function(tag) {
-        const isActive = ACTIVE_TAG_FILTERS.has(tag.key);
-        const isRouteTag = URL_TAG_FILTER_KEYS.has(tag.key);
-        const tagCount = isRouteTag ? getPaperCountForTagKey(tag.key) : tag.count;
-        const activeClass = isActive ? ' is-active' : '';
-        return '<button type="button" class="tag-filter-chip' + activeClass + '" data-tag-key="' + escapeHtml(tag.key) + '" data-tag-group="' + escapeHtml(tag.group) + '" aria-pressed="' + (isActive ? 'true' : 'false') + '">'
-          + '<span class="tag-filter-chip-label">' + escapeHtml(tag.displayLabel) + '</span>'
-          + '<span class="tag-filter-chip-count">' + escapeHtml(tagCount) + '</span>'
+  container.innerHTML = FACET_FILTER_GROUPS.map(function(group) {
+    return '<section class="facet-filter-group">'
+      + '<div class="facet-filter-group-title">' + escapeHtml(group.title) + '</div>'
+      + '<div class="facet-filter-chip-list">'
+      + group.values.map(function(entry) {
+        const isActive = isFacetActive(group.id, entry.value);
+        return '<button type="button" class="facet-filter-chip' + (isActive ? ' is-active' : '') + '" data-facet-group="' + escapeHtml(group.id) + '" data-facet-value="' + escapeHtml(entry.value) + '" aria-pressed="' + (isActive ? 'true' : 'false') + '">'
+          + '<span class="facet-filter-chip-label">' + escapeHtml(entry.value) + '</span>'
+          + '<span class="facet-filter-chip-count">' + escapeHtml(entry.count) + '</span>'
           + '</button>';
       }).join('')
       + '</div>'
@@ -7359,56 +6886,18 @@ function renderTagFilterGroups() {
   }).join('');
 }
 
-function updateTagFilterUI() {
-  const toggle = document.getElementById('tag-filter-toggle');
-  const panel = document.getElementById('tag-filter-panel');
-  const summary = document.getElementById('tag-filter-summary');
+function updateFacetFilterUI() {
+  const toggle = document.getElementById('facet-filter-toggle');
+  const panel = document.getElementById('facet-filter-panel');
+  const summary = document.getElementById('facet-filter-summary');
   if (!toggle || !panel || !summary) return;
-  toggle.setAttribute('aria-expanded', TAG_FILTER_OPEN ? 'true' : 'false');
-  panel.hidden = !TAG_FILTER_OPEN;
-  const summaryHtml = renderActiveTagFiltersHtml();
+  toggle.setAttribute('aria-expanded', FACET_FILTER_OPEN ? 'true' : 'false');
+  panel.hidden = !FACET_FILTER_OPEN;
+  const summaryHtml = renderActiveFacetFiltersHtml();
   summary.innerHTML = summaryHtml;
   summary.hidden = !summaryHtml;
-  renderTagFilterGroups();
+  renderFacetFilterGroups();
   updateFilterSidebarSummary();
-}
-
-function getPaperPath(paper) {
-  if (paper.entry_type === 'blog') return [];
-  return [paper.category || "designs"];
-}
-
-function getNodeKey(pathParts) {
-  return pathParts.join("/");
-}
-
-function getSectionId(pathParts) {
-  return "section-" + pathParts.join("__");
-}
-
-function getNodeCount(pathParts) {
-  return NODE_COUNTS[getNodeKey(pathParts)] || 0;
-}
-
-function getDirectPapers(pathParts) {
-  return DIRECT_PAPERS_BY_NODE[getNodeKey(pathParts)] || [];
-}
-
-function buildCategoryIndex() {
-  DIRECT_PAPERS_BY_NODE = {};
-  NODE_COUNTS = {};
-
-  ALL_PAPERS.forEach(function(paper) {
-    const path = getPaperPath(paper);
-    const exactKey = getNodeKey(path);
-    if (!DIRECT_PAPERS_BY_NODE[exactKey]) DIRECT_PAPERS_BY_NODE[exactKey] = [];
-    DIRECT_PAPERS_BY_NODE[exactKey].push(paper);
-
-    for (let depth = 1; depth <= path.length; depth++) {
-      const key = getNodeKey(path.slice(0, depth));
-      NODE_COUNTS[key] = (NODE_COUNTS[key] || 0) + 1;
-    }
-  });
 }
 
 function normalizeDateInputValue(raw) {
@@ -7492,35 +6981,61 @@ function matchHasCommentsOnly(paper) {
   return !HAS_COMMENTS_ONLY || paperHasCommunityComments(paper);
 }
 
-/** Populate canonical category choices once, keeping every option available during filtering. */
-function renderCategoryFilter() {
-  const select = document.getElementById('category-filter');
+/** Populate chapter-grouped survey-section choices with catalog membership counts. */
+function renderSectionFilter() {
+  const select = document.getElementById('section-filter');
   if (!select) return;
-  select.innerHTML = '<option value="">All categories</option>' + Object.entries(CATEGORIES).map(function(entry) {
-    return '<option value="' + escapeHtml(entry[0]) + '">'
-      + escapeHtml(entry[1].title || entry[0]) + ' · ' + getNodeCount([entry[0]]) + '</option>';
+  const resources = ACTIVE_TOP_LEVEL_TAB === 'blogs' ? ALL_BLOGS : ALL_PAPERS;
+  const sectionCounts = {};
+  const chapterCounts = {};
+  resources.forEach(function(paper) {
+    (paper._sections || []).forEach(function(sectionId) { sectionCounts[sectionId] = (sectionCounts[sectionId] || 0) + 1; });
+    (paper._chapterSet || new Set()).forEach(function(chapter) { chapterCounts[chapter] = (chapterCounts[chapter] || 0) + 1; });
+  });
+  select.innerHTML = '<option value="">All survey sections</option>' + SURVEY.chapters.map(function(chapter) {
+    const sections = SURVEY.sections.filter(function(section) { return section.chapter === chapter.number; });
+    return '<optgroup label="' + escapeHtml('§' + chapter.number + ' ' + chapter.title) + '">'
+      + '<option value="' + escapeHtml(chapter.number) + '">All of §' + escapeHtml(chapter.number) + ' · ' + (chapterCounts[chapter.number] || 0) + '</option>'
+      + sections.map(function(section) {
+        return '<option value="' + escapeHtml(section.id) + '">' + escapeHtml(formatSectionLabel(section)) + ' · ' + (sectionCounts[section.id] || 0) + '</option>';
+      }).join('')
+      + '</optgroup>';
   }).join('');
-  select.value = ACTIVE_CATEGORY_FILTER;
+  select.value = ACTIVE_SECTION_FILTER;
 }
 
-/** Change only the category; all other active filters keep their current values. */
-function setCategoryFilter(category) {
-  ACTIVE_CATEGORY_FILTER = Object.prototype.hasOwnProperty.call(CATEGORIES, category) ? category : '';
-  const select = document.getElementById('category-filter');
-  if (select) select.value = ACTIVE_CATEGORY_FILTER;
+/** Change only the survey section; every other active filter keeps its value. */
+function setSectionFilter(value) {
+  ACTIVE_SECTION_FILTER = isValidSectionFilter(value) ? value : '';
+  const select = document.getElementById('section-filter');
+  if (select) select.value = ACTIVE_SECTION_FILTER;
+  syncFiltersToUrl('replace');
   rerenderCurrentResults();
 }
 
-/** Match a paper category; the Blogs view bypasses this paper-only filter. */
-function matchCategoryFilter(paper) {
-  return !ACTIVE_CATEGORY_FILTER || (paper.entry_type !== 'blog' && (paper.category || 'designs') === ACTIVE_CATEGORY_FILTER);
+/** Match any survey placement; a chapter number matches every section in that chapter. */
+function matchSectionFilter(paper) {
+  if (!ACTIVE_SECTION_FILTER) return true;
+  if (Object.prototype.hasOwnProperty.call(CHAPTER_BY_NUMBER, ACTIVE_SECTION_FILTER)) {
+    return Boolean(paper._chapterSet && paper._chapterSet.has(ACTIVE_SECTION_FILTER));
+  }
+  return Boolean(paper._sectionSet && paper._sectionSet.has(ACTIVE_SECTION_FILTER));
 }
 
+/** Return the reader-facing label of the active section filter. */
+function getSectionFilterLabel() {
+  if (!ACTIVE_SECTION_FILTER) return '';
+  const chapter = CHAPTER_BY_NUMBER[ACTIVE_SECTION_FILTER];
+  if (chapter) return '§' + chapter.number + ' ' + chapter.title;
+  return formatSectionLabel(SECTION_BY_ID[ACTIVE_SECTION_FILTER]);
+}
+
+/** Blogs carry survey sections only, so design-axis and paper-status filters skip them. */
 function paperMatchesActiveFilters(paper, query, publicationDateFilter) {
   const isBlogs = ACTIVE_TOP_LEVEL_TAB === 'blogs';
-  return (isBlogs || (matchCategoryFilter(paper) && matchAcceptedOnly(paper) && matchHighInfluenceOnly(paper) && matchNewlyArrivedOnly(paper)))
+  return (isBlogs || (paperMatchesFacetFilters(paper) && matchAcceptedOnly(paper) && matchHighInfluenceOnly(paper) && matchNewlyArrivedOnly(paper)))
+    && matchSectionFilter(paper)
     && matchPublicationDate(paper, publicationDateFilter)
-    && paperMatchesTagFilters(paper)
     && paperMatchesQuery(paper, query)
     && matchHasCodeOnly(paper)
     && matchHasCommentsOnly(paper);
@@ -7535,15 +7050,15 @@ function getFilteredPapers(query, publicationDateFilter) {
 function getFilterSidebarActiveCount() {
   const publicationDateFilter = getPublicationDateFilter();
   const isBlogs = ACTIVE_TOP_LEVEL_TAB === 'blogs';
-  let count = ACTIVE_TAG_FILTERS.size;
-  if (!isBlogs && ACTIVE_CATEGORY_FILTER) count += 1;
+  let count = ACTIVE_SECTION_FILTER ? 1 : 0;
+  if (!isBlogs) count += getActiveFacetCount();
   if (publicationDateFilter.active) count += 1;
   if (!isBlogs && ACCEPTED_ONLY) count += 1;
   if (!isBlogs && HIGH_INFLUENCE_ONLY) count += 1;
   if (!isBlogs && NEWLY_ARRIVED_ONLY) count += 1;
   if (HAS_CODE_ONLY) count += 1;
   if (HAS_COMMENTS_ONLY) count += 1;
-  if (CURRENT_VIEW !== 'category') count += 1;
+  if (CURRENT_VIEW !== 'list') count += 1;
   if (CURRENT_SORT !== 'date') count += 1;
   return count;
 }
@@ -7552,7 +7067,7 @@ function updateFilterSidebarSummary() {
   const summary = document.getElementById('filter-sidebar-summary');
   if (!summary) return;
   const activeCount = getFilterSidebarActiveCount();
-  summary.textContent = activeCount ? activeCount + ' active' : (ACTIVE_TOP_LEVEL_TAB === 'blogs' ? 'Date, tags' : 'Category, date, tags');
+  summary.textContent = activeCount ? activeCount + ' active' : (ACTIVE_TOP_LEVEL_TAB === 'blogs' ? 'Section, date' : 'Section, axes, date');
 }
 
 function setFilterSidebarOpen(isOpen) {
@@ -7615,7 +7130,7 @@ function updateQuickFilterButtons() {
 }
 
 function updateViewToggleButtons() {
-  setToggleButtonState('view-category-toggle', CURRENT_VIEW === 'category');
+  setToggleButtonState('view-list-toggle', CURRENT_VIEW === 'list');
   setToggleButtonState('view-table-toggle', CURRENT_VIEW === 'table');
   updateFilterSidebarSummary();
 }
@@ -7624,13 +7139,11 @@ function applyViewMode() {
   const layout = document.querySelector('.layout');
   const sectionsContainer = document.getElementById('sections-container');
   const tableShell = document.getElementById('table-view-shell');
-  const mobileDirectory = document.getElementById('mobile-directory');
   const isTableView = CURRENT_VIEW === 'table';
 
   if (layout) layout.classList.toggle('table-view-active', isTableView);
   if (sectionsContainer) sectionsContainer.hidden = isTableView;
   if (tableShell) tableShell.hidden = !isTableView;
-  if (mobileDirectory) mobileDirectory.hidden = isTableView;
   document.getElementById('desk-view').value = CURRENT_VIEW;
   syncReadingDeskPanel();
 }
@@ -7667,7 +7180,7 @@ function toggleHasCommentsOnly() {
 }
 
 function setView(view) {
-  CURRENT_VIEW = view === 'table' ? 'table' : 'category';
+  CURRENT_VIEW = view === 'table' ? 'table' : 'list';
   updateViewToggleButtons();
   applyViewMode();
   rerenderCurrentResults();
@@ -7701,13 +7214,14 @@ function toggleTableRow(paperId) {
 function getActiveFilterLabel(query, publicationDateFilter) {
   const labels = [];
   const isBlogs = ACTIVE_TOP_LEVEL_TAB === 'blogs';
-  if (!isBlogs && ACTIVE_CATEGORY_FILTER) labels.push('category: ' + (CATEGORIES[ACTIVE_CATEGORY_FILTER].title || ACTIVE_CATEGORY_FILTER));
+  if (ACTIVE_SECTION_FILTER) labels.push('section: ' + getSectionFilterLabel());
   const rawQuery = (document.getElementById('search').value || '').trim();
   if (rawQuery) labels.push(rawQuery);
-  if (ACTIVE_TAG_FILTERS.size) {
-    labels.push('tags: ' + Array.from(ACTIVE_TAG_FILTERS).map(function(tagKey) {
-      return (TAG_FILTER_LOOKUP[tagKey] && TAG_FILTER_LOOKUP[tagKey].displayLabel) || tagKey;
-    }).join(' ∧ '));
+  if (!isBlogs) {
+    FACET_GROUPS.forEach(function(group) {
+      const selected = ACTIVE_FACET_FILTERS[group];
+      if (selected && selected.size) labels.push(getFacetGroupLabel(group).toLowerCase() + ': ' + Array.from(selected).join(' ∨ '));
+    });
   }
   if (publicationDateFilter.active) {
     if (publicationDateFilter.start && publicationDateFilter.end) {
@@ -7731,8 +7245,8 @@ function sortPapers(papers, sortKey) {
   const direction = getSortDirection(sortKey);
   if (sortKey === 'default') {
     return papers.slice().sort(function(a, b) {
-      const foundationDiff = Number(Boolean(b.foundation)) - Number(Boolean(a.foundation));
-      if (foundationDiff !== 0) return foundationDiff;
+      const coreDiff = Number(b.survey_core === true) - Number(a.survey_core === true);
+      if (coreDiff !== 0) return coreDiff;
       return comparePapersByDateDesc(a, b);
     });
   }
@@ -7768,75 +7282,90 @@ function toggleSortDirection(sortKey) {
   renderAllGrids((document.getElementById('search').value || '').trim().toLowerCase());
 }
 
-function syncSectionVisibility() {
-  Array.from(document.querySelectorAll(".category, .category-node"))
-    .sort(function(a, b) {
-      return Number(b.dataset.depth || 0) - Number(a.dataset.depth || 0);
-    })
-    .forEach(function(section) {
-      const visible = section.querySelectorAll(".paper-card").length > 0;
-      section.style.display = visible ? "" : "none";
-    });
-}
-
-function syncTreeVisibility(hasActiveFilter) {
-  Array.from(document.querySelectorAll(".tree-node"))
-    .sort(function(a, b) {
-      return Number(b.dataset.depth || 0) - Number(a.dataset.depth || 0);
-    })
-    .forEach(function(node) {
-      const target = document.getElementById(node.dataset.section);
-      const visible = Boolean(target) && target.style.display !== "none";
-      node.classList.toggle("tree-hidden", !visible);
-      if (hasActiveFilter && visible && node.querySelector(".tree-children")) {
-        node.classList.add("is-open");
-        const toggle = node.querySelector(".tree-toggle");
-        if (toggle) toggle.setAttribute("aria-expanded", "true");
-      }
-    });
-}
-
-function buildFilteredNodeCounts(filteredPapers) {
+/** Count filtered papers by primary chapter for the survey navigation. */
+function buildPrimaryChapterCounts(papers) {
   const counts = {};
-  let blogCount = 0;
-
-  filteredPapers.forEach(function(paper) {
-    if (paper.entry_type === 'blog') {
-      blogCount += 1;
-      return;
-    }
-
-    const path = getPaperPath(paper);
-    for (let depth = 1; depth <= path.length; depth++) {
-      const key = getNodeKey(path.slice(0, depth));
-      counts[key] = (counts[key] || 0) + 1;
-    }
+  papers.forEach(function(paper) {
+    if (paper._primaryChapter) counts[paper._primaryChapter] = (counts[paper._primaryChapter] || 0) + 1;
   });
-
-  counts.blogs = blogCount;
   return counts;
 }
 
-function updateFirstCountInSection(section, selector, count) {
-  if (!section) return;
-  const header = section.firstElementChild;
-  const countEl = header ? header.querySelector(selector) : null;
-  if (countEl) countEl.textContent = String(count || 0);
+/** Render one survey-section group of cards. */
+function renderSurveySectionHtml(section, papers, query) {
+  return '<section class="survey-section" id="' + escapeHtml(getSectionDomId(section)) + '" data-section-id="' + escapeHtml(section.id) + '">'
+    + '<header class="survey-section-header">'
+    + '<span class="survey-section-number">§' + escapeHtml(section.number) + '</span>'
+    + '<h5 class="survey-section-title">' + escapeHtml(section.title) + '</h5>'
+    + '<span class="survey-count" aria-label="' + papers.length + ' papers">' + papers.length + '</span>'
+    + '</header>'
+    + '<div class="papers-grid">' + papers.map(function(paper) { return renderCard(paper, query); }).join('') + '</div>'
+    + '</section>';
 }
 
-function syncDynamicCounts(filteredPapers) {
-  const counts = buildFilteredNodeCounts(filteredPapers);
-
-  document.querySelectorAll('.category[data-node-key], .category-node[data-node-key]').forEach(function(section) {
-    const key = section.dataset.nodeKey || '';
-    const count = counts[key] || 0;
-    updateFirstCountInSection(section, '.category-count, .category-node-count', count);
+/**
+ * Render filtered papers under Part, Chapter and primary Section, keeping the sort order inside each section.
+ * @param {Array<Object>} papers Filtered and sorted paper records.
+ * @param {string} query Lower-case search query for highlighting.
+ * @returns {string} List-view HTML.
+ */
+function renderSurveyListHtml(papers, query) {
+  const bySection = new Map();
+  const unplaced = [];
+  papers.forEach(function(paper) {
+    if (!paper._primarySection) {
+      unplaced.push(paper);
+      return;
+    }
+    if (!bySection.has(paper._primarySection)) bySection.set(paper._primarySection, []);
+    bySection.get(paper._primarySection).push(paper);
   });
 
-  document.querySelectorAll('.tree-node[data-node-key]').forEach(function(node) {
-    const key = node.dataset.nodeKey || '';
-    const countEl = node.querySelector('.tree-row > .tree-link .tree-count');
-    if (countEl) countEl.textContent = String(counts[key] || 0);
+  let html = SURVEY.parts.map(function(part) {
+    let partCount = 0;
+    const chaptersHtml = SURVEY.chapters.filter(function(chapter) { return chapter.part === part.id; }).map(function(chapter) {
+      let chapterCount = 0;
+      const sectionsHtml = SURVEY.sections.filter(function(section) { return section.chapter === chapter.number; }).map(function(section) {
+        const sectionPapers = bySection.get(section.id) || [];
+        if (!sectionPapers.length) return '';
+        chapterCount += sectionPapers.length;
+        return renderSurveySectionHtml(section, sectionPapers, query);
+      }).join('');
+      if (!chapterCount) return '';
+      partCount += chapterCount;
+      return '<section class="survey-chapter" id="' + getChapterDomId(chapter.number) + '" data-chapter="' + escapeHtml(chapter.number) + '">'
+        + '<header class="survey-chapter-header">'
+        + '<span class="survey-chapter-number">§' + escapeHtml(chapter.number) + '</span>'
+        + '<h4 class="survey-chapter-title">' + escapeHtml(chapter.title) + '</h4>'
+        + '<span class="survey-count" aria-label="' + chapterCount + ' papers">' + chapterCount + '</span>'
+        + '</header>' + sectionsHtml + '</section>';
+    }).join('');
+    if (!partCount) return '';
+    const partTitle = splitPartTitle(part);
+    return '<section class="survey-part" id="part-' + escapeHtml(part.id) + '">'
+      + '<header class="survey-part-header">'
+      + (partTitle.label ? '<span class="survey-part-label">' + escapeHtml(partTitle.label) + '</span>' : '')
+      + '<h3 class="survey-part-title">' + escapeHtml(partTitle.title) + '</h3>'
+      + '</header>' + chaptersHtml + '</section>';
+  }).join('');
+
+  if (unplaced.length) {
+    html += '<section class="survey-part" id="part-unplaced"><header class="survey-part-header"><h3 class="survey-part-title">Not yet placed in the survey</h3></header>'
+      + '<section class="survey-section"><header class="survey-section-header"><h5 class="survey-section-title">Awaiting a survey section</h5>'
+      + '<span class="survey-count">' + unplaced.length + '</span></header>'
+      + '<div class="papers-grid">' + unplaced.map(function(paper) { return renderCard(paper, query); }).join('') + '</div></section></section>';
+  }
+  return html;
+}
+
+/** Update survey navigation counts and dim chapters the current filters leave empty. */
+function syncSurveyNavCounts(filteredPapers) {
+  const counts = ACTIVE_TOP_LEVEL_TAB === 'blogs' ? {} : buildPrimaryChapterCounts(filteredPapers);
+  document.querySelectorAll('.survey-nav-link[data-chapter]').forEach(function(link) {
+    const count = counts[link.dataset.chapter] || 0;
+    const countEl = link.querySelector('.survey-nav-count');
+    if (countEl) countEl.textContent = String(count);
+    link.classList.toggle('is-empty', count === 0);
   });
 }
 
@@ -7846,15 +7375,18 @@ function renderAllGrids(q) {
   updateSortButtons();
   const filteredPapers = sortPapers(getFilteredPapers(query, publicationDateFilter), CURRENT_SORT);
   const isBlogs = ACTIVE_TOP_LEVEL_TAB === 'blogs';
+  const isList = CURRENT_VIEW !== 'table';
   const grid = document.getElementById('papers-grid');
   if (grid) {
-    grid.innerHTML = isBlogs ? '' : filteredPapers.map(function(paper) { return renderCard(paper, query); }).join('');
+    grid.innerHTML = isBlogs || !isList ? '' : renderSurveyListHtml(filteredPapers, query);
   }
 
   const blogsGrid = document.getElementById('blogs-grid');
   if (blogsGrid) {
     blogsGrid.innerHTML = isBlogs ? filteredPapers.map(function(blog) { return renderCard(blog, query); }).join('') : '';
   }
+  const blogCount = document.getElementById('blogs-count');
+  if (blogCount) blogCount.textContent = String(isBlogs ? filteredPapers.length : ALL_BLOGS.length);
 
   if (CURRENT_VIEW === 'table') {
     renderTableView(query, filteredPapers);
@@ -7862,7 +7394,7 @@ function renderAllGrids(q) {
     const tableBody = document.getElementById('papers-table-body');
     if (tableBody && tableBody.children.length) tableBody.textContent = '';
   }
-  syncDynamicCounts(filteredPapers);
+  syncSurveyNavCounts(filteredPapers);
   syncReadingDeskSelection(filteredPapers);
 
   const total = filteredPapers.length;
@@ -7879,95 +7411,11 @@ function renderAllGrids(q) {
     document.getElementById('no-results-query').textContent = getActiveFilterLabel(query, publicationDateFilter) || 'the current filters';
   }
 
-  syncSectionVisibility();
-  syncTreeVisibility(CURRENT_VIEW === 'category');
-
   updateFilterSidebarSummary();
   applyViewMode();
+  observeSurveyChapters();
   const researchDialog = document.getElementById('research-prompt-dialog');
   if (researchDialog && researchDialog.open) updateResearchPromptPreview();
-}
-
-function createTreeNode(node, pathParts, depth) {
-  const count = getNodeCount(pathParts);
-  if (!count) return null;
-
-  const sectionId = getSectionId(pathParts);
-  const nodeKey = getNodeKey(pathParts);
-  const childNodes = Object.entries(node.children || {})
-    .map(function(entry) {
-      return createTreeNode(entry[1], pathParts.concat(entry[0]), depth + 1);
-    })
-    .filter(Boolean);
-
-  const wrapper = document.createElement("div");
-  wrapper.className = "tree-node" + (childNodes.length && depth < 2 ? " is-open" : "");
-  wrapper.dataset.depth = String(depth);
-  wrapper.dataset.section = sectionId;
-  wrapper.dataset.nodeKey = nodeKey;
-
-  const row = document.createElement("div");
-  row.className = "tree-row";
-
-  if (childNodes.length) {
-    const toggle = document.createElement("button");
-    toggle.className = "tree-toggle";
-    toggle.type = "button";
-    toggle.setAttribute("aria-expanded", depth < 2 ? "true" : "false");
-    toggle.innerHTML = "⌄";
-    row.appendChild(toggle);
-  } else {
-    const spacer = document.createElement("span");
-    spacer.className = "tree-spacer";
-    row.appendChild(spacer);
-  }
-
-  const link = document.createElement("a");
-  link.className = "tree-link";
-  link.href = "#" + sectionId;
-  link.dataset.section = sectionId;
-  link.innerHTML =
-    '<span class="tree-label"><span>' + node.title + '</span></span>' +
-    '<span class="tree-count">' + count + '</span>';
-  row.appendChild(link);
-  wrapper.appendChild(row);
-
-  if (childNodes.length) {
-    const children = document.createElement("div");
-    children.className = "tree-children";
-    childNodes.forEach(function(child) { children.appendChild(child); });
-    wrapper.appendChild(children);
-  }
-
-  return wrapper;
-}
-
-function createBlogTreeNode() {
-  if (!ALL_BLOGS.length) return null;
-
-  const wrapper = document.createElement('div');
-  wrapper.className = 'tree-node';
-  wrapper.dataset.depth = '0';
-  wrapper.dataset.section = 'section-blogs';
-  wrapper.dataset.nodeKey = 'blogs';
-
-  const row = document.createElement('div');
-  row.className = 'tree-row';
-
-  const spacer = document.createElement('span');
-  spacer.className = 'tree-spacer';
-  row.appendChild(spacer);
-
-  const link = document.createElement('a');
-  link.className = 'tree-link';
-  link.href = '#section-blogs';
-  link.dataset.section = 'section-blogs';
-  link.innerHTML =
-    '<span class="tree-label"><span>' + (BLOG_SECTION_META.title || 'Blogs') + '</span></span>' +
-    '<span class="tree-count">' + ALL_BLOGS.length + '</span>';
-  row.appendChild(link);
-  wrapper.appendChild(row);
-  return wrapper;
 }
 
 function updateDailyBriefingNotice(briefing) {
@@ -8025,22 +7473,19 @@ function createBlogSection() {
   if (!ALL_BLOGS.length) return null;
 
   const section = document.createElement('section');
-  section.className = 'category';
+  section.className = 'resource-group';
   section.id = 'section-blogs';
-  section.dataset.depth = '0';
-  section.dataset.nodeKey = 'blogs';
   section.innerHTML =
-    '<div class="category-header">'
-    + '<span class="category-icon">✍️</span>'
-    + '<div class="category-copy">'
-    + '<div class="category-title">' + (BLOG_SECTION_META.title || 'Blogs') + '</div>'
-    + '<div class="category-desc">' + (BLOG_SECTION_META.desc || 'Long-form technical posts, essays, and deep-dives about loop models.') + '</div>'
+    '<div class="resource-group-header">'
+    + '<div class="resource-group-copy">'
+    + '<div class="resource-group-title">' + escapeHtml(BLOG_SECTION_META.title || 'Blogs') + '</div>'
+    + '<div class="resource-group-desc">' + escapeHtml(BLOG_SECTION_META.desc || 'Long-form technical posts, essays, and deep-dives about loop models.') + '</div>'
     + '</div>'
-    + '<span class="category-count">' + ALL_BLOGS.length + '</span>'
+    + '<span class="resource-group-count" id="blogs-count">' + ALL_BLOGS.length + '</span>'
     + '</div>';
 
   const body = document.createElement('div');
-  body.className = 'category-body';
+  body.className = 'resource-group-body';
 
   const grid = document.createElement('div');
   grid.className = 'papers-grid';
@@ -8051,22 +7496,66 @@ function createBlogSection() {
   return section;
 }
 
-function renderTreeInto(container) {
-  if (!container) return;
-  container.innerHTML = "";
-  Object.entries(CATEGORIES).forEach(function(entry) {
-    const catId = entry[0];
-    const treeNode = createTreeNode(entry[1], [catId], 0);
-    if (treeNode) container.appendChild(treeNode);
+/** Render the sidebar chapter list; counts are refreshed after every filter change. */
+function renderSurveyNav() {
+  const nav = document.getElementById('survey-nav');
+  const list = document.getElementById('survey-nav-list');
+  if (!nav || !list) return;
+  const partsById = {};
+  SURVEY.parts.forEach(function(part) { partsById[part.id] = part; });
+  list.innerHTML = SURVEY.chapters.map(function(chapter) {
+    const part = partsById[chapter.part];
+    return '<li><a class="survey-nav-link" href="#' + getChapterDomId(chapter.number) + '" data-chapter="' + escapeHtml(chapter.number) + '"'
+      + (part ? ' title="' + escapeHtml(part.title) + '"' : '') + '>'
+      + '<span class="survey-nav-number">§' + escapeHtml(chapter.number) + '</span>'
+      + '<span class="survey-nav-label">' + escapeHtml(chapter.title) + '</span>'
+      + '<span class="survey-nav-count">0</span></a></li>';
+  }).join('');
+  nav.hidden = !SURVEY.chapters.length;
+}
+
+/** Highlight the navigation entry for a chapter, or for the chapter containing a section. */
+function activateSurveyNavLink(targetId) {
+  const match = /^(?:chapter|section)-(\d+)/.exec(String(targetId || ''));
+  const chapter = match ? match[1] : '';
+  document.querySelectorAll('.survey-nav-link[data-chapter]').forEach(function(link) {
+    const active = link.dataset.chapter === chapter;
+    link.classList.toggle('active', active);
+    if (active) link.setAttribute('aria-current', 'location');
+    else link.removeAttribute('aria-current');
   });
-  const blogTreeNode = createBlogTreeNode();
-  if (blogTreeNode) container.appendChild(blogTreeNode);
+}
+
+function initSurveyNavInteractions() {
+  const list = document.getElementById('survey-nav-list');
+  if (!list) return;
+  list.addEventListener('click', function(event) {
+    const link = event.target.closest('.survey-nav-link[data-chapter]');
+    if (!link) return;
+    event.preventDefault();
+    activateSurveyNavLink(getChapterDomId(link.dataset.chapter));
+    navigateToSurveyAnchor(getChapterDomId(link.dataset.chapter));
+  });
+}
+
+/** Track the chapter in view while the desktop list scrolls. */
+function observeSurveyChapters() {
+  if (typeof IntersectionObserver !== 'function') return;
+  if (SURVEY_CHAPTER_OBSERVER) SURVEY_CHAPTER_OBSERVER.disconnect();
+  SURVEY_CHAPTER_OBSERVER = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) activateSurveyNavLink(entry.target.id);
+    });
+  }, { root: document.getElementById('main'), rootMargin: '-18% 0px -68% 0px' });
+  document.querySelectorAll('.survey-chapter').forEach(function(chapter) {
+    SURVEY_CHAPTER_OBSERVER.observe(chapter);
+  });
 }
 
 // ── Build DOM from papers.json data ──────────────────────────────────────────
 function buildDOM(data) {
   CATALOG_GENERATED_AT = (data.meta && data.meta.generated) || '';
-  CATEGORIES = data.categories || {};
+  setSurveyTaxonomy(data.survey_taxonomy);
   BLOG_SECTION_META = {
     title: (data.meta && data.meta.blog_section_title) || 'Blogs',
     desc: (data.meta && data.meta.blog_section_desc) || ''
@@ -8084,28 +7573,29 @@ function buildDOM(data) {
       : null
   );
   ALL_RESOURCES = ALL_PAPERS.concat(ALL_BLOGS);
-  TAG_FILTER_GROUPS = buildTagFilterGroups(ALL_RESOURCES);
-  buildCategoryIndex();
+  FACET_FILTER_GROUPS = buildFacetFilterGroups(ALL_PAPERS);
 
   const container = document.getElementById("sections-container");
-  container.innerHTML = '<div class="papers-grid" id="papers-grid"></div>';
+  container.innerHTML = '<div class="survey-list" id="papers-grid"></div>';
 
   const blogSection = createBlogSection();
   if (blogSection) container.appendChild(blogSection);
 
-  renderCategoryFilter();
+  renderSurveyNav();
+  renderSectionFilter();
+  initSurveyNavInteractions();
   initFilterSidebarControls();
   initSearch();
   initPublicationDateFilter();
-  initTagFilterControls();
-  initPaperTagInteractions();
+  initFacetFilterControls();
+  initFacetLinkInteractions();
   initTableInteractions();
   updateQuickFilterButtons();
   updateViewToggleButtons();
   applyViewMode();
-  restoreTagDrilldownFromUrl();
+  restoreFiltersFromUrl();
   restoreTopLevelTabAfterCatalogLoad();
-  restoreCategoryHashPosition(window.location.hash);
+  restoreSurveyHashPosition(window.location.hash);
 }
 
 // ── Search ────────────────────────────────────────────────────────────────────
@@ -8166,53 +7656,61 @@ function initPublicationDateFilter() {
   }
 }
 
-function initTagFilterControls() {
-  const toggle = document.getElementById('tag-filter-toggle');
-  const groups = document.getElementById('tag-filter-groups');
-  const summary = document.getElementById('tag-filter-summary');
+function initFacetFilterControls() {
+  const toggle = document.getElementById('facet-filter-toggle');
+  const groups = document.getElementById('facet-filter-groups');
+  const summary = document.getElementById('facet-filter-summary');
   if (!toggle || !groups || !summary) return;
 
-  updateTagFilterUI();
+  updateFacetFilterUI();
 
   toggle.addEventListener('click', function() {
-    setTagFilterOpen(!TAG_FILTER_OPEN);
+    setFacetFilterOpen(!FACET_FILTER_OPEN);
   });
 
   groups.addEventListener('click', function(event) {
-    const chip = event.target.closest('.tag-filter-chip[data-tag-key]');
+    const chip = event.target.closest('.facet-filter-chip[data-facet-group]');
     if (!chip) return;
-    toggleTagFilter(chip.dataset.tagKey);
+    toggleFacetFilter(chip.dataset.facetGroup, chip.dataset.facetValue);
   });
 
   summary.addEventListener('click', function(event) {
-    const removeButton = event.target.closest('.tag-filter-active-remove[data-remove-tag-key]');
+    const removeButton = event.target.closest('.facet-filter-active-remove[data-remove-facet-group]');
     if (!removeButton) return;
-    const removeButtons = Array.from(summary.querySelectorAll('.tag-filter-active-remove[data-remove-tag-key]'));
+    const removeButtons = Array.from(summary.querySelectorAll('.facet-filter-active-remove'));
     const removeIndex = Math.max(0, removeButtons.indexOf(removeButton));
-    removeTagFilter(removeButton.dataset.removeTagKey);
+    toggleFacetFilter(removeButton.dataset.removeFacetGroup, removeButton.dataset.removeFacetValue);
     window.requestAnimationFrame(function() {
-      const remainingButtons = summary.querySelectorAll('.tag-filter-active-remove[data-remove-tag-key]');
+      const remainingButtons = summary.querySelectorAll('.facet-filter-active-remove');
       const nextButton = remainingButtons[Math.min(removeIndex, remainingButtons.length - 1)];
       (nextButton || toggle).focus();
     });
   });
 }
 
-/** Return whether a tag-link click should use in-page history navigation. */
-function shouldHandleTagDrilldownClick(event) {
+/** Return whether a filter-link click should use in-page history navigation. */
+function shouldHandleFacetLinkClick(event) {
   return Boolean(event && !event.defaultPrevented && event.button === 0
     && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey);
 }
 
-function initPaperTagInteractions() {
-  if (TAG_DRILLDOWN_INTERACTIONS_BOUND) return;
-  TAG_DRILLDOWN_INTERACTIONS_BOUND = true;
+/** Section badges, axis chips and Stats rows share one in-page navigation path. */
+function initFacetLinkInteractions() {
+  if (FACET_LINK_INTERACTIONS_BOUND) return;
+  FACET_LINK_INTERACTIONS_BOUND = true;
 
   document.addEventListener('click', function(event) {
-    const link = event.target.closest('a[data-tag-key][href]');
-    if (!link || !shouldHandleTagDrilldownClick(event)) return;
+    if (!shouldHandleFacetLinkClick(event)) return;
+    const anchorLink = event.target.closest('a[data-survey-anchor]');
+    if (anchorLink) {
+      event.preventDefault();
+      navigateToUnfilteredSurveyAnchor(anchorLink.dataset.surveyAnchor);
+      return;
+    }
+    const link = event.target.closest('a[data-facet-group][href]');
+    if (!link) return;
     event.preventDefault();
-    navigateToTagDrilldown(link.dataset.tagKey);
+    navigateToFacetLink(link);
   });
 }
 
@@ -8243,12 +7741,6 @@ function initTableInteractions() {
   });
 }
 
-function activateTreeLinks(sectionId) {
-  document.querySelectorAll(".tree-link").forEach(function(link) {
-    link.classList.toggle("active", link.dataset.section === sectionId);
-  });
-}
-
 function scrollToSection(sectionId) {
   const target = document.getElementById(sectionId);
   if (!target) return;
@@ -8269,64 +7761,6 @@ function scrollToSection(sectionId) {
     - 14;
 
   scrollRoot.scrollTo({ top: offsetTop, behavior: "smooth" });
-}
-
-function initTreeInteractions() {
-  document.querySelectorAll(".tree-toggle").forEach(function(toggle) {
-    toggle.addEventListener("click", function() {
-      const node = toggle.closest(".tree-node");
-      const isOpen = node.classList.toggle("is-open");
-      toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
-    });
-  });
-
-  document.querySelectorAll(".tree-link").forEach(function(link) {
-    link.addEventListener("click", function(e) {
-      e.preventDefault();
-      const sectionId = link.dataset.section;
-      const node = link.closest(".tree-node");
-      if (node) {
-        node.classList.add("is-open");
-        const toggle = node.querySelector(".tree-toggle");
-        if (toggle) toggle.setAttribute("aria-expanded", "true");
-      }
-      activateTreeLinks(sectionId);
-      navigateToPaperSection(sectionId);
-
-      const mobileDirectory = document.getElementById("mobile-directory");
-      const mobileToggle = document.getElementById("mobile-directory-toggle");
-      if (mobileDirectory && mobileToggle && window.innerWidth <= 768) {
-        mobileDirectory.classList.remove("is-open");
-        mobileToggle.setAttribute("aria-expanded", "false");
-      }
-    });
-  });
-
-  const mobileDirectory = document.getElementById("mobile-directory");
-  const mobileToggle = document.getElementById("mobile-directory-toggle");
-  if (mobileDirectory && mobileToggle) {
-    mobileToggle.addEventListener("click", function() {
-      const isOpen = mobileDirectory.classList.toggle("is-open");
-      mobileToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
-    });
-  }
-}
-
-function initScrollObserver() {
-  if (SECTION_OBSERVER) SECTION_OBSERVER.disconnect();
-
-  const scrollRoot = document.getElementById("main");
-  SECTION_OBSERVER = new IntersectionObserver(function(entries) {
-    entries.forEach(function(entry) {
-      if (entry.isIntersecting) {
-        activateTreeLinks(entry.target.id);
-      }
-    });
-  }, { root: scrollRoot, rootMargin: "-18% 0px -68% 0px" });
-
-  document.querySelectorAll(".category, .category-node").forEach(function(section) {
-    SECTION_OBSERVER.observe(section);
-  });
 }
 
 initReadingDesk();

@@ -12,21 +12,21 @@ scope:
   evidence: "The analyzed model applies the same residual Transformer block N times in a forward pass, so its depth is recurrent weight sharing rather than a stack of independent blocks."
   locator: "Model formulation; Section 8.1-8.2"
 taxonomy:
-  category:
-    value: analysis
-    rationale: "The paper analyzes stability and hyperparameter transfer under recurrent-depth scaling."
-  mechanism_tags:
-    values: [flat-loop]
-    rationale: "A shared residual block is repeated sequentially N times."
-  focus_tags:
-    values: [architecture, training-algorithm]
-    rationale: "The contribution connects recurrent architecture to residual scaling needed for stable training."
-  domain_tags:
-    values: [language-modeling, theory, scaling]
-    rationale: "The theoretical and empirical analysis concerns language models as recurrent depth grows."
-  tags:
-    values: [looped-transformer, depth-scaling]
-    rationale: "These aliases describe the studied architecture and central scaling variable."
+  survey_section:
+    values:
+      - training/supervision-optimization
+      - architecture/residual-init
+      - scaling/compute-optimal
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): A shared residual block is repeated sequentially N times."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): A shared residual block is repeated sequentially N times."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

@@ -12,27 +12,21 @@ scope:
   evidence: "The same learned iterative reasoning unit is recursively applied N times inside a policy forward pass."
   locator: "Section 5, page 4, Figure 1 and Equations 2-4"
 taxonomy:
-  category:
-    value: analysis
-    rationale: "The core contribution is a theoretical and empirical analysis of computation in reinforcement learning."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "One IRU block is reused over a single internal computation axis."
-  focus_tags:
-    values:
-      - architecture
-    rationale: "The controlled variable-compute policy architecture is the relevant loop-model artifact."
-  domain_tags:
-    values:
-      - rl-control
-      - theory
-    rationale: "Theorems and 31 control tasks characterize iterative computation in online/offline RL."
-  tags:
-    values:
-      - compute-bounded-policy
-      - IRU
-    rationale: "These identify the policy formulation and iterative reasoning unit."
+      - applications/embodied-other
+      - capabilities/expressivity
+      - understanding/why
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One IRU block is reused over a single internal computation axis."
+  sharing:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One IRU block is reused over a single internal computation axis."
+  depth_control:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

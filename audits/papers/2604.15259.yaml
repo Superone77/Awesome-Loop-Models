@@ -14,27 +14,21 @@ scope:
     fixed points are analyzed as emergent dynamics rather than solved by a DEQ-style root finder.
   locator: "Section 2, page 2; Definitions 3.1-3.4, pages 3-4"
 taxonomy:
-  category:
-    value: analysis
-    rationale: "The paper's primary contribution is a stability and generalization framework."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "A single learned update is explicitly unrolled; no implicit equilibrium layer is used."
-  focus_tags:
-    values:
-      - inference-algorithm
-    rationale: "The analysis concerns the behavior of repeated inference-time iterations."
-  domain_tags:
-    values:
-      - reasoning
-      - theory
-    rationale: "The paper develops theory and validates it on chess, Sudoku, and prefix-sum reasoning tasks."
-  tags:
-    values:
-      - looped-transformer
-      - fixed-point-analysis
-    rationale: "These aliases precisely describe the explicit model family and the analytical lens."
+      - training/supervision-optimization
+      - architecture/residual-init
+      - capabilities/generalization
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): A single learned update is explicitly unrolled; no implicit equilibrium layer is used."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): A single learned update is explicitly unrolled; no implicit equilibrium layer is used."
+  depth_control:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

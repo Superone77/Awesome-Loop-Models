@@ -12,27 +12,19 @@ scope:
   evidence: "RIM defines a nested recurrent process with T inner solver steps inside each of N outer generator iterations, reusing the learned components throughout one forward computation."
   locator: "Definition 3.1 and Figure 2; Section 4; Section 5"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces the Recursive Inference Machine framework and its RIMformer and TabRIM instances."
-  mechanism_tags:
+  survey_section:
     values:
-      - hierarchical-loop
-    rationale: "The generator-solver computation nests inner recurrence within outer iterations."
-  focus_tags:
-    values:
-      - architecture
-      - inference-algorithm
-    rationale: "The contribution covers the nested architecture and history-reweighting inference procedure."
-  domain_tags:
-    values:
-      - reasoning
-      - tabular-data
-    rationale: "RIMformer targets ARC-AGI and Sudoku reasoning, while TabRIM targets tabular classification."
-  tags:
-    values:
-      - RIM
-    rationale: "RIM is the official framework abbreviation."
+      - architecture/state-memory
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: hierarchical
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: hierarchical-loop): The generator-solver computation nests inner recurrence within outer iterations."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: hierarchical-loop): The generator-solver computation nests inner recurrence within outer iterations."
+  depth_control:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

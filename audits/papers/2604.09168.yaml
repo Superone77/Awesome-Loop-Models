@@ -12,30 +12,21 @@ scope:
   evidence: "ELT repeatedly applies one weight-shared composite Transformer block inside each visual-generation sampling step."
   locator: "Figure 1; Section 3; Algorithms 1-2"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces Elastic Looped Transformers for visual generation."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "One shared composite block is repeated over a flat latent-depth axis."
-  focus_tags:
-    values:
-      - architecture
-      - training-algorithm
-      - inference-algorithm
-    rationale: "The contribution covers the looped architecture, Intra-Loop Self Distillation, and dynamic-depth inference."
-  domain_tags:
-    values:
-      - vision
-      - efficiency
-    rationale: "The model targets image and video generation with quality-compute trade-offs."
-  tags:
-    values:
-      - ELT
-      - looped-transformer
-      - ILSD
-    rationale: "These identify the model, architecture family, and named self-distillation method."
+      - applications/vision
+      - architecture/hybrid
+      - open-problems/diffusion
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One shared composite block is repeated over a flat latent-depth axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): One shared composite block is repeated over a flat latent-depth axis."
+  depth_control:
+    value: sampled-train
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

@@ -22,10 +22,12 @@ def valid_paper(arxiv_id: str = "2601.00001") -> dict:
         "year": 2026,
         "published_date": "2026-01-02",
         "venue": "arXiv",
-        "category": "designs",
-        "mechanism_tags": ["flat-loop"],
-        "domain_tags": ["reasoning"],
-        "focus_tags": ["architecture"],
+        "survey_section": ["architecture/topology", "capabilities/efficiency"],
+        "loop_topology": "whole-stack",
+        "sharing": "full",
+        "depth_control": "fixed",
+        "claims": ["param-efficiency"],
+        "comparison": ["iso-param"],
         "desc": "Introduces a shared block that is reused within one forward pass.",
         "links": {"arxiv": f"https://arxiv.org/abs/{arxiv_id}"},
     }
@@ -40,7 +42,7 @@ def write_paper(root: Path, filename: str, paper: object) -> Path:
 
 
 class CatalogAuditTests(unittest.TestCase):
-    """Exercise raw YAML, schema, identity, tag, and prose findings."""
+    """Exercise raw YAML, schema, identity, survey-taxonomy, and prose findings."""
 
     def test_peer_review_provenance_is_validated(self):
         """Verified papers need a real venue, boolean flag and safe source URL."""
@@ -72,12 +74,12 @@ class CatalogAuditTests(unittest.TestCase):
 
         self.assertEqual(findings, [])
 
-    def test_adjacent_fit_allows_an_empty_mechanism_list(self):
+    def test_adjacent_fit_uses_the_same_survey_fields(self):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             paper = valid_paper()
             paper["catalog_fit"] = "adjacent"
-            paper["mechanism_tags"] = []
+            paper["loop_topology"] = "unspecified"
             write_paper(root, "2601.00001.yaml", paper)
 
             findings = audit_catalog.audit_catalog(root)
@@ -297,46 +299,84 @@ class CatalogAuditTests(unittest.TestCase):
             {item.code for item in findings},
         )
 
-    def test_tag_shape_duplicates_allowlists_and_cross_axis_collisions(self):
-        """Raw tag arrays should retain shape and respect controlled vocabularies."""
+    def test_retired_taxonomy_fields_are_errors(self):
+        """Legacy category and tag fields must be rejected, not silently ignored."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             paper = valid_paper()
-            paper["mechanism_tags"] = ["flat-loop", "Flat Loop", ""]
-            paper["focus_tags"] = "architecture"
-            paper["domain_tags"] = ["reasoning", "architecture"]
-            paper["tags"] = ["reasoning"]
+            paper.update(
+                {
+                    "category": "designs",
+                    "mechanism_tags": ["flat-loop"],
+                    "domain_tags": ["reasoning"],
+                    "focus_tags": ["architecture"],
+                    "foundation": True,
+                    "tags": [],
+                }
+            )
+            write_paper(root, "2601.00001.yaml", paper)
+
+            findings = audit_catalog.audit_catalog(root)
+
+        self.assertEqual(
+            {(item.severity, item.code, item.field) for item in findings},
+            {
+                ("error", "retired-field", field)
+                for field in (
+                    "category",
+                    "mechanism_tags",
+                    "domain_tags",
+                    "focus_tags",
+                    "foundation",
+                    "tags",
+                )
+            },
+        )
+
+    def test_survey_fields_are_required_and_closed(self):
+        """Every survey axis is required and must use the controlled vocabulary."""
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            paper = valid_paper()
+            del paper["comparison"]
+            paper["survey_section"] = ["architecture/topology", "design/topology", "architecture/topology"]
+            paper["loop_topology"] = "flat-loop"
+            paper["sharing"] = ["full"]
+            paper["claims"] = "expressivity"
+            paper["survey_core"] = "yes"
             write_paper(root, "2601.00001.yaml", paper)
 
             findings = audit_catalog.audit_catalog(root)
 
         keys = {(item.code, item.field) for item in findings}
-        self.assertIn(("duplicate-tag", "mechanism_tags[1]"), keys)
-        self.assertIn(("invalid-mechanism-tag", "mechanism_tags[1]"), keys)
-        self.assertIn(("empty-tag", "mechanism_tags[2]"), keys)
-        self.assertIn(("invalid-tag-list", "focus_tags"), keys)
-        self.assertIn(("cross-axis-tag-collision", "domain_tags[1]"), keys)
-        self.assertIn(("cross-axis-tag-collision", "tags[0]"), keys)
+        self.assertEqual(
+            keys,
+            {
+                ("missing-field", "comparison"),
+                ("invalid-survey-value", "survey_section[1]"),
+                ("duplicate-value", "survey_section[2]"),
+                ("invalid-survey-value", "loop_topology"),
+                ("invalid-field-type", "sharing"),
+                ("invalid-field-type", "claims"),
+                ("invalid-field-type", "survey_core"),
+            },
+        )
 
-    def test_required_tag_lists_cannot_be_empty_but_optional_tags_can(self):
-        """Every required tag axis should contain a value while aliases may be empty."""
+    def test_survey_section_cannot_be_empty_but_claims_can(self):
+        """A paper needs a survey section, while claims and comparison may be empty."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             paper = valid_paper()
-            paper["mechanism_tags"] = []
-            paper["domain_tags"] = []
-            paper["focus_tags"] = []
-            paper["tags"] = []
+            paper["survey_section"] = []
+            paper["claims"] = []
+            paper["comparison"] = []
             write_paper(root, "2601.00001.yaml", paper)
 
             findings = audit_catalog.audit_catalog(root)
 
-        empty_fields = {
-            item.field for item in findings if item.code == "empty-field"
-        }
         self.assertEqual(
-            empty_fields,
-            {"mechanism_tags", "domain_tags", "focus_tags"},
+            {(item.code, item.field) for item in findings},
+            {("empty-field", "survey_section")},
         )
 
     def test_valid_optional_metadata_types_have_no_findings(self):
@@ -350,13 +390,12 @@ class CatalogAuditTests(unittest.TestCase):
                     "citation_source_best": "semantic_scholar",
                     "citation_sources": {"semantic_scholar": 0},
                     "citations": 0,
-                    "foundation": False,
                     "github_stars": 3,
                     "metrics_updated": "2026-01-04",
                     "must_read": True,
                     "star_source_best": "github_api",
                     "star_sources": {"github_api": 3},
-                    "tags": [],
+                    "survey_core": False,
                 }
             )
             write_paper(root, "2601.00001.yaml", paper)
@@ -372,7 +411,7 @@ class CatalogAuditTests(unittest.TestCase):
             paper = valid_paper()
             paper.update(
                 {
-                    "foundation": "false",
+                    "survey_core": "false",
                     "must_read": 1,
                     "citations": True,
                     "github_stars": -1,
@@ -392,7 +431,7 @@ class CatalogAuditTests(unittest.TestCase):
 
         keys = {(item.code, item.field) for item in findings}
         for field in (
-            "foundation",
+            "survey_core",
             "must_read",
             "citations",
             "github_stars",
@@ -432,7 +471,7 @@ class CatalogAuditCliTests(unittest.TestCase):
             root = Path(tmpdir)
             paper = valid_paper()
             paper["year"] = 2027
-            paper["category"] = "legacy"
+            paper["loop_topology"] = "legacy"
             write_paper(root, "2601.00001.yaml", paper)
             stdout = io.StringIO()
 
@@ -446,11 +485,13 @@ class CatalogAuditCliTests(unittest.TestCase):
             "findings": [
                 {
                     "severity": "error",
-                    "code": "invalid-category",
+                    "code": "invalid-survey-value",
                     "source": "papers/2601.00001.yaml",
-                    "field": "category",
+                    "field": "loop_topology",
                     "message": (
-                        "Expected one of analysis, applications, designs; got 'legacy'."
+                        "Expected one of whole-stack, prelude-core-coda, partial, "
+                        "hierarchical, shifted-parallel, implicit-fixed-point, "
+                        "unspecified; got 'legacy'."
                     ),
                 },
                 {

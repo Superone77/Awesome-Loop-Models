@@ -12,21 +12,20 @@ scope:
   evidence: "ReLIT reuses a latent-recursion block multiple times inside outer reasoning steps before emitting an answer."
   locator: "Sections 3.1-3.3; Appendix Figure 6"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces the ReLIT recursive latent reasoning architecture and training method."
-  mechanism_tags:
-    values: [hierarchical-loop, flat-loop]
-    rationale: "The forward computation nests shared latent-recursion updates inside repeated reasoning steps."
-  focus_tags:
-    values: [architecture, training-algorithm, inference-algorithm]
-    rationale: "The work contributes the recursive block, Recall-Then-Learn supervision, and inference-time halting."
-  domain_tags:
-    values: [language-modeling, reasoning, algorithmic-reasoning, adaptive-compute, efficiency]
-    rationale: "Evaluation covers theorem finding, logic, and planning with parameter-efficient latent recursion and variable halting depth."
-  tags:
-    values: []
-    rationale: "No optional alias is needed."
+  survey_section:
+    values:
+      - applications/language-speech-multimodal
+      - capabilities/efficiency
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: partial
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: hierarchical-loop, flat-loop): The forward computation nests shared latent-recursion updates inside repeated reasoning steps."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: hierarchical-loop, flat-loop): The forward computation nests shared latent-recursion updates inside repeated reasoning steps."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

@@ -12,32 +12,21 @@ scope:
   evidence: "Within one masked-diffusion denoiser forward pass, LoopMDM applies the head and tail once and reuses the same learned early-middle Transformer layers K times."
   locator: "Section 3, Equations 4-6; Section 4.1, Figure 1"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces a selectively looped architecture for masked diffusion language models."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "The selected middle block is repeatedly applied along one depth axis."
-  focus_tags:
-    values:
-      - architecture
-      - training-algorithm
-      - inference-algorithm
-    rationale: "The work changes denoiser depth sharing, trains with recurrent depth, and varies loop count at inference."
-  domain_tags:
-    values:
-      - language-modeling
-      - reasoning
-      - efficiency
-      - scaling
-    rationale: "LoopMDM targets masked-diffusion language modeling and reasoning with parameter-free training-depth and test-time compute scaling."
-  tags:
-    values:
-      - LoopMDM
-      - masked-diffusion-language-model
-      - looped-transformer
-    rationale: "These aliases identify the official model, its diffusion-LM setting, and its recurrent Transformer mechanism."
+      - architecture/hybrid
+      - open-problems/diffusion
+      - scaling/test-time
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: partial
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The selected middle block is repeatedly applied along one depth axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): The selected middle block is repeatedly applied along one depth axis."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

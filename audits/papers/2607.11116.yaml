@@ -12,21 +12,20 @@ scope:
   evidence: "The paper audits a deep-equilibrium layer whose learned operator is repeatedly solved to a fixed point within one forward process."
   locator: "Section 3; equilibrium formulation"
 taxonomy:
-  category:
-    value: analysis
-    rationale: "The work diagnoses lazy identity collapse in an existing DEQ reasoning design."
-  mechanism_tags:
-    values: [implicit-layer]
-    rationale: "The model defines computation through a fixed point of a shared learned operator."
-  focus_tags:
-    values: [architecture, inference-algorithm]
-    rationale: "The analysis concerns DEQ structure and the behavior of its fixed-point solve."
-  domain_tags:
-    values: [graph-data, reasoning]
-    rationale: "Experiments use ProofWriter entailment and BFS graph reachability; physics is an inductive bias rather than an application domain."
-  tags:
-    values: [DEQ]
-    rationale: "DEQ identifies the audited deep-equilibrium model family."
+  survey_section:
+    values:
+      - understanding/failure-modes
+      - training/supervision-optimization
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: implicit-fixed-point
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: implicit-layer): The model defines computation through a fixed point of a shared learned operator."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: implicit-layer): The model defines computation through a fixed point of a shared learned operator."
+  depth_control:
+    value: convergence
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

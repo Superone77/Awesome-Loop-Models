@@ -12,31 +12,21 @@ scope:
   evidence: "LT2 repeatedly applies shared transformer layers so successive loop steps refine memory and expand the effective receptive field within one forward computation."
   locator: "Abstract, paragraphs 1-4"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces a family of linear-time looped-transformer architectures."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-    rationale: "A shared transformer computation is repeated along one loop axis."
-  focus_tags:
-    values:
-      - architecture
-      - inference-algorithm
-    rationale: "The main contribution combines recurrent transformer design with linear or sparse attention for scalable iterative inference."
-  domain_tags:
-    values:
-      - language-modeling
-      - reasoning
-      - efficiency
-      - scaling
-    rationale: "LT2 targets scalable language-model reasoning by replacing quadratic attention in repeated inference steps."
-  tags:
-    values:
-      - looped-transformer
-      - looped-llm
-      - Ouro
-    rationale: "The first two aliases name the architecture family, and Ouro identifies the model line compared and extended by LT2."
+      - architecture/hybrid
+      - systems/kv-memory
+      - training/retrofitting
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: whole-stack
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): A shared transformer computation is repeated along one loop axis."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop): A shared transformer computation is repeated along one loop axis."
+  depth_control:
+    value: fixed
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import sys as _sys
 from dataclasses import asdict, dataclass
 from datetime import date
 from pathlib import Path
@@ -13,6 +14,16 @@ from typing import Sequence
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 import yaml
+
+_sys.path.insert(0, str(Path(__file__).resolve().parent))
+from taxonomy import (  # noqa: E402
+    RETIRED_FIELDS,
+    VALID_CATALOG_FITS,
+    VALID_DEPTH_CONTROLS,
+    VALID_LOOP_TOPOLOGIES,
+    VALID_SHARING_SCHEMES,
+    VALID_SURVEY_SECTIONS,
+)
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -31,13 +42,17 @@ AUDIT_FIELDS = frozenset(
 )
 SOURCE_FIELDS = frozenset({"url", "version", "verified_on"})
 SCOPE_FIELDS = frozenset({"verdict", "evidence", "locator"})
-TAXONOMY_FIELDS = (
-    "category",
-    "mechanism_tags",
-    "focus_tags",
-    "domain_tags",
-    "tags",
-)
+# Audited survey taxonomy axes. ``survey_section`` is a list (primary first);
+# the design axes are single values. ``claims``/``comparison`` are not audited.
+TAXONOMY_LIST_FIELDS = {"survey_section": frozenset(VALID_SURVEY_SECTIONS)}
+TAXONOMY_SCALAR_FIELDS = {
+    "loop_topology": frozenset(VALID_LOOP_TOPOLOGIES),
+    "sharing": frozenset(VALID_SHARING_SCHEMES),
+    "depth_control": frozenset(VALID_DEPTH_CONTROLS),
+}
+TAXONOMY_FIELDS = (*TAXONOMY_LIST_FIELDS, *TAXONOMY_SCALAR_FIELDS)
+# Removal tombstones may omit the taxonomy block: they have no canonical entry.
+OPTIONAL_FOR_REMOVE = frozenset({"taxonomy"})
 CONTENT_CHECK_FIELDS = (
     "title_authors",
     "publication",
@@ -469,8 +484,7 @@ def _validate_canonical_paper(
 ) -> tuple[dict[str, object], frozenset[str]]:
     """Validate and return canonical taxonomy plus primary-source identities."""
     taxonomy: dict[str, object] = {}
-    required = ("category", "mechanism_tags", "focus_tags", "domain_tags", "links")
-    for field in required:
+    for field in (*TAXONOMY_FIELDS, "links"):
         if field not in data:
             _add(
                 findings,
@@ -479,19 +493,17 @@ def _validate_canonical_paper(
                 field,
                 "Canonical field required for audit validation is missing.",
             )
-    category = data.get("category")
-    if isinstance(category, str) and category.strip():
-        taxonomy["category"] = category
-    elif "category" in data:
-        _add(
-            findings,
-            "invalid-field-type",
-            source,
-            "category",
-            "Expected a non-empty string.",
-        )
+    for field in RETIRED_FIELDS:
+        if field in data:
+            _add(
+                findings,
+                "retired-field",
+                source,
+                field,
+                "Field was retired by the survey taxonomy.",
+            )
     catalog_fit = data.get("catalog_fit", "strict")
-    if not isinstance(catalog_fit, str) or catalog_fit not in {"strict", "adjacent"}:
+    if not isinstance(catalog_fit, str) or catalog_fit not in VALID_CATALOG_FITS:
         _add(
             findings,
             "invalid-catalog-fit",
@@ -501,33 +513,16 @@ def _validate_canonical_paper(
         )
     else:
         taxonomy["catalog_fit"] = catalog_fit
-    for field in TAXONOMY_FIELDS[1:]:
-        if field not in data:
-            if field == "tags":
-                taxonomy[field] = []
-            continue
-        items = _string_list_field(data, field, source, "", findings)
-        if items is not None:
-            taxonomy[field] = items
-
-    mechanism_tags = taxonomy.get("mechanism_tags")
-    if isinstance(mechanism_tags, list):
-        if catalog_fit == "adjacent" and mechanism_tags:
-            _add(
-                findings,
-                "adjacent-mechanism-tag",
-                source,
-                "mechanism_tags",
-                "Adjacent work must not claim a strict loop-mechanism tag.",
-            )
-        elif catalog_fit == "strict" and not mechanism_tags:
-            _add(
-                findings,
-                "missing-mechanism-tag",
-                source,
-                "mechanism_tags",
-                "Strict-scope work must claim at least one loop-mechanism tag.",
-            )
+    for field in TAXONOMY_LIST_FIELDS:
+        if field in data:
+            items = _string_list_field(data, field, source, "", findings)
+            if items is not None:
+                taxonomy[field] = items
+    for field in TAXONOMY_SCALAR_FIELDS:
+        if field in data:
+            value = _string_field(data, field, source, "", findings)
+            if value is not None:
+                taxonomy[field] = value
 
     identities: set[str] = set()
     links = data.get("links")
@@ -595,29 +590,44 @@ def _validate_taxonomy(
         entry = _mapping_field(data, field, source, "taxonomy", findings)
         if entry is None:
             continue
-        value_key = "value" if field == "category" else "values"
-        allowed = frozenset({value_key, "rationale"})
+        prefix = f"taxonomy.{field}"
+        value_key = "values" if field in TAXONOMY_LIST_FIELDS else "value"
         _validate_mapping_shape(
             entry,
             (value_key, "rationale"),
-            allowed,
+            frozenset({value_key, "rationale"}),
             source,
-            f"taxonomy.{field}",
+            prefix,
             findings,
         )
-        if field == "category":
-            category = _string_field(
-                entry, "value", source, "taxonomy.category", findings
-            )
-            if category is not None:
-                values[field] = category
+        if field in TAXONOMY_LIST_FIELDS:
+            items = _string_list_field(entry, "values", source, prefix, findings)
+            if items is not None:
+                if not items:
+                    _add(
+                        findings,
+                        "empty-field",
+                        source,
+                        f"{prefix}.values",
+                        "Expected at least one value.",
+                    )
+                for index, item in enumerate(items):
+                    if item not in TAXONOMY_LIST_FIELDS[field]:
+                        _add(
+                            findings,
+                            "invalid-enum",
+                            source,
+                            f"{prefix}.values[{index}]",
+                            f"Unknown {field} value {item!r}.",
+                        )
+                values[field] = items
         else:
-            tags = _string_list_field(
-                entry, "values", source, f"taxonomy.{field}", findings
+            value = _enum_field(
+                entry, "value", TAXONOMY_SCALAR_FIELDS[field], source, prefix, findings
             )
-            if tags is not None:
-                values[field] = tags
-        _string_field(entry, "rationale", source, f"taxonomy.{field}", findings)
+            if value is not None:
+                values[field] = value
+        _string_field(entry, "rationale", source, prefix, findings)
     return values
 
 
@@ -669,12 +679,14 @@ def _validate_content_checks(
 
 
 def _same_taxonomy_value(field: str, audit_value: object, paper_value: object) -> bool:
-    """Compare category exactly and tag arrays as order-insensitive exact values."""
-    if field == "category":
+    """Compare design axes exactly; sections by primary entry plus the full set."""
+    if field not in TAXONOMY_LIST_FIELDS:
         return audit_value == paper_value
     if not isinstance(audit_value, list) or not isinstance(paper_value, list):
         return False
-    return sorted(audit_value) == sorted(paper_value)
+    if not audit_value or not paper_value:
+        return audit_value == paper_value
+    return audit_value[0] == paper_value[0] and sorted(audit_value) == sorted(paper_value)
 
 
 def _validate_audit_record(
@@ -687,18 +699,21 @@ def _validate_audit_record(
 ) -> tuple[str | None, str | None]:
     """Validate one audit record and return its logical ID and valid status."""
     source = _source_name(path, root)
+    status = _enum_field(
+        data, "status", STATUS_VALUES, source, "", findings
+    )
+    required_fields = sorted(
+        AUDIT_FIELDS - OPTIONAL_FOR_REMOVE if status == "remove" else AUDIT_FIELDS
+    )
     _validate_mapping_shape(
         data,
-        tuple(AUDIT_FIELDS),
+        required_fields,
         AUDIT_FIELDS,
         source,
         "",
         findings,
     )
     paper_id = _string_field(data, "paper_id", source, "", findings)
-    status = _enum_field(
-        data, "status", STATUS_VALUES, source, "", findings
-    )
     confidence = _enum_field(
         data, "confidence", CONFIDENCE_VALUES, source, "", findings
     )
@@ -818,13 +833,13 @@ def _validate_audit_record(
                     if not _same_taxonomy_value(
                         field, taxonomy_values[field], paper_taxonomy[field]
                     ):
-                        value_key = "value" if field == "category" else "values"
+                        value_key = "values" if field in TAXONOMY_LIST_FIELDS else "value"
                         _add(
                             findings,
                             "taxonomy-drift",
                             source,
                             f"taxonomy.{field}.{value_key}",
-                            "Verified taxonomy must exactly match canonical YAML.",
+                            "Verified taxonomy must match canonical YAML (same primary section and section set; same design-axis values).",
                         )
     elif (
         paper_id in removed_sources

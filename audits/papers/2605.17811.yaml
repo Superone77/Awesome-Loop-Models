@@ -14,30 +14,20 @@ scope:
     nested L,L,H schedule repeated over multiple cycles.
   locator: "Figure 1, pages 1-2; Section 3, Equations 1-2, page 3"
 taxonomy:
-  category:
-    value: analysis
-    rationale: "The paper analyzes emergent functional specialization inside a shared recurrent model."
-  mechanism_tags:
+  survey_section:
     values:
-      - flat-loop
-      - hierarchical-loop
-    rationale: "One f is reused at every substep, while multiple low updates are nested under each high update."
-  focus_tags:
-    values:
-      - architecture
-      - inference-algorithm
-    rationale: "The paper studies the recurrent architecture and behavior of its forward update schedule."
-  domain_tags:
-    values:
-      - reasoning
-      - algorithmic-reasoning
-    rationale: "The mechanistic experiments use Sudoku-Extreme and maze reasoning."
-  tags:
-    values:
-      - looped-transformer
-      - shared-weight-recurrence
-      - mechanistic-analysis
-    rationale: "These aliases identify the model family and the paper's analytical purpose."
+      - understanding/interpretability
+      - architecture/topology
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: hierarchical
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop, hierarchical-loop): One f is reused at every substep, while multiple low updates are nested under each high update."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: flat-loop, hierarchical-loop): One f is reused at every substep, while multiple low updates are nested under each high update."
+  depth_control:
+    value: unspecified
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified

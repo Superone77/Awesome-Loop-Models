@@ -12,28 +12,21 @@ scope:
   evidence: "The same Mamba2 state-space transformation is iterated over depth toward a fixed point under simultaneous or sequential solver ordering."
   locator: "Section 3.1, Equations 6-7"
 taxonomy:
-  category:
-    value: designs
-    rationale: "The paper introduces implicit state-space language models and their curriculum."
-  mechanism_tags:
+  survey_section:
     values:
-      - implicit-layer
-    rationale: "The shared state-space transformation is solved toward a fixed point."
-  focus_tags:
-    values:
-      - architecture
-      - training-algorithm
-      - inference-algorithm
-    rationale: "The contribution covers the implicit architecture, bounded/free fixed-point curriculum, and solver execution."
-  domain_tags:
-    values:
-      - language-modeling
-      - reasoning
-    rationale: "The model is an implicit language model evaluated on language and reasoning behavior."
-  tags:
-    values:
-      - implicit-ssm
-    rationale: "This alias identifies the paper's implicit state-space model family."
+      - architecture/hybrid
+      - capabilities/expressivity
+      - foundations/implicit
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
+  loop_topology:
+    value: implicit-fixed-point
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: implicit-layer): The shared state-space transformation is solved toward a fixed point."
+  sharing:
+    value: full
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source. Value copied from the canonical entry. Legacy loop-mechanism rationale (old tags: implicit-layer): The shared state-space transformation is solved toward a fixed point."
+  depth_control:
+    value: convergence
+    rationale: "Migrated on 2026-10-12 from the legacy category/tag classification; not re-verified against the primary source."
 content_checks:
   title_authors:
     status: verified
