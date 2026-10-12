@@ -42,6 +42,7 @@ desc: Post-training quantization for looped language models that picks one share
 links:
   arxiv: https://arxiv.org/abs/2610.05265
   alphaxiv: https://www.alphaxiv.org/abs/2610.05265
+  github: https://github.com/Shameless0817/Loopy-review
 citation_source_best: semantic_scholar
 citations: 0
 citation_sources:

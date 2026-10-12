@@ -1,0 +1,40 @@
+title: 'RAMP: Recurrent Adaptive Mixed Precision for Efficient Prefill in Recurrent-Depth
+  Language Models'
+authors:
+- Ke Wan
+- Chen Chen
+year: 2026
+published_date: '2026-10-09'
+added_date: '2026-10-12'
+venue: arXiv
+category: designs
+foundation: false
+mechanism_tags:
+- flat-loop
+domain_tags:
+- language-modeling
+- efficiency
+tags:
+- RAMP
+- Huginn
+focus_tags:
+- inference-algorithm
+survey_section:
+- systems/quantization-edge
+- benefits/efficiency
+- train/stability
+loop_topology: prelude-core-coda
+sharing: full
+depth_control: fixed
+claims:
+- compute-efficiency
+- stability
+comparison: []
+survey_core: false
+desc: Shows that quantization error injected early in a recurrent-depth language model's loop
+  is damped by later iterations and runs the first 24 of Huginn-0125's 32 recurrent steps
+  in FP8 and the last 8 in BF16, keeping prefill NLL within 0.0001 of BF16 at 4K context with
+  up to 1.16x H100 speedup and no retraining.
+links:
+  arxiv: https://arxiv.org/abs/2610.13041
+  alphaxiv: https://www.alphaxiv.org/abs/2610.13041

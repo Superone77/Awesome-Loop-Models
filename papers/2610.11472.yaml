@@ -1,0 +1,45 @@
+title: 'From Chain-of-Thought to Loops: Non-Autoregressive Latent Reasoning via Looped Transformers'
+authors:
+- Gerard Grau García
+- Arnau Padrés Masdemont
+- Niccolò Grillo
+- Jordi Ros-Giralt
+- Arash Behboodi
+- Victor Conchello Vendrell
+year: 2026
+published_date: '2026-10-08'
+added_date: '2026-10-12'
+venue: arXiv
+category: designs
+foundation: false
+mechanism_tags:
+- flat-loop
+domain_tags:
+- reasoning
+- language-modeling
+- efficiency
+tags:
+- LLoCoT
+- looped-transformer
+focus_tags:
+- architecture
+- inference-algorithm
+- objective-loss
+survey_section:
+- design/state-memory
+- train/supervision
+- scaling/test-time
+loop_topology: whole-stack
+sharing: full
+depth_control: fixed
+claims:
+- compute-efficiency
+comparison: []
+survey_core: false
+desc: LLoCoT replaces autoregressive latent chain-of-thought with weight-tied looped refinement
+  of 64 latent workspace slots by a Qwen3-1.7B backbone, sampling all latent thoughts in parallel
+  before decoding the answer; it slightly beats reasoning SFT on EvalPlus code benchmarks
+  with about 36x lower time to first answer token.
+links:
+  arxiv: https://arxiv.org/abs/2610.11472
+  alphaxiv: https://www.alphaxiv.org/abs/2610.11472

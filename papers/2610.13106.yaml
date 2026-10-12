@@ -1,0 +1,52 @@
+title: Scaling RNA Foundation Models through Iterative Refinement
+authors:
+- Pengan Chen
+- Liang Hong
+- Xinyuan Liu
+- Han Huang
+- Ziqian Lin
+- Jiayang Chen
+- Yimin Fan
+- Jiyue Jiang
+- Yu Li
+year: 2026
+published_date: '2026-10-09'
+added_date: '2026-10-12'
+venue: arXiv
+category: applications
+foundation: false
+mechanism_tags:
+- flat-loop
+domain_tags:
+- biology
+- adaptive-compute
+- scaling
+tags:
+- Eco-RNA
+- recurrent-depth
+focus_tags:
+- architecture
+- objective-loss
+- training-algorithm
+survey_section:
+- applications/graphs-science
+- scaling/test-time
+- design/residual-injection
+- train/supervision
+loop_topology: prelude-core-coda
+sharing: full
+depth_control: sampled-train
+claims:
+- param-efficiency
+- compute-efficiency
+- test-time-scaling
+comparison:
+- iso-param
+survey_core: false
+desc: Eco-RNA is an 80M-parameter RNA foundation model whose input-conditioned shared Transformer
+  core is iterated a chosen number of times, trained with sampled depths and a fixed-point
+  displacement penalty; RNAGym fitness Spearman rises from 0.242 at one iteration to 0.286
+  at four, beating Evo 2 40B with 500x fewer parameters.
+links:
+  arxiv: https://arxiv.org/abs/2610.13106
+  alphaxiv: https://www.alphaxiv.org/abs/2610.13106
