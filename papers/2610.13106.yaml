@@ -23,7 +23,7 @@ domain_tags:
 - scaling
 tags:
 - Eco-RNA
-- recurrent-depth
+- depth-recurrent
 focus_tags:
 - architecture
 - objective-loss
