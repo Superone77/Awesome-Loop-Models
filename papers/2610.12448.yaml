@@ -1,4 +1,5 @@
-title: 'One Block, Multiple Depths: Recurrent Vision Transformers with Depth-Programmed Experts'
+title: 'One Block, Multiple Depths: Recurrent Vision Transformers with Depth-Programmed
+  Experts'
 authors:
 - Adrian Bulat
 - Yassine Ouali
@@ -20,10 +21,17 @@ claims:
 comparison:
 - iso-flop
 survey_core: false
-desc: reViT applies one Transformer block at every depth of a vision encoder and gives each
-  depth its own FFN by merging a small shared expert bank in weight space with a router conditioned
-  only on normalized depth; reViT-B/16 matches DeiT III on ImageNet-1k with about 70 percent
-  fewer stored parameters at similar FLOPs.
+desc: reViT applies one Transformer block at every depth of a vision encoder and gives
+  each depth its own FFN by merging a small shared expert bank in weight space with
+  a router conditioned only on normalized depth; reViT-B/16 matches DeiT III on ImageNet-1k
+  with about 70 percent fewer stored parameters at similar FLOPs.
 links:
   arxiv: https://arxiv.org/abs/2610.12448
   alphaxiv: https://www.alphaxiv.org/abs/2610.12448
+citation_source_best: semantic_scholar
+citations: 0
+citation_sources:
+  semantic_scholar: 0
+  openalex: 0
+  opencitations: 0
+metrics_updated: '2026-10-13'

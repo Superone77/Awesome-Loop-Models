@@ -19,10 +19,17 @@ claims:
 - stability
 comparison: []
 survey_core: false
-desc: Shows that quantization error injected early in a recurrent-depth language model's loop
-  is damped by later iterations and runs the first 24 of Huginn-0125's 32 recurrent steps
-  in FP8 and the last 8 in BF16, keeping prefill NLL within 0.0001 of BF16 at 4K context with
-  up to 1.16x H100 speedup and no retraining.
+desc: Shows that quantization error injected early in a recurrent-depth language model's
+  loop is damped by later iterations and runs the first 24 of Huginn-0125's 32 recurrent
+  steps in FP8 and the last 8 in BF16, keeping prefill NLL within 0.0001 of BF16 at
+  4K context with up to 1.16x H100 speedup and no retraining.
 links:
   arxiv: https://arxiv.org/abs/2610.13041
   alphaxiv: https://www.alphaxiv.org/abs/2610.13041
+citation_source_best: semantic_scholar
+citations: 0
+citation_sources:
+  semantic_scholar: 0
+  openalex: 0
+  opencitations: 0
+metrics_updated: '2026-10-13'
