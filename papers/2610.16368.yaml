@@ -1,11 +1,11 @@
 title: 'LoopQuant: Accurate and Efficient Post-Training Quantization for Looped Transformers'
 authors:
-- 'Zhixiong Zhao'
-- 'Zukang Xu'
-- 'Xing Hu'
-- 'Lifeng Liu'
-- 'Guangyu Sun'
-- 'Dawei Yang'
+- Zhixiong Zhao
+- Zukang Xu
+- Xing Hu
+- Lifeng Liu
+- Guangyu Sun
+- Dawei Yang
 year: 2026
 published_date: '2026-10-12'
 added_date: '2026-10-14'
@@ -19,11 +19,19 @@ claims:
 - memory-efficiency
 - compute-efficiency
 comparison: []
-desc: Introduces LoopQuant, a post-training quantization method for looped language models
-  with loop-shared transforms, loop-wise activation precision allocation and per-loop
-  calibration; at W4A4 on Ouro-2.6B it beats W4A8 baselines while cutting memory by 65.3
-  percent and speeding decoding 1.7x.
+desc: Introduces LoopQuant, a post-training quantization method for looped language
+  models with loop-shared transforms, loop-wise activation precision allocation and
+  per-loop calibration; at W4A4 on Ouro-2.6B it beats W4A8 baselines while cutting
+  memory by 65.3 percent and speeding decoding 1.7x.
 links:
   arxiv: https://arxiv.org/abs/2610.16368
   github: https://github.com/Kishon-zzx/LoopQuant
 citations: 0
+citation_source_best: opencitations
+citation_sources:
+  opencitations: 0
+star_source_best: github_api
+github_stars: 0
+star_sources:
+  github_api: 0
+metrics_updated: '2026-10-14'

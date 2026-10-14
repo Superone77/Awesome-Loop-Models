@@ -1,7 +1,8 @@
-title: 'RELAGRAM: Recursive Latent Graph Model for the Capacitated Vehicle Routing Problem'
+title: 'RELAGRAM: Recursive Latent Graph Model for the Capacitated Vehicle Routing
+  Problem'
 authors:
-- 'Vladimir Kirill Bickov'
-- 'Neil Yorke-Smith'
+- Vladimir Kirill Bickov
+- Neil Yorke-Smith
 year: 2026
 published_date: '2026-10-10'
 added_date: '2026-10-14'
@@ -19,10 +20,14 @@ claims:
 - failure-mode
 comparison:
 - iso-param
-desc: Introduces RELAGRAM, a 0.53M-parameter TRM-style latent-recursive edge-token transformer
-  for capacitated vehicle routing that reaches an 8.30 percent gap on CVRP-100 and
-  transfers zero-shot to CVRP-1000, though a matched single-pass control shows no
-  significant gain from recursion.
+desc: Introduces RELAGRAM, a 0.53M-parameter TRM-style latent-recursive edge-token
+  transformer for capacitated vehicle routing that reaches an 8.30 percent gap on
+  CVRP-100 and transfers zero-shot to CVRP-1000, though a matched single-pass control
+  shows no significant gain from recursion.
 links:
   arxiv: https://arxiv.org/abs/2610.15106
 citations: 0
+citation_source_best: opencitations
+citation_sources:
+  opencitations: 0
+metrics_updated: '2026-10-14'

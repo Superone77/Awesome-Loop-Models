@@ -1,9 +1,9 @@
-title: 'Learning to Extrapolate in Depth with Looped Transformers'
+title: Learning to Extrapolate in Depth with Looped Transformers
 authors:
-- 'Huitao Yang'
-- 'Jianhao Huang'
-- 'Zixuan Wang'
-- 'Baharan Mirzasoleiman'
+- Huitao Yang
+- Jianhao Huang
+- Zixuan Wang
+- Baharan Mirzasoleiman
 year: 2026
 published_date: '2026-10-10'
 added_date: '2026-10-14'
@@ -22,8 +22,13 @@ claims:
 comparison: []
 desc: Proves that a looped linear-attention block trained on all-pairs graph connectivity
   converges to an update rule with a single effective parameter, which yields a finite
-  window of useful test-time loop counts and certifies shallow-to-deep extrapolation to
-  harder graphs.
+  window of useful test-time loop counts and certifies shallow-to-deep extrapolation
+  to harder graphs.
 links:
   arxiv: https://arxiv.org/abs/2610.14456
 citations: 0
+citation_source_best: semantic_scholar
+citation_sources:
+  semantic_scholar: 0
+  opencitations: 0
+metrics_updated: '2026-10-14'

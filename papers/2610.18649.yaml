@@ -1,9 +1,9 @@
-title: 'Tiny Recursive Message Passing'
+title: Tiny Recursive Message Passing
 authors:
-- 'Tommaso Salvatori'
-- 'Matteo Forasassi'
-- 'Alexis Toumi'
-- 'Giovanni de Felice'
+- Tommaso Salvatori
+- Matteo Forasassi
+- Alexis Toumi
+- Giovanni de Felice
 year: 2026
 published_date: '2026-10-13'
 added_date: '2026-10-14'
@@ -19,10 +19,14 @@ claims:
 - param-efficiency
 - length-generalization
 comparison: []
-desc: Applies tiny-recursive-model training (deep supervision, truncated recursion, ACT
-  halting, deduction lattices) to weight-shared recurrent message passing, reaching about
-  99 percent on Sudoku-Extreme with 16k parameters and transferring zero-shot to larger
-  N-Queens and SAT instances.
+desc: Applies tiny-recursive-model training (deep supervision, truncated recursion,
+  ACT halting, deduction lattices) to weight-shared recurrent message passing, reaching
+  about 99 percent on Sudoku-Extreme with 16k parameters and transferring zero-shot
+  to larger N-Queens and SAT instances.
 links:
   arxiv: https://arxiv.org/abs/2610.18649
 citations: 0
+citation_source_best: opencitations
+citation_sources:
+  opencitations: 0
+metrics_updated: '2026-10-14'
