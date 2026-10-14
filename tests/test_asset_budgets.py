@@ -39,6 +39,36 @@ def valid_briefing(date: str = "2026-07-10") -> dict:
     }
 
 
+def valid_briefing_page(date: str | None = "2026-07-10") -> dict:
+    """Return the complete reading-page schema of briefing-latest.json."""
+    if date is None:
+        return {
+            "date": None, "title": None, "status": None, "summary": "", "highlights": [],
+            "candidates": [], "source_path": None, "body_markdown": "",
+        }
+    return {
+        **valid_briefing(date),
+        "highlights": ["One highlight."],
+        "candidates": [{"id": "2607.00001", "title": "A looped paper", "verdict": "added"}],
+        "body_markdown": "## Added\n\n**TL;DR:** A looped block.",
+    }
+
+
+def briefing_page_text(page: dict) -> str:
+    """Serialize a briefing page the way scripts/build.py writes it."""
+    return json.dumps(page, ensure_ascii=False, indent=2) + "\n"
+
+
+def briefing_page_version(page: dict) -> str:
+    """Return the papers.json cache-busting version of a serialized briefing page."""
+    return hashlib.sha256(briefing_page_text(page).encode("utf-8")).hexdigest()[:12]
+
+
+def write_briefing_page(root: Path, page: dict) -> None:
+    """Write briefing-latest.json under ``root``."""
+    (root / "briefing-latest.json").write_text(briefing_page_text(page), encoding="utf-8")
+
+
 def valid_survey_taxonomy() -> dict:
     """Return the smallest complete survey taxonomy the browser and submission pickers read."""
     return {
@@ -66,7 +96,7 @@ def valid_submission_payload(existing_paths: list | None = None) -> dict:
 def valid_papers_payload() -> dict:
     """Return the minimal complete browser catalog schema."""
     return {
-        "meta": {},
+        "meta": {"latest_briefing_version": briefing_page_version(valid_briefing_page())},
         "survey_taxonomy": valid_survey_taxonomy(),
         "paper_chunks": [],
         "blogs": [],
@@ -91,6 +121,7 @@ def write_chunk(root: Path, index: int, papers: list, count: int | None = None) 
 def write_valid_fixture(root: Path) -> None:
     """Create the smallest valid repository fixture for the budget checker."""
     write_json(root / "papers.json", valid_papers_payload())
+    write_briefing_page(root, valid_briefing_page())
     write_json(root / "submission-meta.json", valid_submission_payload())
     favicon_path = root / "assets" / "favicon.png"
     favicon_path.parent.mkdir(parents=True, exist_ok=True)
@@ -133,6 +164,7 @@ class AssetBudgetContractTests(unittest.TestCase):
                 "largest paper chunk entries",
                 "papers.json briefing count",
                 "papers.json briefing content fields",
+                "briefing-latest.json deterministic gzip bytes",
                 "submission-meta.json raw bytes",
                 "assets/favicon.png raw bytes",
             },
@@ -444,6 +476,111 @@ class AssetBudgetContractTests(unittest.TestCase):
         self.assertIn("limit=", rendered)
         self.assertIn("Asset budgets: PASS", rendered)
 
+    def test_requires_latest_briefing_page(self):
+        """The Briefing tab's lazily fetched page is a required generated asset."""
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            write_valid_fixture(root)
+            (root / "briefing-latest.json").unlink()
+
+            report = check_asset_budgets.check_asset_budgets(root)
+
+        self.assertIsNone(measurement(report, "briefing-latest.json deterministic gzip bytes"))
+        self.assertIn("briefing-latest.json: missing required file", report.violations)
+
+    def test_rejects_latest_briefing_page_over_gzip_limit(self):
+        """A briefing body that grows past the network budget must fail."""
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            write_valid_fixture(root)
+            page = valid_briefing_page()
+            page["body_markdown"] = deterministic_noise(140_000)
+            write_briefing_page(root, page)
+            payload = valid_papers_payload()
+            payload["meta"]["latest_briefing_version"] = briefing_page_version(page)
+            write_json(root / "papers.json", payload)
+
+            report = check_asset_budgets.check_asset_budgets(root)
+
+        self.assertGreater(
+            measurement(report, "briefing-latest.json deterministic gzip bytes"),
+            check_asset_budgets.BRIEFING_LATEST_GZIP_BYTES_LIMIT,
+        )
+        self.assertEqual(
+            [violation for violation in report.violations if violation.startswith("briefing-latest.json")],
+            [next(v for v in report.violations if v.startswith("briefing-latest.json deterministic gzip bytes"))],
+        )
+
+    def test_rejects_invalid_latest_briefing_json_and_fields(self):
+        """Malformed JSON, missing keys and wrong field types are all reported."""
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            write_valid_fixture(root)
+            (root / "briefing-latest.json").write_text("{not json", encoding="utf-8")
+            malformed = check_asset_budgets.check_asset_budgets(root)
+
+            page = valid_briefing_page()
+            del page["body_markdown"]
+            page["title"] = 7
+            page["date"] = "July 10"
+            page["highlights"] = ["ok", 3]
+            page["candidates"] = ["not an object"]
+            write_briefing_page(root, page)
+            invalid = check_asset_budgets.check_asset_budgets(root)
+
+        self.assertTrue(any(v.startswith("briefing-latest.json: invalid JSON") for v in malformed.violations))
+        for expected in (
+            "briefing-latest.json.body_markdown is required",
+            "briefing-latest.json.title must be a string",
+            "briefing-latest.json.date must use YYYY-MM-DD",
+            "briefing-latest.json.highlights[1] must be a string",
+            "briefing-latest.json.candidates[0] must be an object",
+            "briefing-latest.json: content does not match papers.json.meta.latest_briefing_version",
+        ):
+            self.assertIn(expected, invalid.violations)
+
+    def test_latest_briefing_must_match_the_manifest(self):
+        """The page must be the manifest's newest briefing and match its cache-busting version."""
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            write_valid_fixture(root)
+            page = valid_briefing_page("2026-07-09")
+            write_briefing_page(root, page)
+            payload = valid_papers_payload()
+            payload["meta"]["latest_briefing_version"] = briefing_page_version(page)
+            write_json(root / "papers.json", payload)
+
+            report = check_asset_budgets.check_asset_budgets(root)
+
+        self.assertEqual(
+            report.violations,
+            ("briefing-latest.json.date '2026-07-09' does not match papers.json.briefings[0].date '2026-07-10'",),
+        )
+
+    def test_accepts_empty_latest_briefing_page_without_briefings(self):
+        """Without any briefing the page keeps every key with null identity fields and empty content."""
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            write_valid_fixture(root)
+            page = valid_briefing_page(None)
+            write_briefing_page(root, page)
+            payload = valid_papers_payload()
+            payload["briefings"] = []
+            payload["meta"]["latest_briefing_version"] = briefing_page_version(page)
+            write_json(root / "papers.json", payload)
+            empty = check_asset_budgets.check_asset_budgets(root)
+
+            page["body_markdown"] = "Orphaned body"
+            page["title"] = "Orphaned title"
+            write_briefing_page(root, page)
+            payload["meta"]["latest_briefing_version"] = briefing_page_version(page)
+            write_json(root / "papers.json", payload)
+            orphaned = check_asset_budgets.check_asset_budgets(root)
+
+        self.assertTrue(empty.ok, empty.violations)
+        self.assertIn("briefing-latest.json.title must be null when date is null", orphaned.violations)
+        self.assertIn("briefing-latest.json.body_markdown must be empty when date is null", orphaned.violations)
+
     def test_cli_lists_all_violations_and_returns_nonzero(self):
         """The CLI should aggregate failures and return nonzero when any budget fails."""
         with TemporaryDirectory() as tmpdir:
@@ -494,7 +631,7 @@ class AssetBudgetContractTests(unittest.TestCase):
         steps_by_name = {step["name"]: step for step in steps}
 
         offline_gate_commands = {
-            "Build papers.json, submission-meta.json, README.md, and TAGS.md": "python3 scripts/build.py",
+            "Build papers.json, briefing-latest.json, submission-meta.json, README.md, and TAGS.md": "python3 scripts/build.py",
             "Check static asset budgets": "python3 scripts/check_asset_budgets.py",
             "Run unit tests": "python3 -m unittest discover -s tests -t . -p 'test_*.py'",
         }
@@ -563,7 +700,7 @@ class AssetBudgetContractTests(unittest.TestCase):
 
         for command in (
             "git add papers",
-            "git add -f papers.json submission-meta.json README.md TAGS.md catalog",
+            "git add -f papers.json briefing-latest.json submission-meta.json README.md TAGS.md catalog",
             "git diff --cached --quiet && exit 0",
             'base_sha="$(git rev-parse HEAD)"',
             "git commit -m \"chore: update paper metrics [skip ci]\"",

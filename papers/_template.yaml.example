@@ -2,7 +2,7 @@
 # For non-arXiv papers, use a stable slug such as papers/openreview-example.yaml
 # For long-form technical blog posts, use blogs/YYYY-MM-DD-shortname.yaml and blogs/_template.yaml.example instead.
 #
-# Classification follows the Looped Models Survey; see TAXONOMY.md.
+# Classification follows the repo's topic map of chapters and sections; see TAXONOMY.md.
 # Every taxonomy value is controlled. There are no free-form tags: model and
 # method names go in the title and desc. The build rejects category,
 # foundation, mechanism_tags, focus_tags, domain_tags and tags.
@@ -24,7 +24,7 @@ venue: "arXiv"
 # Omit `catalog_fit` for strict scope. A curator may set `catalog_fit: "adjacent"`
 # for a rare, labeled exception with primary-source boundary evidence.
 
-survey_section:            # every survey section the paper contributes to; first = primary
+survey_section:            # every taxonomy section the paper contributes to; first = primary
   - "architecture/depth-control"
   - "scaling/test-time"
 loop_topology: "prelude-core-coda"   # whole-stack | prelude-core-coda | partial | hierarchical | shifted-parallel | implicit-fixed-point | unspecified

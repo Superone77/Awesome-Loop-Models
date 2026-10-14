@@ -150,7 +150,7 @@ def parse_args() -> argparse.Namespace:
         required=True,
         choices=VALID_SURVEY_SECTIONS,
         dest="survey_sections",
-        help="Survey section id; repeat for several, primary first",
+        help="Taxonomy section id (survey_section); repeat for several, primary first",
     )
     p.add_argument("--loop-topology", required=True, choices=VALID_LOOP_TOPOLOGIES)
     p.add_argument("--sharing", required=True, choices=VALID_SHARING_SCHEMES)

@@ -56,6 +56,20 @@ PAPERS_DIR = REPO_ROOT / "papers"
 BLOGS_DIR = REPO_ROOT / "blogs"
 BRIEFINGS_DIR = REPO_ROOT / "briefings"
 JSON_OUT = REPO_ROOT / "papers.json"
+# The newest briefing's full reading page, fetched lazily by index.html's Briefing tab.
+# papers.json.briefings stays content-free; the Markdown body lives only here.
+# The path is relative to JSON_OUT.parent, next to the manifest.
+BRIEFING_LATEST_FILENAME = "briefing-latest.json"
+BRIEFING_PAGE_FIELDS = (
+    "date",
+    "title",
+    "status",
+    "summary",
+    "highlights",
+    "candidates",
+    "source_path",
+    "body_markdown",
+)
 # Paper records are split into bounded chunks next to the manifest so no single
 # browser asset grows with the catalog. Paths are relative to JSON_OUT.parent.
 PAPER_CHUNK_DIRNAME = "catalog"
@@ -76,7 +90,7 @@ ADJACENT_SCOPE_NOTE = (
 )
 
 TAXONOMY_NOTE = (
-    "Papers are organized by the chapters of the Looped Models Survey. Each paper lists every survey section it "
+    "Papers are organized by the chapters of the repo's topic map. Each paper lists every taxonomy section it "
     "belongs to, primary first, and records where its loop sits, how weights are shared, how depth is controlled, "
     "and what it claims looping buys. Every value is controlled; there are no free-form tags."
 )
@@ -87,7 +101,7 @@ DAILY_BRIEFING_SECTION_DESC = (
     "and concise inclusion rationale."
 )
 BLOG_SECTION_DESC = (
-    "Long-form technical posts, essays, and deep-dives about loop models. Blogs list the survey sections they "
+    "Long-form technical posts, essays, and deep-dives about loop models. Blogs list the taxonomy sections they "
     "discuss but stay in a single flat section."
 )
 BLOG_VENUE_CLASS = "venue-other"
@@ -220,12 +234,12 @@ def normalize_must_read_flag(raw_must_read: object) -> bool:
 
 
 def reject_retired_fields(data: dict, source: str) -> None:
-    """Fail on fields retired by the survey taxonomy (categories and free-form tags)."""
+    """Fail on fields retired by the current taxonomy (categories and free-form tags)."""
     retired = [field for field in (*RETIRED_FIELDS, "family_tags") if field in data]
     if retired:
         raise ValueError(
             f"{source}: {', '.join(retired)} no longer exist; classify the entry with survey_section and the "
-            "survey design axes (see TAXONOMY.md)"
+            "design axes (see TAXONOMY.md)"
         )
 
 
@@ -419,9 +433,9 @@ def validate_publication_metadata(data: dict, source: str) -> None:
 
 
 def normalize_survey_fields(data: dict, source: str, required: tuple[str, ...] = ()) -> dict:
-    """Validate the survey taxonomy fields and return their normalized values.
+    """Validate the taxonomy fields and return their normalized values.
 
-    ``survey_section`` lists every survey section the entry belongs to, primary
+    ``survey_section`` lists every taxonomy section the entry belongs to, primary
     first. Fields named in ``required`` must be present; other missing fields
     are omitted from the result.
     """
@@ -557,7 +571,7 @@ def load_papers() -> list[dict]:
     return papers
 
 
-# Blogs live in a separate flat section. They list the survey sections they discuss
+# Blogs live in a separate flat section. They list the taxonomy sections they discuss
 # but carry none of the paper-only design axes.
 def load_blogs() -> list[dict]:
     if not BLOGS_DIR.exists():
@@ -806,8 +820,59 @@ def serialize_browser_briefings(briefings: list[dict]) -> list[dict]:
     return [browser_briefing]
 
 
+def render_latest_briefing_page(briefings: list[dict]) -> dict:
+    """Return the newest briefing as the reading-page payload written to briefing-latest.json.
+
+    Keys always appear in ``BRIEFING_PAGE_FIELDS`` order. Without any briefing the
+    payload keeps every key, with ``None`` for the scalar identity fields and empty
+    text and lists, so the browser can show a friendly empty state.
+    """
+    if not briefings:
+        return {
+            "date": None,
+            "title": None,
+            "status": None,
+            "summary": "",
+            "highlights": [],
+            "candidates": [],
+            "source_path": None,
+            "body_markdown": "",
+        }
+    latest = max(briefings, key=lambda item: item.get("date", ""))
+    page = {
+        "date": latest["date"],
+        "title": latest.get("title", ""),
+        "status": latest.get("status", ""),
+        "summary": latest.get("summary", ""),
+        "highlights": list(latest.get("highlights") or []),
+        "candidates": [serialize_browser_briefing_candidate(candidate) for candidate in latest.get("candidates") or []],
+        "source_path": latest.get("source_path", ""),
+        "body_markdown": latest.get("content", ""),
+    }
+    return {field: page[field] for field in BRIEFING_PAGE_FIELDS}
+
+
+def render_latest_briefing_text(briefings: list[dict]) -> str:
+    """Serialize the latest-briefing page deterministically, with a trailing newline."""
+    return json.dumps(render_latest_briefing_page(briefings), ensure_ascii=False, indent=2) + "\n"
+
+
+def write_latest_briefing(briefings: list[dict]) -> str:
+    """Write briefing-latest.json only when its content changes and return its 12-character version."""
+    text = render_latest_briefing_text(briefings)
+    out_path = JSON_OUT.parent / BRIEFING_LATEST_FILENAME
+    try:
+        current = out_path.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        current = None
+    if current != text:
+        out_path.write_text(text, encoding="utf-8")
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()[:12]
+
+
 def build_json(papers: list[dict], blogs: list[dict], briefings: list[dict] | None = None) -> None:
     briefings = sorted(briefings or [], key=lambda item: item.get("date", ""), reverse=True)
+    latest_briefing_version = write_latest_briefing(briefings)
     generated_at = datetime.now(timezone.utc)
     payload = {
         "meta": {
@@ -816,6 +881,7 @@ def build_json(papers: list[dict], blogs: list[dict], briefings: list[dict] | No
             "blog_total": len(blogs),
             "briefing_total": len(briefings),
             "latest_briefing_date": briefings[0]["date"] if briefings else None,
+            "latest_briefing_version": latest_briefing_version,
             "generated": generated_at.isoformat(),
             "generated_local_date": generated_at.astimezone(CATALOG_TIME_ZONE).date().isoformat(),
             "taxonomy_note": TAXONOMY_NOTE,
@@ -837,7 +903,7 @@ def build_json(papers: list[dict], blogs: list[dict], briefings: list[dict] | No
 
 
 def render_survey_taxonomy() -> dict:
-    """Return the controlled survey vocabulary consumed by index.html and submit.html."""
+    """Return the controlled taxonomy vocabulary consumed by index.html and submit.html."""
     return {
         "parts": [{"id": part_id, "title": title} for part_id, title in SURVEY_PARTS],
         "chapters": [
@@ -933,7 +999,7 @@ def build_submission_metadata(papers: list[dict], blogs: list[dict]) -> None:
 
 
 def render_tags_reference_text(papers: list[dict], blogs: list[dict]) -> str:
-    """Render TAGS.md: the survey taxonomy vocabulary with current usage counts."""
+    """Render TAGS.md: the taxonomy vocabulary with current usage counts."""
     entries = [*papers, *blogs]
     section_counts = count_field_values(entries, "survey_section")
     primary_counts: Counter[str] = Counter(
@@ -943,12 +1009,12 @@ def render_tags_reference_text(papers: list[dict], blogs: list[dict]) -> str:
         "# Taxonomy vocabulary",
         "",
         "Every paper and blog is classified with the controlled vocabulary below, which follows the chapters of the "
-        "Looped Models Survey. There are no free-form tags; a value that is not listed here is a taxonomy change and "
+        "repo's topic map. There are no free-form tags; a value that is not listed here is a taxonomy change and "
         "needs the maintainer. See [TAXONOMY.md](TAXONOMY.md) for how to choose values.",
         "",
         "This file is auto-generated from `papers/*.yaml` and `blogs/*.yaml` by `scripts/build.py`.",
         "",
-        "## Survey sections (`survey_section`)",
+        "## Taxonomy sections (`survey_section`)",
         "",
         "List every section the entry belongs to; the first entry is its primary section. Counts are primary / any.",
         "",
@@ -990,7 +1056,7 @@ def render_tags_reference_text(papers: list[dict], blogs: list[dict]) -> str:
 
 def build_tags_reference(papers: list[dict], blogs: list[dict]) -> None:
     TAGS_OUT.write_text(render_tags_reference_text(papers, blogs), encoding="utf-8")
-    print(f"✓ TAGS.md      — {len(SURVEY_SECTIONS)} survey sections, {len(papers) + len(blogs)} classified entries")
+    print(f"✓ TAGS.md      — {len(SURVEY_SECTIONS)} sections, {len(papers) + len(blogs)} classified entries")
 
 
 def primary_link(links: dict) -> str:
@@ -1120,7 +1186,7 @@ def _paper_to_md(paper: dict) -> str:
         detail_lines.append(f"  <div><strong>Catalog fit:</strong> {escape(ADJACENT_SCOPE_NOTE)}</div>")
     if sections:
         detail_lines.append(
-            f"  <div><strong>Survey sections:</strong> {escape(' · '.join(section_label(s) for s in sections))}</div>"
+            f"  <div><strong>Sections:</strong> {escape(' · '.join(section_label(s) for s in sections))}</div>"
         )
     design = [
         f"{AXIS_LABELS[field]}: {paper[field]}"
@@ -1230,7 +1296,7 @@ def build_readme(papers: list[dict], blogs: list[dict], repo_meta: dict) -> None
     browser_url = repo_meta["public_pages_base"] + "/index.html"
 
     stats_line = (
-        f"<p align=\"center\"><b>{len(papers)} papers</b> · {len(SURVEY_SECTIONS)} survey sections"
+        f"<p align=\"center\"><b>{len(papers)} papers</b> · {len(SURVEY_SECTIONS)} sections"
         + (f" · <b>{len(blogs)} blogs</b>" if blogs else "")
         + f" · <a href=\"{escape(browser_url)}\">browse all →</a></p>"
     )
@@ -1251,13 +1317,13 @@ def build_readme(papers: list[dict], blogs: list[dict], repo_meta: dict) -> None
         ])
     sections += [
         "",
-        "## 🗺️ Survey map",
+        "## 🗺️ Topic map",
         "",
-        "The catalog follows the chapters of the Looped Models Survey. A paper is counted once under its primary "
+        "The catalog is organized into chapters and sections. A paper is counted once under its primary "
         "section and again under every other section it belongs to.",
         "",
         "<details>",
-        "<summary>Papers per survey section</summary>",
+        "<summary>Papers per section</summary>",
         "",
         _readme_table(["§", "Section", "Primary", "Any"], map_rows),
         "",
@@ -1280,7 +1346,7 @@ def build_readme(papers: list[dict], blogs: list[dict], repo_meta: dict) -> None
             "",
             "## 🌟 Start here",
             "",
-            "The survey's core papers, plus the ones the maintainer marks as must-read.",
+            "Core references for loop models, plus the ones the maintainer marks as must-read.",
             "",
             _readme_table(["Paper", "Venue", "Loop", "Links"], rows),
         ]

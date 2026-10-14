@@ -151,7 +151,7 @@ assert.equal(splitUpdates, 2);
 rail.context.window.innerWidth = 390;
 rail.context.setReadingDeskSidebarWidth(200);
 assert.equal(railStyles['--desk-rail'], '409px');
-const card = html.slice(html.indexOf('// ── Render a single paper card'), html.indexOf('// ── State & Survey Taxonomy'));
+const card = html.slice(html.indexOf('// ── Render a single paper card'), html.indexOf('// ── State & Taxonomy'));
 assert.match(card, /class="desk-card-summary"/);
 assert.match(card, /highlightQuery\(escapeHtml\(paper\.desc\), query\)/);
 assert.match(card, /renderMetricsHtml\(paper\)/);
@@ -190,9 +190,12 @@ const watch = html.slice(html.indexOf('<section class="desk-watch"'), html.index
 assert.match(watch, /aria-label="Catalog watch"/);
 assert.doesNotMatch(watch, /desk-watch-title|<h2/);
 assert.match(watch, /id="daily-watch-countdown"/);
-assert.match(watch, /id="daily-briefing-body"/);
+assert.doesNotMatch(watch, /daily-briefing|Today/, 'The briefing has its own page, not a sidebar box');
 assert.doesNotMatch(watch, /<details|<summary/);
-assert.match(css, /\.reading-desk \.daily-briefing-notice \{[^}]*font-size: 14px;[^}]*line-height: 1\.6;/);
+assert.doesNotMatch(html, /daily-briefing-notice|updateDailyBriefingNotice|hideStaleDailyBriefingNotice/);
+assert.doesNotMatch(css, /daily-briefing-/);
+assert.match(css, /\.reading-desk\.briefing-mode \.briefing-panel/);
+assert.match(css, /\.briefing-page \{[^}]*max-width: 760px;/);
 assert.match(css, /\.reading-desk \.daily-watch-countdown-meta \{[^}]*font-size: 12px;[^}]*line-height: 1\.6;/);
 assert.match(css, /\.reading-desk \.daily-watch-countdown-value \{[^}]*font-size: 20px;[^}]*white-space: normal;/);
 assert.ok(html.indexOf('assets/reading-desk.js') < html.indexOf('<style>'));
@@ -231,7 +234,7 @@ vm.runInContext(html.slice(html.indexOf('function parseIsoDate(value) {'), html.
 vm.runInContext(html.slice(html.indexOf('function escapeHtml(str) {'), html.indexOf('function formatMetricCount(')), rendering);
 vm.runInContext(html.slice(html.indexOf('function formatMetricCount('), html.indexOf('function getCurrentDailyWatchDateString(')), rendering);
 vm.runInContext(card, rendering);
-vm.runInContext(source.slice(source.indexOf('/** Describe every survey placement'), source.indexOf('function syncReadingDeskSelection(')), rendering);
+vm.runInContext(source.slice(source.indexOf('/** Describe every section placement'), source.indexOf('function syncReadingDeskSelection(')), rendering);
 assert.match(rendering.renderMetricsHtml({ published_date: '2026-01-01', citations: 1000 }), /High influence/);
 const influence = rendering.renderInfluenceBadgeHtml;
 const influenceNow = new Date('2026-09-17T23:59:59Z');
@@ -306,7 +309,7 @@ assert.ok(cardSections.indexOf('§4.5') < cardSections.indexOf('§6.2'), 'Primar
 assert.match(openCard, /data-facet-group="loop_topology" data-facet-value="whole-stack"/);
 assert.match(openCard, /data-facet-group="claims" data-facet-value="test-time-scaling"/);
 assert.doesNotMatch(openCard, /data-facet-value="unspecified"/, 'Cards omit unspecified axes');
-assert.match(openCard, /class="survey-core-badge"[^>]*>Survey core</);
+assert.match(openCard, /class="survey-core-badge" title="A core reference for loop models">Core</);
 assert.doesNotMatch(rendering.renderCard({ ...example, survey_core: false }, ''), /survey-core-badge/);
 const exampleRow = rendering.renderTableRow(example, '');
 assert.match(exampleRow, /§4\.5 Controlling recurrence depth/);
@@ -375,13 +378,14 @@ assert.match(fixedHeader, /Author One, Author Two/);
 assert.match(fixedHeader, /Open paper/);
 assert.doesNotMatch(fixedHeader, /<h3>Summary/);
 assert.match(scrollableBody, /^<div class="desk-detail-body" tabindex="0" role="region" aria-label="Resource details"><section class="desk-detail-section"><h3>Summary/);
-for (const title of ['Survey placement', 'Sources', 'Discussion']) assert.ok(scrollableBody.includes(title));
-const placement = scrollableBody.split('<h3>Survey placement</h3>')[1].split('</section>')[0];
+for (const title of ['Topic-map placement', 'Sources', 'Discussion']) assert.ok(scrollableBody.includes(title));
+const placement = scrollableBody.split('<h3>Topic-map placement</h3>')[1].split('</section>')[0];
 assert.match(placement, /paper-section-badge is-primary/);
 for (const label of ['Loop topology', 'Sharing', 'Depth control', 'Claims', 'Looped-vs-untied comparison']) assert.ok(placement.includes('<dt>' + label + '</dt>'), label);
 assert.match(placement, /<dt>Depth control<\/dt><dd><span class="desk-axis-unspecified">unspecified/);
 assert.match(placement, /<dt>Looped-vs-untied comparison<\/dt><dd><span class="desk-axis-unspecified">none recorded/);
-assert.match(fixedHeader, /Survey core/);
+assert.match(fixedHeader, />Core</);
+assert.doesNotMatch(fixedHeader, /Survey/);
 const primaryActions = detailContent.innerHTML.split('<div class="desk-primary-actions">')[1].split('</div>')[0];
 assert.match(primaryActions, /Open paper/);
 assert.doesNotMatch(primaryActions, /github|Code/);
@@ -469,12 +473,12 @@ const sections = vm.createContext({
   CATALOG_ADJACENT_NOTE: '',
 });
 vm.runInContext(html.slice(html.indexOf('function escapeHtml(str) {'), html.indexOf('function highlightQuery(')), sections);
-vm.runInContext(html.slice(html.indexOf('/** Index the survey parts, chapters and sections'), html.indexOf('/** Return a record\'s controlled values')), sections);
+vm.runInContext(html.slice(html.indexOf('/** Index the taxonomy parts, chapters and sections'), html.indexOf('/** Return a record\'s controlled values')), sections);
 vm.runInContext(html.slice(html.indexOf('/** Return whether a section-filter value names'), html.indexOf('/** Return whether a design-axis value is currently selected.')), sections);
-vm.runInContext(html.slice(html.indexOf('/** Return the DOM id of a survey chapter heading'), html.indexOf('/**\n * Scroll the list view')), sections);
+vm.runInContext(html.slice(html.indexOf('/** Return the DOM id of a chapter heading'), html.indexOf('/**\n * Scroll the list view')), sections);
 vm.runInContext(html.slice(html.indexOf('function getPaperAxisValues(paper, group) {'), html.indexOf('/** Return design-axis entries worth')), sections);
 vm.runInContext(html.slice(html.indexOf('function preparePaperRecord(paper) {'), html.indexOf('/** Count each design-axis value')), sections);
-vm.runInContext(html.slice(html.indexOf('/** Populate chapter-grouped survey-section choices'), html.indexOf('/** Blogs carry survey sections only')), sections);
+vm.runInContext(html.slice(html.indexOf('/** Populate chapter-grouped section choices'), html.indexOf('/** Blogs carry taxonomy sections only')), sections);
 sections.setSurveyTaxonomy(surveyTaxonomy);
 sections.restoreDerivedLinks = links => links;
 const deqPaper = sections.preparePaperRecord({ id: 'deq', title: 'DEQ', survey_section: ['foundations/implicit', 'architecture/depth-control', 'retired/value'] });
@@ -487,7 +491,7 @@ const topoPaper = sections.preparePaperRecord({ id: 'topo', survey_section: ['ar
 sections.ALL_PAPERS = [deqPaper, topoPaper];
 sections.ALL_BLOGS = [];
 sections.renderSectionFilter();
-assert.match(sectionSelect.innerHTML, /All survey sections/);
+assert.match(sectionSelect.innerHTML, /<option value="">All sections<\/option>/);
 assert.match(sectionSelect.innerHTML, /<optgroup label="§4 Architecture &amp; Design"><option value="4">All of §4 · 2<\/option>/);
 assert.match(sectionSelect.innerHTML, /§4\.5 Controlling recurrence depth · 1/);
 sections.setSectionFilter('architecture/depth-control');
@@ -526,9 +530,9 @@ Object.assign(categories, {
   paperMatchesQuery: (record, query) => !query || record.id === query,
   getPublicationDateFilter: () => ({ active: false }),
 });
-vm.runInContext(html.slice(html.indexOf('function matchAcceptedOnly(paper) {'), html.indexOf('/** Populate chapter-grouped survey-section choices')), categories);
-vm.runInContext(html.slice(html.indexOf('/** Blogs carry survey sections only'), html.indexOf('function setFilterSidebarOpen(')), categories);
-vm.runInContext(html.slice(html.indexOf('function normalizeTopLevelTab(tab) {'), html.indexOf('/** Design-axis filter groups in survey order')), categories);
+vm.runInContext(html.slice(html.indexOf('function matchAcceptedOnly(paper) {'), html.indexOf('/** Populate chapter-grouped section choices')), categories);
+vm.runInContext(html.slice(html.indexOf('/** Blogs carry taxonomy sections only'), html.indexOf('function setFilterSidebarOpen(')), categories);
+vm.runInContext(html.slice(html.indexOf('function normalizeTopLevelTab(tab) {'), html.indexOf('/** Design-axis filter groups in taxonomy order')), categories);
 assert.match(filterPanel, /id="accepted-only-toggle"[^>]*>Peer-reviewed<\/button>/);
 assert.match(filterPanel, /id="high-influence-only-toggle"[^>]*aria-pressed="false"[^>]*onclick="toggleHighInfluenceOnly\(\)"[^>]*>High influence<\/button>/);
 assert.match(css, /\.blogs-mode #high-influence-only-toggle/);
@@ -609,8 +613,8 @@ assert.equal(categories.normalizeTopLevelTab('blogs'), 'blogs');
 assert.match(html, /id="blogs-tab" role="tab" aria-controls="papers-panel"/);
 assert.doesNotMatch(html, /class="desk-blogs-link"/);
 assert.match(html, /id="view-list-toggle"[^>]*>List view<\/button>/);
-assert.match(html, /<nav class="survey-nav" id="survey-nav" aria-label="Survey chapters"/);
-const grids = html.slice(html.indexOf('/** Count filtered papers by primary chapter'), html.indexOf('function updateDailyBriefingNotice('));
+assert.match(html, /<nav class="survey-nav" id="survey-nav" aria-label="Chapters"/);
+const grids = html.slice(html.indexOf('/** Count filtered papers by primary chapter'), html.indexOf('// ── Daily briefing page'));
 
 // The list groups by Part → Chapter → primary Section and keeps the sort inside each section; the table is one global order.
 const listElements = {
@@ -647,7 +651,7 @@ for (const [sort, order, grouped] of [
   categories.CURRENT_SORT = sort;
   categories.CURRENT_VIEW = 'list';
   categories.renderAllGrids('');
-  assert.equal(listOrder(), grouped, sort + ': list follows survey order, then the sort inside each section');
+  assert.equal(listOrder(), grouped, sort + ': list follows topic-map order, then the sort inside each section');
   categories.CURRENT_VIEW = 'table';
   categories.renderAllGrids('');
   assert.equal(tableOrder, order, sort + ': table sorts globally');
@@ -658,7 +662,7 @@ const listHtml = listElements['papers-grid'].innerHTML;
 for (const fragment of ['id="part-foundations"', 'Part I</span>', 'id="chapter-4"', '§4</span>', 'id="section-4-5"', 'Controlling recurrence depth']) {
   assert.ok(listHtml.includes(fragment), fragment);
 }
-assert.ok(listHtml.indexOf('id="section-4-1"') < listHtml.indexOf('id="section-4-5"'), 'Sections follow survey order');
+assert.ok(listHtml.indexOf('id="section-4-1"') < listHtml.indexOf('id="section-4-5"'), 'Sections follow topic-map order');
 assert.match(listHtml, /id="chapter-4"[\s\S]*?<span class="survey-count"[^>]*>3<\/span>/, 'Chapter count is filtered primary count');
 assert.doesNotMatch(listHtml, /id="section-2-3"[\s\S]*id="part-foundations"/);
 categories.ACTIVE_SECTION_FILTER = 'architecture/depth-control';
@@ -675,4 +679,86 @@ categories.renderAllGrids('missing');
 assert.equal(listElements['papers-grid'].innerHTML, '');
 assert.equal(listElements['blogs-grid'].innerHTML, '');
 assert.equal(listElements['no-results'].style.display, 'block');
-console.log('Reading desk: theme, selection, resizing, thumbnails, survey sections, design axes, isolated Blogs, peer-review and influence checks passed.');
+// The Briefing tab renders briefing-latest.json with a small, escape-first Markdown renderer.
+const briefingSource = html.slice(html.indexOf('// ── Daily briefing page'), html.indexOf('function createBlogSection() {'));
+const briefingIntervals = [];
+const briefingElements = {
+  'briefing-tab-badge': { hidden: true },
+  'briefing-tab-count': { textContent: '' },
+};
+const briefing = vm.createContext({
+  CURRENT_NY_DATE: '2026-10-14',
+  LATEST_BRIEFING_SUMMARY: null,
+  setInterval: (fn, ms) => briefingIntervals.push(ms),
+  document: { getElementById: (id) => briefingElements[id] || null },
+});
+vm.runInContext(html.slice(html.indexOf('function escapeHtml(str) {'), html.indexOf('/** Display the recorded publication year')), briefing);
+vm.runInContext("function getCurrentDailyWatchDateString() { return CURRENT_NY_DATE; }", briefing);
+vm.runInContext(briefingSource, briefing);
+assert.deepEqual(briefingIntervals, [60000]);
+const md = (text, options) => briefing.renderBriefingMarkdown(text, options);
+assert.equal(md('# Daily Loop-Model Briefing\n\n## Outcome\n\nOne\nparagraph.', { dropLeadingTitle: true }), '<h2>Outcome</h2>\n<p>One paragraph.</p>');
+assert.equal(md('# Title'), '<h2>Title</h2>', 'Body headings never outrank the page title');
+assert.equal(md('### Paper\n#### Detail'), '<h3>Paper</h3>\n<h4>Detail</h4>');
+assert.equal(
+  md('**TL;DR:** Loops *help* with `K=4` [arXiv:2610.14252](https://arxiv.org/abs/2610.14252).'),
+  '<p><strong>TL;DR:</strong> Loops <em>help</em> with <code>K=4</code> <a href="https://arxiv.org/abs/2610.14252" target="_blank" rel="noopener noreferrer">arXiv:2610.14252</a>.</p>'
+);
+assert.equal(
+  md('- **Setup:** first\n  continued line\n- second\n\n1. one\n2. two'),
+  '<ul><li><strong>Setup:</strong> first continued line</li><li>second</li></ul>\n<ol><li>one</li><li>two</li></ol>'
+);
+assert.equal(md('> quoted\n> text\n\n---\n\n```\n<b>x</b>\n```'), '<blockquote><p>quoted text</p></blockquote>\n<hr>\n<pre><code>&lt;b&gt;x&lt;/b&gt;</code></pre>');
+// Raw HTML is escaped and unsafe link targets lose their link.
+assert.equal(md('<script>alert(1)</script> <img src=x onerror=alert(1)>'), '<p>&lt;script&gt;alert(1)&lt;/script&gt; &lt;img src=x onerror=alert(1)&gt;</p>');
+for (const target of ['javascript:alert(1)', 'JaVaScRiPt:void', 'data:text/html,x', 'vbscript:x', '//evil.example/x', '\\\\evil', 'java%0ascript:x']) {
+  const rendered = md('[click](' + target + ')');
+  assert.doesNotMatch(rendered, /<a\b/, target);
+  assert.match(rendered, /click/, target);
+}
+assert.equal(md('[click](javascript:void)'), '<p>click</p>');
+assert.equal(md('[mail](mailto:a@b.c) [rel](../papers/x.yaml) [frag](#added)'),
+  '<p><a href="mailto:a@b.c">mail</a> <a href="../papers/x.yaml">rel</a> <a href="#added">frag</a></p>');
+assert.equal(md('[x](https://e.com/?a=1&b="2")'), '<p><a href="https://e.com/?a=1&amp;b=&quot;2&quot;" target="_blank" rel="noopener noreferrer">x</a></p>');
+assert.equal(md('`<b>` and **`code`**'), '<p><code>&lt;b&gt;</code> and **<code>code</code>**</p>');
+assert.equal(md('2 * 3 * 4 and snake_case_name'), '<p>2 * 3 * 4 and snake_case_name</p>');
+assert.equal(briefing.getSafeBriefingHref(' https://ok.example '), 'https://ok.example');
+assert.equal(briefing.getSafeBriefingHref('java\nscript:alert(1)'), '');
+// The page shows the eyebrow, title, Today/Latest label, summary, highlights, rendered body and GitHub source.
+const pagePayload = {
+  date: '2026-10-14', title: 'Daily Loop-Model Briefing - 2026-10-14', status: 'added', summary: 'Two <b>additions</b>.',
+  highlights: ['First & best.'], candidates: [{ verdict: 'added' }, { verdict: 'added' }, { verdict: 'near-miss' }],
+  source_path: 'briefings/2026/10/2026-10-14.md', body_markdown: '# Daily Loop-Model Briefing - 2026-10-14\n\n## Added\n\n### A paper',
+};
+const pageHtml = briefing.renderBriefingPageHtml(pagePayload);
+assert.match(pageHtml, /<div class="briefing-page-eyebrow">Daily briefing<\/div>/);
+assert.match(pageHtml, /<h2 class="briefing-page-title" id="briefing-page-title">Daily Loop-Model Briefing - 2026-10-14<\/h2>/);
+assert.match(pageHtml, /class="briefing-page-when is-today">Today<\/span>/);
+assert.match(pageHtml, /<time datetime="2026-10-14">October 14, 2026<\/time>/);
+assert.match(pageHtml, /<span>2 papers added<\/span>/);
+assert.match(pageHtml, /<p class="briefing-page-summary">Two &lt;b&gt;additions&lt;\/b&gt;\.<\/p>/);
+assert.match(pageHtml, /<li>First &amp; best\.<\/li>/);
+assert.match(pageHtml, /<div class="briefing-page-body"><h2>Added<\/h2>\n<h3>A paper<\/h3><\/div>/);
+assert.match(pageHtml, /href="https:\/\/github\.com\/huskydoge\/Awesome-Loop-Models\/blob\/main\/briefings\/2026\/10\/2026-10-14\.md"/);
+briefing.CURRENT_NY_DATE = '2026-10-15';
+assert.match(briefing.renderBriefingPageHtml(pagePayload), /class="briefing-page-when">Latest briefing<\/span>/);
+assert.doesNotMatch(briefing.renderBriefingPageHtml({ ...pagePayload, source_path: 'javascript:alert(1)' }), /github\.com|javascript/);
+assert.match(briefing.renderBriefingPageHtml({ date: null }), /No daily briefing has been published yet/);
+// The tab badge only counts added papers while the newest briefing is today's.
+briefing.LATEST_BRIEFING_SUMMARY = pagePayload;
+briefing.updateBriefingTabBadge();
+assert.equal(briefingElements['briefing-tab-badge'].hidden, true);
+briefing.CURRENT_NY_DATE = '2026-10-14';
+briefing.updateBriefingTabBadge();
+assert.equal(briefingElements['briefing-tab-badge'].hidden, false);
+assert.equal(briefingElements['briefing-tab-count'].textContent, '2');
+briefing.CURRENT_NY_DATE = '';
+briefing.updateBriefingTabBadge();
+assert.equal(briefingElements['briefing-tab-badge'].hidden, true);
+// Real briefings render without leaking raw markup.
+const latestPage = JSON.parse(fs.readFileSync(path.join(root, 'briefing-latest.json'), 'utf8'));
+const latestHtml = briefing.renderBriefingMarkdown(latestPage.body_markdown, { dropLeadingTitle: true });
+assert.doesNotMatch(latestHtml, /<h1|\*\*|\]\(/);
+assert.match(latestHtml, /<h2>/);
+assert.match(latestHtml, /<a href="https:\/\/arxiv\.org\/abs\//);
+console.log('Reading desk: theme, selection, resizing, thumbnails, taxonomy sections, design axes, isolated Blogs, peer-review, influence and briefing-page checks passed.');

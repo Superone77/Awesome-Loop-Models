@@ -474,7 +474,7 @@ def _validate_arxiv_identity(path: Path, links: dict | None, source: str, findin
 
 
 def _validate_survey_fields(data: dict, source: str, findings: list[Finding]) -> None:
-    """Validate the closed survey vocabulary: single-valued axes and value lists."""
+    """Validate the closed taxonomy vocabulary: single-valued axes and value lists."""
     for field, allowed in SURVEY_SCALAR_FIELDS:
         if field not in data:
             continue
@@ -513,7 +513,7 @@ def _validate_survey_fields(data: dict, source: str, findings: list[Finding]) ->
             )
             continue
         if field == "survey_section" and not value:
-            _add(findings, "error", "empty-field", source, field, "Expected at least one survey section.")
+            _add(findings, "error", "empty-field", source, field, "Expected at least one taxonomy section.")
         seen: set[str] = set()
         for index, item in enumerate(value):
             item_field = f"{field}[{index}]"

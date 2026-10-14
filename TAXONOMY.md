@@ -45,18 +45,18 @@ A rare, curator-approved paper may remain for its conceptual value with `catalog
 - external search or planning over arbitrary layer orders when the qualifying loop is not a shared internal forward-process recurrence
 - sequence recurrence papers that do not add a genuine loop-model architectural argument beyond standard recurrence
 
-## Organization: the Looped Models Survey
+## Organization: the topic map
 
-The catalog follows the chapters of the Looped Models Survey, so the browser, the README and the survey share one map of the field. There are no shelves, categories or free-form tags. [TAGS.md](TAGS.md) lists every value with its current usage count. Every value below is closed: a paper that does not fit is a reason to discuss a taxonomy change with the maintainer, not to invent a value.
+The catalog is organized as a topic map of parts, chapters and sections, so the browser and the README share one map of the field. There are no shelves, categories or free-form tags. [TAGS.md](TAGS.md) lists every value with its current usage count. Every value below is closed: a paper that does not fit is a reason to discuss a taxonomy change with the maintainer, not to invent a value.
 
 Each paper records two things:
 
-1. **Where it belongs in the survey** — `survey_section`, a list of every section the paper contributes to, with its primary section first. The browser files the paper under that primary section.
-2. **What its loop looks like and what it claims** — the design axes `loop_topology`, `sharing` and `depth_control` (survey §4), plus `claims` and `comparison` (survey §3).
+1. **Where it belongs in the topic map** — `survey_section` (a historical field name), a list of every taxonomy section the paper contributes to, with its primary section first. The browser files the paper under that primary section.
+2. **What its loop looks like and what it claims** — the design axes `loop_topology`, `sharing` and `depth_control` (§4), plus `claims` and `comparison` (§3).
 
-`survey_core: true` marks the survey's core anchor papers. `must_read: true` is a maintainer-only flag.
+`survey_core: true` (a historical field name) marks core reference papers for loop models. `must_read: true` is a maintainer-only flag.
 
-## Survey sections (`survey_section`)
+## Taxonomy sections (`survey_section`)
 
 | § | `survey_section` | Covers |
 |:--|:--|:--|
@@ -98,7 +98,7 @@ Chapters: §2 From Recurrent Computation to Iterative Depth; §3 Capabilities, B
 ### Choosing sections
 
 1. First check scope: is a shared learned layer, block, module or operator reused inside one forward pass? If not, drop the paper.
-2. Pick the **primary** section by the paper's main contribution, i.e. where the survey would discuss it first.
+2. Pick the **primary** section by the paper's main contribution, i.e. the section where a reader would look for it first.
    - A design evaluated on language modeling is an `architecture/*`, `training/*`, `scaling/*` or `systems/*` paper, not `applications/language-speech-multimodal`. Use an `applications/*` section as primary only when the main takeaway is about that external domain.
    - Theory of what loops can compute goes to `capabilities/expressivity`; an analysis of why a trained looped model works goes to `understanding/why`; probing and circuits go to `understanding/interpretability`; negative results go to `understanding/failure-modes`.
    - `foundations/*` is for lineage papers, mostly before 2023.
@@ -128,7 +128,7 @@ Only for papers that compare looped and untied models: which quantity is held fi
 
 ### `survey_core` (bool)
 
-`true` for the survey's core set of anchor papers. It does not change repo inclusion.
+`true` for the core set of reference papers on loop models (the field name is historical). It does not change repo inclusion.
 
 ## No free-form tags
 
