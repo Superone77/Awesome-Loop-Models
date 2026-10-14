@@ -1,0 +1,24 @@
+title: 'Resample the Answer: Where to Spend Test-Time Compute in Recursive Reasoning'
+authors:
+- 'Maxime Illouz'
+year: 2026
+published_date: '2026-10-12'
+added_date: '2026-10-14'
+venue: arXiv
+survey_section:
+- scaling/test-time
+- understanding/failure-modes
+loop_topology: hierarchical
+sharing: full
+depth_control: adaptive-halting
+claims:
+- test-time-scaling
+- failure-mode
+comparison: []
+desc: Shows that failed Tiny Recursive Model trajectories carry their failure in the answer
+  state and introduces Gated Answer Resampling, which restarts halting-head-rejected
+  puzzles with a resampled answer state and lifts TRM from 85.9 to 99.4 percent on Sudoku-
+  Extreme.
+links:
+  arxiv: https://arxiv.org/abs/2610.16427
+citations: 0

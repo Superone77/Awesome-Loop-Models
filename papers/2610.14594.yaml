@@ -1,0 +1,29 @@
+title: 'SpikCTU: A Compact Spiking Network with Adaptive Recurrent Computation for Speech Command Recognition'
+authors:
+- 'Li Jin'
+- 'Jiang Wenbin'
+- 'Chen Tao'
+- 'Wen Fei'
+year: 2026
+published_date: '2026-10-10'
+added_date: '2026-10-14'
+venue: arXiv
+survey_section:
+- applications/language-speech-multimodal
+- architecture/depth-control
+- architecture/sharing
+loop_topology: prelude-core-coda
+sharing: partial-adapter
+depth_control: adaptive-halting
+claims:
+- param-efficiency
+- compute-efficiency
+comparison: []
+desc: Introduces SpikCTU, a spiking speech-command model that iterates a shared Continuous
+  Thinking Unit with low-rank stage adapters over a fixed memory, reaching 96.60 percent
+  on SHD with 0.16M parameters and cutting recurrent steps by 59-67 percent with
+  confidence-based early exit.
+links:
+  arxiv: https://arxiv.org/abs/2610.14594
+  github: https://github.com/Rivflyyy/spikctu
+citations: 0

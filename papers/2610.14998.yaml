@@ -1,0 +1,30 @@
+title: 'Recurrent In-Context Learning for Tabular Foundation Models'
+authors:
+- 'Tejas Vaidhya'
+- 'Gaurav Sahu'
+- 'Irina Rish'
+year: 2026
+published_date: '2026-10-10'
+added_date: '2026-10-14'
+venue: arXiv
+survey_section:
+- applications/graphs-science
+- capabilities/efficiency
+- scaling/test-time
+loop_topology: prelude-core-coda
+sharing: full
+depth_control: sampled-train
+claims:
+- param-efficiency
+- test-time-scaling
+comparison:
+- iso-param
+- iso-flop
+- iso-depth
+desc: Introduces Tab-Loop, which replaces TabICLv2's 12 untied in-context-learning blocks with
+  4 tied blocks looped k times, matching the untied baseline at equal compute with 62
+  percent fewer parameters and raising TabArena Elo from 1288 to 1424 as loops grow from
+  one to four.
+links:
+  arxiv: https://arxiv.org/abs/2610.14998
+citations: 0

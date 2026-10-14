@@ -1,0 +1,28 @@
+title: 'Monitoring latent reasoning in looped language models'
+authors:
+- 'Pawel Olszowiec'
+- 'Paulina Tomaszewska'
+- 'Maciej Żelaszczyk'
+- 'Michal Byra'
+- 'Neo Christopher Chung'
+year: 2026
+published_date: '2026-10-13'
+added_date: '2026-10-14'
+venue: arXiv
+survey_section:
+- understanding/interpretability
+- open-problems/monitorability-safety
+- understanding/failure-modes
+loop_topology: unspecified
+sharing: full
+depth_control: unspecified
+claims:
+- failure-mode
+comparison: []
+desc: Inspects eight released looped language models with five mechanistic lenses and finds
+  that most tokens are decided at the first iteration, attention heads keep fixed roles,
+  and carry-loop models collapse under state noise while prompt-re-reading loops stay
+  robust.
+links:
+  arxiv: https://arxiv.org/abs/2610.18127
+citations: 0
