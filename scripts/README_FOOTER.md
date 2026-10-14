@@ -1,8 +1,3 @@
-## News
-
-- **2026-07-17** — The browser gained a **Release Intelligence** view: publication pulse, long-term trends, and dossiers for the latest releases. [Explore stats]({{PUBLIC_INDEX_URL}}#stats)
-- **2026-04-24** — Awesome Loop Models is released. [Announcement](https://x.com/huskydogewoof/status/2047655947942744285)
-
 ## Contributing
 
 Additions, corrections, and scope challenges are welcome. The [PR Submission Guide]({{PUBLIC_SUBMIT_URL}}) turns a paper or blog into generated YAML; add that file to `papers/` or `blogs/` in a branch in your fork and open a pull request. See [CONTRIBUTING.md](CONTRIBUTING.md), [TAXONOMY.md](TAXONOMY.md), and [TAGS.md](TAGS.md).
