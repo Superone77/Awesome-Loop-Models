@@ -56,6 +56,20 @@ PAPERS_DIR = REPO_ROOT / "papers"
 BLOGS_DIR = REPO_ROOT / "blogs"
 BRIEFINGS_DIR = REPO_ROOT / "briefings"
 JSON_OUT = REPO_ROOT / "papers.json"
+# The newest briefing's full reading page, fetched lazily by index.html's Briefing tab.
+# papers.json.briefings stays content-free; the Markdown body lives only here.
+# The path is relative to JSON_OUT.parent, next to the manifest.
+BRIEFING_LATEST_FILENAME = "briefing-latest.json"
+BRIEFING_PAGE_FIELDS = (
+    "date",
+    "title",
+    "status",
+    "summary",
+    "highlights",
+    "candidates",
+    "source_path",
+    "body_markdown",
+)
 # Paper records are split into bounded chunks next to the manifest so no single
 # browser asset grows with the catalog. Paths are relative to JSON_OUT.parent.
 PAPER_CHUNK_DIRNAME = "catalog"
@@ -806,8 +820,59 @@ def serialize_browser_briefings(briefings: list[dict]) -> list[dict]:
     return [browser_briefing]
 
 
+def render_latest_briefing_page(briefings: list[dict]) -> dict:
+    """Return the newest briefing as the reading-page payload written to briefing-latest.json.
+
+    Keys always appear in ``BRIEFING_PAGE_FIELDS`` order. Without any briefing the
+    payload keeps every key, with ``None`` for the scalar identity fields and empty
+    text and lists, so the browser can show a friendly empty state.
+    """
+    if not briefings:
+        return {
+            "date": None,
+            "title": None,
+            "status": None,
+            "summary": "",
+            "highlights": [],
+            "candidates": [],
+            "source_path": None,
+            "body_markdown": "",
+        }
+    latest = max(briefings, key=lambda item: item.get("date", ""))
+    page = {
+        "date": latest["date"],
+        "title": latest.get("title", ""),
+        "status": latest.get("status", ""),
+        "summary": latest.get("summary", ""),
+        "highlights": list(latest.get("highlights") or []),
+        "candidates": [serialize_browser_briefing_candidate(candidate) for candidate in latest.get("candidates") or []],
+        "source_path": latest.get("source_path", ""),
+        "body_markdown": latest.get("content", ""),
+    }
+    return {field: page[field] for field in BRIEFING_PAGE_FIELDS}
+
+
+def render_latest_briefing_text(briefings: list[dict]) -> str:
+    """Serialize the latest-briefing page deterministically, with a trailing newline."""
+    return json.dumps(render_latest_briefing_page(briefings), ensure_ascii=False, indent=2) + "\n"
+
+
+def write_latest_briefing(briefings: list[dict]) -> str:
+    """Write briefing-latest.json only when its content changes and return its 12-character version."""
+    text = render_latest_briefing_text(briefings)
+    out_path = JSON_OUT.parent / BRIEFING_LATEST_FILENAME
+    try:
+        current = out_path.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        current = None
+    if current != text:
+        out_path.write_text(text, encoding="utf-8")
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()[:12]
+
+
 def build_json(papers: list[dict], blogs: list[dict], briefings: list[dict] | None = None) -> None:
     briefings = sorted(briefings or [], key=lambda item: item.get("date", ""), reverse=True)
+    latest_briefing_version = write_latest_briefing(briefings)
     generated_at = datetime.now(timezone.utc)
     payload = {
         "meta": {
@@ -816,6 +881,7 @@ def build_json(papers: list[dict], blogs: list[dict], briefings: list[dict] | No
             "blog_total": len(blogs),
             "briefing_total": len(briefings),
             "latest_briefing_date": briefings[0]["date"] if briefings else None,
+            "latest_briefing_version": latest_briefing_version,
             "generated": generated_at.isoformat(),
             "generated_local_date": generated_at.astimezone(CATALOG_TIME_ZONE).date().isoformat(),
             "taxonomy_note": TAXONOMY_NOTE,

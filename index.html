@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Awesome Loop Models</title>
   <link rel="icon" type="image/png" href="assets/favicon.png" />
-  <script src="assets/reading-desk.js?v=5"></script>
+  <script src="assets/reading-desk.js?v=6"></script>
   <style>
     /* ── Light theme (default) ── */
     :root {
@@ -127,8 +127,9 @@
 
     /* ── Header ── */
     body > header,
-    body:not(.stats-mode) > header,
-    body.stats-mode > header {
+    body:not(.stats-mode):not(.briefing-mode) > header,
+    body.stats-mode > header,
+    body.briefing-mode > header {
       background:
         linear-gradient(180deg, rgba(9,105,218,0.025), transparent 72%),
         var(--surface);
@@ -169,18 +170,20 @@
       text-align: center;
     }
 
-    body.stats-mode > header {
+    body.stats-mode > header, body.briefing-mode > header {
       padding-top: 11px;
       padding-bottom: 11px;
       background: color-mix(in srgb, var(--surface) 94%, var(--accent) 6%);
     }
 
     body.stats-mode .papers-only-tools,
-    body.stats-mode .sidebar {
+    body.briefing-mode .papers-only-tools,
+    body.stats-mode .sidebar,
+    body.briefing-mode .sidebar {
       display: none;
     }
 
-    body.stats-mode .layout {
+    body.stats-mode .layout, body.briefing-mode .layout {
       width: 100%;
       max-width: 1560px;
       padding: 30px clamp(18px, 3vw, 52px) 40px;
@@ -188,7 +191,9 @@
     }
 
     body.stats-mode main,
-    body.stats-mode .stats-panel {
+    body.briefing-mode main,
+    body.stats-mode .stats-panel,
+    body.briefing-mode .briefing-panel {
       width: 100%;
       max-width: none;
     }
@@ -1387,35 +1392,6 @@
       margin: 0 auto 12px;
     }
 
-    .daily-briefing-notice[hidden] {
-      display: none;
-    }
-
-    .daily-briefing-notice {
-      position: relative;
-      display: block;
-      flex: 0 1 auto;
-      width: 100%;
-      max-width: 100%;
-      min-width: 0;
-      margin: 0;
-      padding: 0;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      background: color-mix(in srgb, var(--surface) 94%, var(--accent) 6%);
-      color: var(--text);
-      font-size: 11px;
-      line-height: 1.3;
-      text-align: left;
-    }
-
-    .daily-briefing-summary {
-      padding: 12px;
-      box-sizing: border-box;
-      white-space: nowrap;
-    }
-
-    .daily-briefing-notice-label,
     .daily-watch-countdown-label {
       font-size: 9.5px;
       font-weight: 700;
@@ -1430,59 +1406,6 @@
       font-weight: 700;
       color: var(--text);
       margin-bottom: 3px;
-    }
-
-    .daily-briefing-today-count {
-      color: var(--text);
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .daily-briefing-separator {
-      color: var(--text-muted);
-    }
-
-    .daily-briefing-body {
-      width: auto;
-      max-width: 100%;
-      padding: 0 12px 10px;
-    }
-
-    .daily-briefing-overview {
-      margin: 0;
-      padding: 8px 0;
-      border-top: 1px solid var(--border);
-      color: var(--text-muted);
-      line-height: 1.45;
-    }
-
-    .daily-briefing-papers {
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .daily-briefing-paper {
-      padding: 8px 0;
-      border-top: 1px solid var(--border);
-    }
-
-    .daily-briefing-paper-title {
-      color: var(--accent);
-      font-weight: 700;
-      text-decoration: none;
-      overflow-wrap: anywhere;
-    }
-
-    .daily-briefing-paper-title:hover {
-      text-decoration: underline;
-    }
-
-    .daily-briefing-paper-desc {
-      margin: 3px 0 0;
-      color: var(--text-muted);
-      line-height: 1.45;
-      overflow-wrap: anywhere;
     }
 
     .daily-watch-countdown {
@@ -2649,10 +2572,10 @@
       .search-field {
         width: 100%;
       }
-      body.stats-mode > header {
+      body.stats-mode > header, body.briefing-mode > header {
         padding: 10px 12px;
       }
-      body.stats-mode .layout {
+      body.stats-mode .layout, body.briefing-mode .layout {
         padding: 18px 12px 28px;
       }
       .daily-status-row {
@@ -2662,15 +2585,11 @@
         max-width: none;
         margin: 0 0 10px;
       }
-      .daily-briefing-notice,
       .daily-watch-countdown {
         flex: 0 0 auto;
         width: fit-content;
         max-width: 100%;
         margin: 0;
-      }
-      .daily-briefing-notice {
-        width: 100%;
       }
       .daily-watch-countdown {
         padding: 7px 10px;
@@ -2812,7 +2731,6 @@
         min-height: 46px;
         padding: 7px 10px;
       }
-      .daily-briefing-notice-label,
       .daily-watch-countdown-label {
         font-size: 9px;
       }
@@ -2868,29 +2786,29 @@
     }
 
     @media (min-width: 769px) {
-      body:not(.stats-mode) > header {
+      body:not(.stats-mode):not(.briefing-mode) > header {
         padding: 10px 28px 12px;
       }
 
-      body:not(.stats-mode) .papers-only-tools {
+      body:not(.stats-mode):not(.briefing-mode) .papers-only-tools {
         margin-top: 8px;
       }
 
-      body:not(.stats-mode) .header-sub {
+      body:not(.stats-mode):not(.briefing-mode) .header-sub {
         margin-bottom: 9px;
         font-size: 12px;
       }
 
-      body:not(.stats-mode) .search-wrap {
+      body:not(.stats-mode):not(.briefing-mode) .search-wrap {
         max-width: 680px;
       }
 
-      body:not(.stats-mode) #search {
+      body:not(.stats-mode):not(.briefing-mode) #search {
         padding-top: 8px;
         padding-bottom: 8px;
       }
 
-      body:not(.stats-mode) .filter-sidebar-toggle-row {
+      body:not(.stats-mode):not(.briefing-mode) .filter-sidebar-toggle-row {
         margin-top: 8px;
       }
 
@@ -3043,8 +2961,9 @@
 
     /* ── Personal-site-aligned editorial system ── */
     body > header,
-    body:not(.stats-mode) > header,
-    body.stats-mode > header {
+    body:not(.stats-mode):not(.briefing-mode) > header,
+    body.stats-mode > header,
+    body.briefing-mode > header {
       min-height: 52px;
       padding: 0 24px;
       border-bottom: 1px solid var(--border);
@@ -3165,19 +3084,19 @@
       background: var(--bg);
     }
 
-    body.stats-mode .catalog-toolbar-shell {
+    body.stats-mode .catalog-toolbar-shell, body.briefing-mode .catalog-toolbar-shell {
       display: none;
     }
 
     .papers-only-tools,
-    body:not(.stats-mode) .papers-only-tools {
+    body:not(.stats-mode):not(.briefing-mode) .papers-only-tools {
       width: 100%;
       max-width: 920px;
       margin: 0 auto;
       padding: 24px 0 20px;
     }
 
-    body:not(.stats-mode) .header-sub,
+    body:not(.stats-mode):not(.briefing-mode) .header-sub,
     .header-sub {
       margin-bottom: 12px;
       color: var(--text-muted);
@@ -3222,7 +3141,8 @@
     }
 
     .layout,
-    body.stats-mode .layout {
+    body.stats-mode .layout,
+    body.briefing-mode .layout {
       width: min(1180px, 100%);
       max-width: 1180px;
       padding: 30px 24px 48px;
@@ -3360,28 +3280,30 @@
 
     /* Research Landscape */
     html:has(body.stats-mode),
-    body.stats-mode {
+    html:has(body.briefing-mode),
+    body.stats-mode,
+    body.briefing-mode {
       height: auto;
       min-height: 100%;
     }
 
-    html:has(body.stats-mode) {
+    html:has(body.stats-mode), html:has(body.briefing-mode) {
       overflow-y: auto;
     }
 
-    body.stats-mode {
+    body.stats-mode, body.briefing-mode {
       min-height: 100vh;
       overflow: visible;
     }
 
-    body.stats-mode .layout {
+    body.stats-mode .layout, body.briefing-mode .layout {
       height: auto;
       min-height: calc(100vh - 61px);
       flex: 1 0 auto;
       overflow: visible;
     }
 
-    body.stats-mode main {
+    body.stats-mode main, body.briefing-mode main {
       height: auto;
       min-height: 0;
       overflow: visible;
@@ -3959,14 +3881,14 @@
     }
 
     @media (min-width: 1180px) and (min-height: 700px) {
-      body.stats-mode .layout {
+      body.stats-mode .layout, body.briefing-mode .layout {
         padding-top: 14px;
         padding-bottom: 14px;
       }
     }
 
     @media (min-width: 1180px) and (min-height: 860px) {
-      body.stats-mode footer {
+      body.stats-mode footer, body.briefing-mode footer {
         display: none;
       }
     }
@@ -3996,8 +3918,9 @@
 
     @media (max-width: 768px) {
       body > header,
-      body:not(.stats-mode) > header,
-      body.stats-mode > header {
+      body:not(.stats-mode):not(.briefing-mode) > header,
+      body.stats-mode > header,
+      body.briefing-mode > header {
         position: sticky;
         padding: 0 12px;
       }
@@ -4060,7 +3983,7 @@
       }
 
       .papers-only-tools,
-      body:not(.stats-mode) .papers-only-tools {
+      body:not(.stats-mode):not(.briefing-mode) .papers-only-tools {
         padding: 18px 12px 16px;
       }
 
@@ -4069,7 +3992,8 @@
       }
 
       .layout,
-      body.stats-mode .layout {
+      body.stats-mode .layout,
+      body.briefing-mode .layout {
         width: 100%;
         padding: 24px 16px 40px;
       }
@@ -4236,7 +4160,7 @@
       }
     }
   </style>
-  <link rel="stylesheet" href="assets/reading-desk.css?v=6" />
+  <link rel="stylesheet" href="assets/reading-desk.css?v=7" />
 </head>
 <body class="reading-desk">
 
@@ -4253,6 +4177,7 @@
 
       <div class="top-level-tabs" role="tablist" aria-label="Site sections" aria-orientation="vertical">
         <button type="button" class="top-level-tab active" id="papers-tab" role="tab" aria-controls="papers-panel" aria-selected="true" tabindex="0">Papers</button>
+        <button type="button" class="top-level-tab" id="briefing-tab" role="tab" aria-controls="briefing-panel" aria-selected="false" tabindex="-1"><span class="briefing-tab-label">Briefing</span><span class="briefing-tab-badge" id="briefing-tab-badge" hidden><span class="briefing-tab-separator" aria-hidden="true">·</span><span class="briefing-tab-count" id="briefing-tab-count"></span><span class="sr-only"> papers added today</span></span></button>
         <button type="button" class="top-level-tab" id="stats-tab" role="tab" aria-controls="stats-panel" aria-selected="false" tabindex="-1">Stats</button>
         <button type="button" class="top-level-tab" id="blogs-tab" role="tab" aria-controls="papers-panel" aria-selected="false" tabindex="-1">Blogs</button>
       </div>
@@ -4264,18 +4189,6 @@
 
     <section class="desk-watch" aria-label="Catalog watch">
     <div class="daily-status-row">
-      <div class="daily-briefing-notice"
-         id="daily-briefing-notice"
-         role="group"
-         aria-label="Today's catalog update"
-         hidden>
-        <div class="daily-briefing-summary">
-          <span class="daily-briefing-notice-label">Today</span>
-          <span class="daily-briefing-separator" aria-hidden="true">·</span>
-          <strong class="daily-briefing-today-count" id="daily-briefing-today-count" aria-live="polite">0 papers</strong>
-        </div>
-        <div class="daily-briefing-body" id="daily-briefing-body"></div>
-      </div>
       <div class="daily-watch-countdown" id="daily-watch-countdown">
         <span class="daily-watch-clock" aria-hidden="true"></span>
         <div class="daily-watch-countdown-copy">
@@ -4548,6 +4461,12 @@
         </article>
       </div>
 
+    </section>
+
+    <section class="top-level-panel briefing-panel" id="briefing-panel" role="tabpanel" aria-labelledby="briefing-tab" tabindex="0" hidden>
+      <article class="briefing-page" id="briefing-page" aria-busy="false">
+        <p class="briefing-page-status">Loading the latest briefing…</p>
+      </article>
     </section>
 
   </main>
@@ -6073,6 +5992,10 @@ let ACTIVE_TOP_LEVEL_TAB = 'papers';
 let HAS_RENDERED_STATS = false;
 let CATALOG_DATA_READY = false;
 let CATALOG_DATA_ERROR = false;
+/** Newest briefing row from papers.json, its page version, and the Briefing tab's load state. */
+let LATEST_BRIEFING_SUMMARY = null;
+let LATEST_BRIEFING_VERSION = '';
+let BRIEFING_PAGE_STATE = 'idle';
 let HAS_USER_SELECTED_TOP_LEVEL_TAB = false;
 let CURRENT_STATS_RANGE = '1y';
 let STATS_RANGE_LISTENERS_BOUND = false;
@@ -6371,19 +6294,20 @@ function initResearchPrompt() {
 /**
  * Coerces a requested top-level tab to a supported tab identifier.
  * @param {string} tab Requested tab identifier.
- * @returns {'papers'|'stats'|'blogs'} A supported tab identifier.
+ * @returns {'papers'|'briefing'|'stats'|'blogs'} A supported tab identifier.
  */
 function normalizeTopLevelTab(tab) {
-  return tab === 'stats' || tab === 'blogs' ? tab : 'papers';
+  return tab === 'briefing' || tab === 'stats' || tab === 'blogs' ? tab : 'papers';
 }
 
 /**
  * Maps the current URL fragment to a top-level tab without consuming topic-map anchors.
  * @param {string} hash URL fragment, including the leading hash marker.
- * @returns {'papers'|'stats'|'blogs'} The tab represented by the fragment.
+ * @returns {'papers'|'briefing'|'stats'|'blogs'} The tab represented by the fragment.
  */
 function getTopLevelTabFromHash(hash) {
   if (hash === '#blogs' || hash === '#section-blogs') return 'blogs';
+  if (hash === '#briefing') return 'briefing';
   return hash === '#stats' ? 'stats' : 'papers';
 }
 
@@ -6540,12 +6464,15 @@ function navigateToFacetLink(link) {
 function applyTopLevelTab() {
   const isStats = ACTIVE_TOP_LEVEL_TAB === 'stats';
   const isBlogs = ACTIVE_TOP_LEVEL_TAB === 'blogs';
+  const isBriefing = ACTIVE_TOP_LEVEL_TAB === 'briefing';
   const papersPanel = document.getElementById('papers-panel');
   const statsPanel = document.getElementById('stats-panel');
+  const briefingPanel = document.getElementById('briefing-panel');
 
   document.body.classList.toggle('stats-mode', isStats);
   document.body.classList.toggle('blogs-mode', isBlogs);
-  ['papers', 'stats', 'blogs'].forEach(function(name) {
+  document.body.classList.toggle('briefing-mode', isBriefing);
+  ['papers', 'briefing', 'stats', 'blogs'].forEach(function(name) {
     const tab = document.getElementById(name + '-tab');
     if (!tab) return;
     const selected = ACTIVE_TOP_LEVEL_TAB === name;
@@ -6555,10 +6482,11 @@ function applyTopLevelTab() {
   });
   // Papers and Blogs share the catalog renderer, but never its resource scope.
   if (papersPanel) {
-    papersPanel.hidden = isStats;
+    papersPanel.hidden = isStats || isBriefing;
     papersPanel.setAttribute('aria-labelledby', isBlogs ? 'blogs-tab' : 'papers-tab');
   }
   if (statsPanel) statsPanel.hidden = !isStats;
+  if (briefingPanel) briefingPanel.hidden = !isBriefing;
   if (CATALOG_DATA_READY) renderSectionFilter();
   const heading = document.getElementById('catalog-heading');
   if (heading) heading.textContent = isBlogs ? 'Blogs' : 'Papers';
@@ -6585,6 +6513,7 @@ function setTopLevelTab(tab, options) {
   if (ACTIVE_TOP_LEVEL_TAB === 'stats' && !HAS_RENDERED_STATS) {
     renderStatsPanel();
   }
+  if (ACTIVE_TOP_LEVEL_TAB === 'briefing') loadBriefingPage();
 
   if (settings.updateHash !== false) {
     const nextHash = '#' + ACTIVE_TOP_LEVEL_TAB;
@@ -6592,7 +6521,7 @@ function setTopLevelTab(tab, options) {
       window.location.hash = nextHash;
     }
   }
-  if (CATALOG_DATA_READY && previousTab !== ACTIVE_TOP_LEVEL_TAB && ACTIVE_TOP_LEVEL_TAB !== 'stats') {
+  if (CATALOG_DATA_READY && previousTab !== ACTIVE_TOP_LEVEL_TAB && ACTIVE_TOP_LEVEL_TAB !== 'stats' && ACTIVE_TOP_LEVEL_TAB !== 'briefing') {
     doSearch(document.getElementById('search').value || '');
   }
 }
@@ -7418,56 +7347,265 @@ function renderAllGrids(q) {
   if (researchDialog && researchDialog.open) updateResearchPromptPreview();
 }
 
-function updateDailyBriefingNotice(briefing) {
-  const notice = document.getElementById('daily-briefing-notice');
-  if (!notice) return;
-  notice.dataset.briefingDate = briefing && typeof briefing.date === 'string' ? briefing.date : '';
+// ── Daily briefing page ──────────────────────────────────────────────────────
+// papers.json carries only the newest briefing's summary row; the full Markdown
+// body lives in briefing-latest.json and is fetched the first time the Briefing
+// tab opens.
+const BRIEFING_PAGE_URL = 'briefing-latest.json';
+const BRIEFING_SOURCE_BASE_URL = 'https://github.com/huskydoge/Awesome-Loop-Models/blob/main/';
 
+/** Count the papers a briefing reports as added to the catalog. */
+function countBriefingAddedPapers(briefing) {
   const candidates = briefing && Array.isArray(briefing.candidates) ? briefing.candidates : [];
-  const papersById = new Map(ALL_PAPERS.map(function(paper) {
-    return [String(paper.id || ''), paper];
-  }));
-  const addedPapers = candidates
-    .filter(function(candidate) { return candidate && candidate.verdict === 'added'; })
-    .map(function(candidate) { return papersById.get(String(candidate.id || '')); })
-    .filter(Boolean);
-  const countEl = document.getElementById('daily-briefing-today-count');
-  const bodyEl = document.getElementById('daily-briefing-body');
-  if (countEl) {
-    countEl.textContent = addedPapers.length + ' paper' + (addedPapers.length === 1 ? '' : 's');
-  }
-  if (bodyEl) {
-    const summary = briefing && typeof briefing.summary === 'string' ? briefing.summary.trim() : '';
-    const paperRows = addedPapers.map(function(paper) {
-      const star = paper.must_read === true
-        ? '<span class="daily-briefing-star" role="img" aria-label="Must read">🌟</span> '
-        : '';
-      const title = star + escapeHtml(paper.title || paper.id || 'Untitled paper');
-      const url = getPrimaryPaperUrl(paper);
-      const titleHtml = url
-        ? '<a class="daily-briefing-paper-title" href="' + escapeHtml(url) + '" target="_blank" rel="noopener">' + title + '</a>'
-        : '<strong class="daily-briefing-paper-title">' + title + '</strong>';
-      return '<li class="daily-briefing-paper">' + titleHtml
-        + (paper.desc ? '<p class="daily-briefing-paper-desc">' + escapeHtml(paper.desc) + '</p>' : '')
-        + '</li>';
-    }).join('');
-    bodyEl.innerHTML = (summary ? '<p class="daily-briefing-overview">' + escapeHtml(summary) + '</p>' : '')
-      + (paperRows ? '<ul class="daily-briefing-papers">' + paperRows + '</ul>' : '');
-  }
-  notice.hidden = !briefing;
+  return candidates.filter(function(candidate) { return candidate && candidate.verdict === 'added'; }).length;
 }
 
-/** Hide the Today bulletin after the New York calendar date changes. */
-function hideStaleDailyBriefingNotice() {
-  const notice = document.getElementById('daily-briefing-notice');
-  if (!notice || notice.hidden) return;
+/** Return whether a briefing date is today's America/New_York date. */
+function isBriefingFromToday(briefing) {
   const currentDate = getCurrentDailyWatchDateString();
-  if (!currentDate || notice.dataset.briefingDate !== currentDate) {
-    notice.hidden = true;
-  }
+  return Boolean(briefing && currentDate && briefing.date === currentDate);
 }
 
-setInterval(hideStaleDailyBriefingNotice, 60_000);
+/** Show "Briefing · N" only while the newest briefing is today's. */
+function updateBriefingTabBadge() {
+  const badge = document.getElementById('briefing-tab-badge');
+  const count = document.getElementById('briefing-tab-count');
+  if (!badge || !count) return;
+  const isToday = isBriefingFromToday(LATEST_BRIEFING_SUMMARY);
+  count.textContent = isToday ? String(countBriefingAddedPapers(LATEST_BRIEFING_SUMMARY)) : '';
+  badge.hidden = !isToday;
+}
+
+setInterval(updateBriefingTabBadge, 60_000);
+
+/** Allow only http(s), mailto, fragment and relative link targets in briefing Markdown. */
+function getSafeBriefingHref(rawUrl) {
+  const url = String(rawUrl || '').trim();
+  if (!url || /[\u0000- \u007f]/.test(url)) return '';
+  if (/^(?:https?:\/\/|mailto:)/i.test(url)) return url;
+  if (url.indexOf('//') === 0 || url.indexOf('\\') !== -1) return '';
+  // A colon before the first "/", "?" or "#" would be read as a scheme; keep only plain relative paths.
+  return /^[^/?#]*:/.test(url) ? '' : url;
+}
+
+/** Render bold, italic and links in already-escaped text that holds no code spans. */
+function renderBriefingEmphasisHtml(escapedText) {
+  return escapedText
+    .replace(/\*\*([^*]+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/(^|[^*\w])\*(?!\s)([^*]+?)\*(?!\w)/g, '$1<em>$2</em>');
+}
+
+/**
+ * Render one line of briefing Markdown inline syntax as HTML.
+ * Text is escaped before any markup is added; raw HTML is never passed through.
+ */
+function renderBriefingInlineHtml(text) {
+  const source = String(text || '');
+  const pattern = /`([^`]+)`|\[([^\]]+)\]\(([^()\s]+)\)/g;
+  let html = '';
+  let lastIndex = 0;
+  let match;
+  while ((match = pattern.exec(source)) !== null) {
+    html += renderBriefingEmphasisHtml(escapeHtml(source.slice(lastIndex, match.index)));
+    if (match[1] !== undefined) {
+      html += '<code>' + escapeHtml(match[1]) + '</code>';
+    } else {
+      const labelHtml = renderBriefingEmphasisHtml(escapeHtml(match[2]));
+      const href = getSafeBriefingHref(match[3]);
+      if (!href) {
+        html += labelHtml;
+      } else {
+        const external = /^https?:\/\//i.test(href);
+        html += '<a href="' + escapeHtml(href) + '"' + (external ? ' target="_blank" rel="noopener noreferrer"' : '') + '>' + labelHtml + '</a>';
+      }
+    }
+    lastIndex = pattern.lastIndex;
+  }
+  return html + renderBriefingEmphasisHtml(escapeHtml(source.slice(lastIndex)));
+}
+
+/**
+ * Render the briefing Markdown subset (headings, paragraphs, bullet and numbered
+ * lists, block quotes, fenced code and rules) as safe HTML.
+ * @param {string} markdown Briefing body after the front matter.
+ * @param {{dropLeadingTitle?: boolean}=} options Drop a leading "# Title" line the page header already shows.
+ * @returns {string} HTML built only from escaped text and a fixed set of tags.
+ */
+function renderBriefingMarkdown(markdown, options) {
+  const settings = options || {};
+  const lines = String(markdown || '').replace(/\r\n?/g, '\n').split('\n');
+  const blocks = [];
+  let paragraph = [];
+  let list = null;
+  let quote = [];
+  let index = 0;
+
+  function flushParagraph() {
+    if (paragraph.length) blocks.push('<p>' + renderBriefingInlineHtml(paragraph.join(' ')) + '</p>');
+    paragraph = [];
+  }
+  function flushList() {
+    if (list) {
+      blocks.push('<' + list.tag + '>' + list.items.map(function(item) {
+        return '<li>' + renderBriefingInlineHtml(item.join(' ')) + '</li>';
+      }).join('') + '</' + list.tag + '>');
+    }
+    list = null;
+  }
+  function flushQuote() {
+    if (quote.length) blocks.push('<blockquote><p>' + renderBriefingInlineHtml(quote.join(' ')) + '</p></blockquote>');
+    quote = [];
+  }
+  function flushAll() {
+    flushParagraph();
+    flushList();
+    flushQuote();
+  }
+
+  while (index < lines.length) {
+    const line = lines[index];
+    const trimmed = line.trim();
+    index += 1;
+    if (!trimmed) {
+      flushAll();
+      continue;
+    }
+    if (/^```/.test(trimmed)) {
+      flushAll();
+      const code = [];
+      while (index < lines.length && !/^```/.test(lines[index].trim())) {
+        code.push(lines[index]);
+        index += 1;
+      }
+      index += 1;
+      blocks.push('<pre><code>' + escapeHtml(code.join('\n')) + '</code></pre>');
+      continue;
+    }
+    const heading = /^(#{1,6})\s+(.+?)\s*#*\s*$/.exec(trimmed);
+    if (heading && !/^\s{4,}/.test(line)) {
+      flushAll();
+      if (settings.dropLeadingTitle && heading[1].length === 1 && !blocks.length) continue;
+      const level = Math.min(6, Math.max(2, heading[1].length));
+      blocks.push('<h' + level + '>' + renderBriefingInlineHtml(heading[2]) + '</h' + level + '>');
+      continue;
+    }
+    if (/^(?:-{3,}|\*{3,}|_{3,})$/.test(trimmed)) {
+      flushAll();
+      blocks.push('<hr>');
+      continue;
+    }
+    const bullet = /^\s{0,3}[-*+]\s+(.*)$/.exec(line);
+    const numbered = /^\s{0,3}\d{1,9}[.)]\s+(.*)$/.exec(line);
+    if (bullet || numbered) {
+      flushParagraph();
+      flushQuote();
+      const tag = bullet ? 'ul' : 'ol';
+      if (list && list.tag !== tag) flushList();
+      if (!list) list = { tag: tag, items: [] };
+      list.items.push([(bullet || numbered)[1]]);
+      continue;
+    }
+    const quoted = /^>\s?(.*)$/.exec(trimmed);
+    if (quoted) {
+      flushParagraph();
+      flushList();
+      quote.push(quoted[1]);
+      continue;
+    }
+    if (list) {
+      list.items[list.items.length - 1].push(trimmed);
+      continue;
+    }
+    if (quote.length) {
+      quote.push(trimmed);
+      continue;
+    }
+    paragraph.push(trimmed);
+  }
+  flushAll();
+  return blocks.join('\n');
+}
+
+/** Format a YYYY-MM-DD briefing date for display without shifting time zones. */
+function formatBriefingDate(value) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value || ''));
+  if (!match) return String(value || '');
+  const date = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3])));
+  return date.toLocaleDateString('en-US', { timeZone: 'UTC', year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+/** Return the GitHub URL of a briefing's Markdown source, or '' for an unexpected path. */
+function getBriefingSourceUrl(sourcePath) {
+  const path = String(sourcePath || '');
+  return /^briefings\/\d{4}\/\d{2}\/\d{4}-\d{2}-\d{2}\.md$/.test(path) ? BRIEFING_SOURCE_BASE_URL + path : '';
+}
+
+/** Render the full reading page for one briefing-latest.json payload. */
+function renderBriefingPageHtml(briefing) {
+  if (!briefing || typeof briefing.date !== 'string' || !briefing.date) {
+    return '<p class="briefing-page-status">No daily briefing has been published yet.</p>';
+  }
+  const isToday = isBriefingFromToday(briefing);
+  const addedCount = countBriefingAddedPapers(briefing);
+  const highlights = Array.isArray(briefing.highlights)
+    ? briefing.highlights.filter(function(item) { return typeof item === 'string' && item.trim(); })
+    : [];
+  const sourceUrl = getBriefingSourceUrl(briefing.source_path);
+  const title = typeof briefing.title === 'string' && briefing.title.trim() ? briefing.title.trim() : 'Daily briefing';
+  return '<header class="briefing-page-header">'
+    + '<div class="briefing-page-eyebrow">Daily briefing</div>'
+    + '<h2 class="briefing-page-title" id="briefing-page-title">' + escapeHtml(title) + '</h2>'
+    + '<p class="briefing-page-meta">'
+    + '<span class="briefing-page-when' + (isToday ? ' is-today' : '') + '">' + (isToday ? 'Today' : 'Latest briefing') + '</span>'
+    + '<span aria-hidden="true">·</span><time datetime="' + escapeHtml(briefing.date) + '">' + escapeHtml(formatBriefingDate(briefing.date)) + '</time>'
+    + (addedCount ? '<span aria-hidden="true">·</span><span>' + addedCount + ' paper' + (addedCount === 1 ? '' : 's') + ' added</span>' : '')
+    + '</p>'
+    + (typeof briefing.summary === 'string' && briefing.summary.trim()
+      ? '<p class="briefing-page-summary">' + escapeHtml(briefing.summary.trim()) + '</p>'
+      : '')
+    + '</header>'
+    + (highlights.length
+      ? '<section class="briefing-page-highlights" aria-labelledby="briefing-highlights-title"><h3 id="briefing-highlights-title">Highlights</h3><ul>'
+        + highlights.map(function(item) { return '<li>' + escapeHtml(item.trim()) + '</li>'; }).join('')
+        + '</ul></section>'
+      : '')
+    + '<div class="briefing-page-body">' + renderBriefingMarkdown(briefing.body_markdown, { dropLeadingTitle: true }) + '</div>'
+    + (sourceUrl
+      ? '<p class="briefing-page-footer"><a href="' + escapeHtml(sourceUrl) + '" target="_blank" rel="noopener noreferrer">View the Markdown source on GitHub</a></p>'
+      : '');
+}
+
+/** Fetch briefing-latest.json once, versioned like the catalog chunks, and render the page. */
+function loadBriefingPage() {
+  const page = document.getElementById('briefing-page');
+  if (!page || BRIEFING_PAGE_STATE === 'loading' || BRIEFING_PAGE_STATE === 'ready') return;
+  if (!CATALOG_DATA_READY && !CATALOG_DATA_ERROR) {
+    page.innerHTML = '<p class="briefing-page-status">Loading the latest briefing…</p>';
+    return;
+  }
+  BRIEFING_PAGE_STATE = 'loading';
+  page.setAttribute('aria-busy', 'true');
+  page.innerHTML = '<p class="briefing-page-status">Loading the latest briefing…</p>';
+  const version = LATEST_BRIEFING_VERSION || (LATEST_BRIEFING_SUMMARY && LATEST_BRIEFING_SUMMARY.date) || '';
+  const url = BRIEFING_PAGE_URL + (version ? '?v=' + encodeURIComponent(version) : '');
+  fetch(url)
+    .then(function(response) {
+      if (!response.ok) throw new Error(BRIEFING_PAGE_URL + ' request failed with status ' + response.status);
+      return response.json();
+    })
+    .then(function(briefing) {
+      BRIEFING_PAGE_STATE = 'ready';
+      page.innerHTML = renderBriefingPageHtml(briefing);
+    })
+    .catch(function(error) {
+      console.error('Failed to load ' + BRIEFING_PAGE_URL + ':', error);
+      BRIEFING_PAGE_STATE = 'error';
+      page.innerHTML = '<p class="briefing-page-status briefing-page-error">The latest briefing could not be loaded. Please refresh to try again, or read the briefings on <a href="https://github.com/huskydoge/Awesome-Loop-Models/tree/main/briefings" target="_blank" rel="noopener noreferrer">GitHub</a>.</p>';
+    })
+    .then(function() {
+      page.setAttribute('aria-busy', 'false');
+    });
+}
 
 function createBlogSection() {
   if (!ALL_BLOGS.length) return null;
@@ -7565,13 +7703,11 @@ function buildDOM(data) {
   CATALOG_DATA_ERROR = false;
   CATALOG_DATA_READY = true;
   ALL_BLOGS = (data.blogs || []).map(preparePaperRecord);
-  const latestBriefing = Array.isArray(data.briefings) ? data.briefings[0] : null;
-  const currentDailyWatchDate = getCurrentDailyWatchDateString();
-  updateDailyBriefingNotice(
-    latestBriefing && currentDailyWatchDate && latestBriefing.date === currentDailyWatchDate
-      ? latestBriefing
-      : null
-  );
+  LATEST_BRIEFING_SUMMARY = Array.isArray(data.briefings) && data.briefings[0] ? data.briefings[0] : null;
+  LATEST_BRIEFING_VERSION = (data.meta && typeof data.meta.latest_briefing_version === 'string')
+    ? data.meta.latest_briefing_version
+    : '';
+  updateBriefingTabBadge();
   ALL_RESOURCES = ALL_PAPERS.concat(ALL_BLOGS);
   FACET_FILTER_GROUPS = buildFacetFilterGroups(ALL_PAPERS);
 

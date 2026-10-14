@@ -21,6 +21,11 @@ PAPER_CHUNK_ENTRIES_LIMIT = 100
 PAPER_CHUNK_PATH_RE = re.compile(r"^catalog/papers-\d{3}\.json$")
 PAPERS_BRIEFINGS_LIMIT = 1
 BRIEFING_CONTENT_FIELDS_LIMIT = 0
+BRIEFING_LATEST_GZIP_BYTES_LIMIT = 60_000
+BRIEFING_LATEST_PATH = "briefing-latest.json"
+BRIEFING_LATEST_STRING_FIELDS = ("date", "title", "status", "summary", "source_path", "body_markdown")
+BRIEFING_LATEST_LIST_FIELDS = ("highlights", "candidates")
+BRIEFING_DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 SUBMISSION_META_BYTES_LIMIT = 32_000
 FAVICON_BYTES_LIMIT = 10_000
 
@@ -226,6 +231,69 @@ def validate_submission_schema(payload: dict, violations: list[str]) -> None:
                 violations.append(f"{row_label}.count must be a non-negative integer")
 
 
+def validate_latest_briefing(
+    raw: bytes, papers_payload: dict | None, violations: list[str]
+) -> None:
+    """Validate briefing-latest.json against its reading-page schema and the papers.json manifest.
+
+    A briefing page carries every string and list field. When the catalog has no
+    briefing, ``date``, ``title``, ``status`` and ``source_path`` are null and the
+    text and lists are empty. The page date must match ``papers.json.briefings[0]``
+    and ``papers.json.meta.latest_briefing_version`` must match the file's content hash.
+    """
+    label = BRIEFING_LATEST_PATH
+    page = parse_json_object(raw, label, violations)
+    if page is None:
+        return
+    for field in (*BRIEFING_LATEST_STRING_FIELDS, *BRIEFING_LATEST_LIST_FIELDS):
+        if field not in page:
+            violations.append(f"{label}.{field} is required")
+
+    if page.get("date") is None:
+        for field in ("title", "status", "source_path"):
+            if page.get(field) is not None:
+                violations.append(f"{label}.{field} must be null when date is null")
+        for field in ("summary", "body_markdown"):
+            if page.get(field) not in ("", None):
+                violations.append(f"{label}.{field} must be empty when date is null")
+        for field in BRIEFING_LATEST_LIST_FIELDS:
+            if page.get(field) not in ([], None):
+                violations.append(f"{label}.{field} must be empty when date is null")
+    else:
+        for field in BRIEFING_LATEST_STRING_FIELDS:
+            if field in page and not isinstance(page[field], str):
+                violations.append(f"{label}.{field} must be a string")
+        if isinstance(page.get("date"), str) and not BRIEFING_DATE_RE.fullmatch(page["date"]):
+            violations.append(f"{label}.date must use YYYY-MM-DD")
+        highlights = page.get("highlights")
+        if "highlights" in page and not isinstance(highlights, list):
+            violations.append(f"{label}.highlights must be an array")
+        elif isinstance(highlights, list):
+            for index, highlight in enumerate(highlights):
+                if not isinstance(highlight, str):
+                    violations.append(f"{label}.highlights[{index}] must be a string")
+        candidates = page.get("candidates")
+        if "candidates" in page and not isinstance(candidates, list):
+            violations.append(f"{label}.candidates must be an array")
+        elif isinstance(candidates, list):
+            for index, candidate in enumerate(candidates):
+                if not isinstance(candidate, dict):
+                    violations.append(f"{label}.candidates[{index}] must be an object")
+
+    if papers_payload is None:
+        return
+    briefings = papers_payload.get("briefings")
+    if isinstance(briefings, list):
+        manifest_date = briefings[0].get("date") if briefings and isinstance(briefings[0], dict) else None
+        if page.get("date") != manifest_date:
+            violations.append(
+                f"{label}.date {page.get('date')!r} does not match papers.json.briefings[0].date {manifest_date!r}"
+            )
+    meta = papers_payload.get("meta")
+    if isinstance(meta, dict) and meta.get("latest_briefing_version") != hashlib.sha256(raw).hexdigest()[:12]:
+        violations.append(f"{label}: content does not match papers.json.meta.latest_briefing_version")
+
+
 def check_paper_chunks(root: Path, payload: dict, violations: list[str]) -> tuple[int, int]:
     """Validate every manifest-listed paper chunk and return the largest gzip size and entry count.
 
@@ -297,6 +365,7 @@ def check_asset_budgets(root: Path) -> AssetBudgetReport:
     content_fields: int | None = None
     chunk_gzip_bytes: int | None = None
     chunk_entries: int | None = None
+    papers_payload: dict | None = None
     if papers_raw is not None:
         papers_payload = parse_json_object(papers_raw, "papers.json", violations)
         if papers_payload is not None:
@@ -335,6 +404,18 @@ def check_asset_budgets(root: Path) -> AssetBudgetReport:
         "fields",
         "browser briefings must not contain a 'content' field",
     )
+
+    briefing_raw = read_required_file(root / BRIEFING_LATEST_PATH, BRIEFING_LATEST_PATH, violations)
+    add_measurement(
+        measurements,
+        violations,
+        "briefing-latest.json deterministic gzip bytes",
+        len(gzip.compress(briefing_raw, mtime=0)) if briefing_raw is not None else None,
+        BRIEFING_LATEST_GZIP_BYTES_LIMIT,
+        "bytes",
+    )
+    if briefing_raw is not None:
+        validate_latest_briefing(briefing_raw, papers_payload, violations)
 
     submission_raw = read_required_file(
         root / "submission-meta.json", "submission-meta.json", violations

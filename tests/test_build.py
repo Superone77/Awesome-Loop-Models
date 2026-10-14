@@ -1,5 +1,6 @@
 import hashlib
 import json
+import re
 import subprocess
 import unittest
 from datetime import datetime
@@ -521,6 +522,7 @@ class DailyBriefingBuildTests(unittest.TestCase):
                 build.build_json(papers, blogs, briefings)
             raw_payload = json_out.read_text(encoding="utf-8")
             payload = json.loads(raw_payload)
+            briefing_page_raw = (json_out.parent / "briefing-latest.json").read_text(encoding="utf-8")
             chunk_papers = [
                 paper
                 for row in payload["paper_chunks"]
@@ -598,6 +600,72 @@ class DailyBriefingBuildTests(unittest.TestCase):
         )
         self.assertNotIn("content", payload["briefings"][0])
         self.assertNotIn("internal", payload["briefings"][0]["candidates"][0])
+
+        # The newest briefing's full body lives only in briefing-latest.json.
+        briefing_page = json.loads(briefing_page_raw)
+        self.assertEqual(list(briefing_page), list(build.BRIEFING_PAGE_FIELDS))
+        self.assertEqual(briefing_page, {
+            "date": "2026-04-28",
+            "title": "Today",
+            "status": "watchlist",
+            "summary": "Latest summary.",
+            "highlights": ["Latest highlight."],
+            "candidates": [{
+                "id": "2604.21999",
+                "title": "A paper",
+                "verdict": "strong candidate",
+                "url": "https://arxiv.org/abs/2604.21999",
+            }],
+            "source_path": "briefings/2026/04/2026-04-28.md",
+            "body_markdown": "Latest full Markdown body.",
+        })
+        self.assertEqual(briefing_page_raw, json.dumps(briefing_page, ensure_ascii=False, indent=2) + "\n")
+        self.assertEqual(
+            payload["meta"]["latest_briefing_version"],
+            hashlib.sha256(briefing_page_raw.encode("utf-8")).hexdigest()[:12],
+        )
+        self.assertNotIn("Latest full Markdown body.", raw_payload)
+
+    def test_latest_briefing_page_is_rewritten_only_when_its_content_changes(self):
+        briefing = {
+            "date": "2026-04-28", "title": "Today", "status": "added", "summary": "Summary.",
+            "highlights": [], "candidates": [], "content": "## Added\n\nBody.",
+            "source_path": "briefings/2026/04/2026-04-28.md",
+        }
+        with TemporaryDirectory() as tmpdir:
+            json_out = Path(tmpdir) / "papers.json"
+            page_path = Path(tmpdir) / "briefing-latest.json"
+            with patch.object(build, "JSON_OUT", json_out):
+                first_version = build.write_latest_briefing([briefing])
+                first_text = page_path.read_text(encoding="utf-8")
+                with patch.object(Path, "write_text") as write_text:
+                    second_version = build.write_latest_briefing([briefing])
+                write_text.assert_not_called()
+                changed_version = build.write_latest_briefing([{**briefing, "content": "## Added\n\nNew body."}])
+                changed_text = page_path.read_text(encoding="utf-8")
+
+        self.assertEqual(first_version, second_version)
+        self.assertNotEqual(first_version, changed_version)
+        self.assertTrue(first_text.endswith("}\n"))
+        self.assertIn('"body_markdown": "## Added\\n\\nNew body."', changed_text)
+
+    def test_latest_briefing_page_without_briefings_keeps_every_key_empty(self):
+        page = build.render_latest_briefing_page([])
+        self.assertEqual(list(page), list(build.BRIEFING_PAGE_FIELDS))
+        self.assertEqual(page, {
+            "date": None, "title": None, "status": None, "summary": "", "highlights": [],
+            "candidates": [], "source_path": None, "body_markdown": "",
+        })
+
+    def test_repo_latest_briefing_page_matches_the_newest_briefing_file(self):
+        briefings = build.load_briefings()
+        page = json.loads((REPO_ROOT / "briefing-latest.json").read_text(encoding="utf-8"))
+        newest = max(briefings, key=lambda item: item["date"])
+        self.assertEqual(page["date"], newest["date"])
+        self.assertEqual(page["source_path"], newest["source_path"])
+        source = (REPO_ROOT / newest["source_path"]).read_text(encoding="utf-8")
+        self.assertTrue(source.rstrip().endswith(page["body_markdown"]))
+        self.assertFalse(page["body_markdown"].startswith("---"))
 
     def test_serialize_browser_briefings_copies_nested_ui_fields(self):
         briefings = [
@@ -759,17 +827,27 @@ function makeTab(id, selected, tabIndex) {{
   }};
 }}
 
-const tabs = [makeTab('papers-tab', true, 0), makeTab('stats-tab', false, -1), makeTab('blogs-tab', false, -1)];
+const tabs = [
+  makeTab('papers-tab', true, 0),
+  makeTab('briefing-tab', false, -1),
+  makeTab('stats-tab', false, -1),
+  makeTab('blogs-tab', false, -1)
+];
+const [papersTab, briefingTab, statsTab, blogsTab] = tabs;
 const papersPanel = makeStaticElement(false);
 const statsPanel = makeStaticElement(true);
+const briefingPanel = makeStaticElement(true);
+const briefingLoads = [];
 const catalogHeading = makeStaticElement(false);
 const bodyClasses = {{}};
 const elements = {{
-  'papers-tab': tabs[0],
-  'stats-tab': tabs[1],
-  'blogs-tab': tabs[2],
+  'papers-tab': papersTab,
+  'briefing-tab': briefingTab,
+  'stats-tab': statsTab,
+  'blogs-tab': blogsTab,
   'papers-panel': papersPanel,
   'stats-panel': statsPanel,
+  'briefing-panel': briefingPanel,
   'catalog-heading': catalogHeading,
   'search': searchInput,
   'publication-date-start': publicationDateStart,
@@ -829,6 +907,7 @@ function flushAnimationFrames() {{
 function renderStatsPanel() {{
   renderStatsCalls.push({{ ready: CATALOG_DATA_READY, error: CATALOG_DATA_ERROR }});
 }}
+function loadBriefingPage() {{ briefingLoads.push(ACTIVE_TOP_LEVEL_TAB); }}
 function scrollToSection(sectionId) {{ scrollRequests.push(sectionId); }}
 function activateSurveyNavLink(targetId) {{ activatedNavTargets.push(targetId); }}
 /** Keep this harness independent of detail-pane and card rendering. */
@@ -1659,7 +1738,7 @@ setTimeout(function() {
         self.assertIn(".survey-nav-link[data-chapter]", sync)
         self.assertIn("link.classList.toggle('is-empty', count === 0);", sync)
         renderer_start = html.index("function renderAllGrids(q) {")
-        renderer = html[renderer_start:html.index("function updateDailyBriefingNotice(", renderer_start)]
+        renderer = html[renderer_start:html.index("// ── Daily briefing page", renderer_start)]
         self.assertIn("syncSurveyNavCounts(filteredPapers);", renderer)
         nav_start = html.index("function renderSurveyNav() {")
         nav = html[nav_start:html.index("function activateSurveyNavLink(", nav_start)]
@@ -1687,7 +1766,7 @@ setTimeout(function() {
         blog_end = html.index("function renderSurveyNav()", blog_start)
         blog_builder = html[blog_start:blog_end]
         renderer_start = html.index("function renderAllGrids(q) {")
-        renderer_end = html.index("function updateDailyBriefingNotice(briefing)", renderer_start)
+        renderer_end = html.index("// ── Daily briefing page", renderer_start)
         renderer = html[renderer_start:renderer_end]
 
         self.assertIn("container.innerHTML = '<div class=\"survey-list\" id=\"papers-grid\"></div>';", list_builder)
@@ -1712,7 +1791,7 @@ setTimeout(function() {
         """Preserve lazy table rendering when view modes change."""
         html = INDEX_HTML_PATH.read_text(encoding="utf-8")
         renderer_start = html.index("function renderAllGrids(q) {")
-        renderer_end = html.index("function updateDailyBriefingNotice(briefing)", renderer_start)
+        renderer_end = html.index("// ── Daily briefing page", renderer_start)
         renderer = html[renderer_start:renderer_end]
 
         self.assertIn(
@@ -1722,77 +1801,85 @@ setTimeout(function() {
         self.assertIn("if (tableBody && tableBody.children.length) tableBody.textContent = '';", renderer)
         self.assertEqual(renderer.count("renderTableView(query, filteredPapers);"), 1)
 
-    def test_daily_briefing_notice_is_a_static_bulletin_in_document_flow(self):
-        """Catalog updates stay visible without nested disclosure controls."""
+    def test_briefing_tab_replaces_the_sidebar_notice(self):
+        """The daily briefing is a top-level page; the sidebar keeps only the paper-watch countdown."""
         html = INDEX_HTML_PATH.read_text(encoding="utf-8")
+        for retired in (
+            "daily-briefing-notice", "daily-briefing-summary", "daily-briefing-today-count", "daily-briefing-body",
+            "updateDailyBriefingNotice", "hideStaleDailyBriefingNotice", "daily-briefing-paper",
+        ):
+            self.assertNotIn(retired, html)
         self.assertIn('<div class="daily-status-row">', html)
-        self.assertIn('<div class="daily-briefing-notice"', html)
-        self.assertIn('id="daily-briefing-notice"', html)
-        self.assertIn('<div class="daily-briefing-summary">', html)
-        self.assertIn('<span class="daily-briefing-notice-label">Today</span>', html)
-        self.assertIn('class="daily-briefing-separator" aria-hidden="true">·</span>', html)
-        self.assertIn('id="daily-briefing-today-count" aria-live="polite">0 papers</strong>', html)
-        self.assertIn('id="daily-briefing-body"', html)
-        self.assertIn("function updateDailyBriefingNotice(briefing)", html)
+
+        # The Briefing tab sits right after Papers and controls its own panel.
+        tabs_start = html.index('<div class="top-level-tabs" role="tablist"')
+        tabs = html[tabs_start:html.index("</div>\n", tabs_start)]
+        tab_ids = re.findall(r'id="(\w+)-tab" role="tab"', tabs)
+        self.assertEqual(tab_ids, ["papers", "briefing", "stats", "blogs"])
+        self.assertIn(
+            '<button type="button" class="top-level-tab" id="briefing-tab" role="tab" aria-controls="briefing-panel" '
+            'aria-selected="false" tabindex="-1"><span class="briefing-tab-label">Briefing</span>',
+            tabs,
+        )
+        self.assertIn('<span class="briefing-tab-badge" id="briefing-tab-badge" hidden>', tabs)
+        self.assertIn('<span class="briefing-tab-separator" aria-hidden="true">·</span>', tabs)
+        self.assertIn('<span class="sr-only"> papers added today</span>', tabs)
+        self.assertIn(
+            '<section class="top-level-panel briefing-panel" id="briefing-panel" role="tabpanel" '
+            'aria-labelledby="briefing-tab" tabindex="0" hidden>',
+            html,
+        )
+        self.assertIn('<article class="briefing-page" id="briefing-page" aria-busy="false">', html)
+        self.assertLess(html.index('id="stats-panel"'), html.index('id="briefing-panel"'))
+        self.assertLess(html.index('id="briefing-panel"'), html.index("</main>"))
+
+        # Today's New-York date drives the badge, rechecked every minute.
         self.assertIn("function getCurrentDailyWatchDateString()", html)
         self.assertIn("window.DAILY_WATCH_COUNTDOWN.getDailyWatchParts(new Date())", html)
         helper_start = html.index("function getCurrentDailyWatchDateString() {")
-        helper_end = html.index("function formatTableText(value)", helper_start)
-        helper = html[helper_start:helper_end]
+        helper = html[helper_start:html.index("function formatTableText(value)", helper_start)]
         self.assertIn("typeof window.DAILY_WATCH_COUNTDOWN.getDailyWatchParts !== 'function'", helper)
         self.assertIn("return '';", helper)
-        self.assertIn(
-            "const latestBriefing = Array.isArray(data.briefings) ? data.briefings[0] : null;",
-            html,
-        )
-        self.assertIn(
-            "const currentDailyWatchDate = getCurrentDailyWatchDateString();",
-            html,
-        )
-        build_dom_start = html.index("function buildDOM(data) {")
-        build_dom_end = html.index("// ── Search", build_dom_start)
-        build_dom = html[build_dom_start:build_dom_end]
-        self.assertIn("latestBriefing && currentDailyWatchDate", build_dom)
-        self.assertIn("latestBriefing.date === currentDailyWatchDate", build_dom)
-        self.assertNotIn("getRepoTodayString()", build_dom)
-        updater_start = html.index("function updateDailyBriefingNotice(briefing) {")
-        updater_end = html.index("function hideStaleDailyBriefingNotice()", updater_start)
-        updater = html[updater_start:updater_end]
-        self.assertIn("notice.dataset.briefingDate", updater)
-        self.assertIn("Array.isArray(briefing.candidates)", updater)
-        self.assertIn("candidate.verdict === 'added'", updater)
-        self.assertIn("new Map(ALL_PAPERS.map", updater)
-        self.assertIn("papersById.get(String(candidate.id || ''))", updater)
-        self.assertIn("briefing.summary", updater)
-        self.assertIn("paper.desc", updater)
-        self.assertIn("paper.must_read === true", updater)
-        self.assertIn("getPrimaryPaperUrl(paper)", updater)
-        self.assertIn("escapeHtml(summary)", updater)
-        self.assertIn("escapeHtml(paper.desc)", updater)
-        self.assertNotIn("_addedDate", updater)
-        self.assertNotIn("getRepoTodayString()", updater)
+        page_start = html.index("// ── Daily briefing page")
+        page_js = html[page_start:html.index("function createBlogSection() {", page_start)]
+        self.assertIn("const currentDate = getCurrentDailyWatchDateString();", page_js)
+        self.assertIn("briefing.date === currentDate", page_js)
+        self.assertIn("candidate.verdict === 'added'", page_js)
+        self.assertIn("badge.hidden = !isToday;", page_js)
+        self.assertEqual(html.count("setInterval(updateBriefingTabBadge, 60_000);"), 1)
 
-        stale_start = updater_end
-        stale_end = html.index("function createBlogSection(", stale_start)
-        stale_helper = html[stale_start:stale_end]
-        self.assertIn("if (!notice || notice.hidden) return;", stale_helper)
-        self.assertIn("notice.dataset.briefingDate !== currentDate", stale_helper)
-        self.assertIn("notice.hidden = true;", stale_helper)
-        self.assertNotIn("notice.open", stale_helper)
-        self.assertEqual(html.count("setInterval(hideStaleDailyBriefingNotice, 60_000);"), 1)
+        build_dom_start = html.index("function buildDOM(data) {")
+        build_dom = html[build_dom_start:html.index("// ── Search", build_dom_start)]
+        self.assertIn(
+            "LATEST_BRIEFING_SUMMARY = Array.isArray(data.briefings) && data.briefings[0] ? data.briefings[0] : null;",
+            build_dom,
+        )
+        self.assertIn("data.meta.latest_briefing_version", build_dom)
+        self.assertIn("updateBriefingTabBadge();", build_dom)
+
+        # The page body is fetched lazily from briefing-latest.json with a cache-busting version.
+        self.assertIn("const BRIEFING_PAGE_URL = 'briefing-latest.json';", page_js)
+        self.assertIn("BRIEFING_PAGE_URL + (version ? '?v=' + encodeURIComponent(version) : '')", page_js)
+        self.assertIn("BRIEFING_PAGE_STATE === 'loading' || BRIEFING_PAGE_STATE === 'ready'", page_js)
+        self.assertIn("The latest briefing could not be loaded.", page_js)
+        self.assertIn("'https://github.com/huskydoge/Awesome-Loop-Models/blob/main/'", page_js)
+        self.assertIn("renderBriefingMarkdown(briefing.body_markdown, { dropLeadingTitle: true })", page_js)
+        self.assertNotIn("innerHTML = briefing.body_markdown", page_js)
+
+        # Like Stats, the Briefing page hides the catalog toolbar and the detail column.
+        self.assertIn("body.stats-mode .catalog-toolbar-shell, body.briefing-mode .catalog-toolbar-shell {\n      display: none;", html)
+        desk_js = READING_DESK_JS_PATH.read_text(encoding="utf-8")
+        self.assertIn("&& !document.body.classList.contains('briefing-mode')", desk_js)
 
         watch_start = html.index('<section class="desk-watch"')
         status_start = html.index('<div class="daily-status-row">', watch_start)
-        notice_markup = html.index('<div class="daily-briefing-notice"', status_start)
-        countdown_markup = html.index('<div class="daily-watch-countdown"', notice_markup)
+        countdown_markup = html.index('<div class="daily-watch-countdown"', status_start)
         watch_end = html.index('</section>', countdown_markup)
         sidebar_end = html.index('</aside>', watch_start)
         self.assertIn('aria-label="Catalog watch"', html[watch_start:status_start])
         self.assertNotIn('desk-watch-title', html)
         self.assertNotIn('<details', html[watch_start:watch_end])
-        self.assertLess(status_start, notice_markup)
-        self.assertLess(notice_markup, countdown_markup)
-        self.assertLess(countdown_markup, watch_end)
+        self.assertLess(status_start, countdown_markup)
         self.assertLess(watch_end, sidebar_end)
 
         status_css_start = html.index("\n    .daily-status-row {\n") + 1
@@ -1807,25 +1894,43 @@ setTimeout(function() {
         ):
             self.assertIn(declaration, status_css)
 
-        css_start = html.index(".daily-briefing-notice {\n")
-        css_end = html.index("}", css_start)
-        notice_css = html[css_start:css_end]
-        for declaration in (
-            "position: relative;",
-            "display: block;",
-            "flex: 0 1 auto;",
-            "width: 100%;",
-            "min-width: 0;",
-        ):
-            self.assertIn(declaration, notice_css)
-        self.assertNotIn("position: absolute;", notice_css)
-        self.assertNotIn(".daily-briefing-notice {\n        padding:", html)
-
-        self.assertNotIn(".daily-briefing-notice[open]", html)
-
-        summary_start = html.index(".daily-briefing-summary {\n")
-        summary_end = html.index("}", summary_start)
-        self.assertNotIn("cursor: pointer;", html[summary_start:summary_end])
+    def test_briefing_tab_routes_and_hides_the_catalog_tools(self):
+        """#briefing selects the Briefing page, hides Papers and Stats, and loads its body once."""
+        result = self.run_top_level_tab_block("#briefing", """
+const initial = {
+  active: ACTIVE_TOP_LEVEL_TAB,
+  briefingMode: bodyClasses['briefing-mode'],
+  statsMode: bodyClasses['stats-mode'],
+  panels: { papers: papersPanel.hidden, briefing: briefingPanel.hidden, stats: statsPanel.hidden },
+  selected: tabs.map(tab => tab.attributes['aria-selected']),
+  loads: briefingLoads.length,
+  searches: searchCalls.length
+};
+CATALOG_DATA_READY = true;
+tabs[0].listeners.click[0]();
+dispatchWindowEvent('hashchange');
+const papers = { active: ACTIVE_TOP_LEVEL_TAB, briefingMode: bodyClasses['briefing-mode'], panels: [papersPanel.hidden, briefingPanel.hidden], searches: searchCalls.length };
+tabs[1].listeners.click[0]();
+dispatchWindowEvent('hashchange');
+process.stdout.write(JSON.stringify({
+  initial, papers,
+  back: { active: ACTIVE_TOP_LEVEL_TAB, hash: window.location.hash, loads: briefingLoads.length, searches: searchCalls.length },
+  normalized: ['briefing', 'nope'].map(normalizeTopLevelTab)
+}));
+""")
+        self.assertEqual(result["initial"], {
+            "active": "briefing",
+            "briefingMode": True,
+            "statsMode": False,
+            "panels": {"papers": True, "briefing": False, "stats": True},
+            "selected": ["false", "true", "false", "false"],
+            "loads": 1,
+            "searches": 0,
+        })
+        self.assertEqual(result["papers"], {"active": "papers", "briefingMode": False, "panels": [False, True], "searches": 1})
+        # Each activation asks for the page; loadBriefingPage itself fetches only once (see the node check).
+        self.assertEqual(result["back"], {"active": "briefing", "hash": "#briefing", "loads": 3, "searches": 1})
+        self.assertEqual(result["normalized"], ["briefing", "papers"])
 
     def test_daily_status_row_reflows_without_detached_positioning(self):
         """Daily status remains in flow and becomes compact on phones."""
@@ -1842,7 +1947,7 @@ setTimeout(function() {
         self.assertIn("@keyframes daily-watch-clock-spin", html)
         self.assertIn("animation: daily-watch-clock-spin 60s steps(60, end) infinite;", html)
         self.assertIn(".daily-watch-clock::after { animation: none; }", html)
-        self.assertIn(".daily-briefing-notice {\n        width: 100%;", html)
+        self.assertNotIn(".daily-briefing-notice", html)
         meta_start = html.index(".daily-watch-countdown-meta {\n")
         meta_end = html.index("}", meta_start)
         self.assertIn("display: none;", html[meta_start:meta_end])
@@ -1962,7 +2067,7 @@ setTimeout(function() {
         self.assertLess(tabs_index, actions_index)
         self.assertNotIn("top-level-tabs", main)
         for marker in (
-            'id="daily-briefing-notice"',
+            'id="briefing-tab"',
             'id="daily-watch-countdown"',
             'id="research-prompt-launch"',
             'href="submit.html"',
@@ -1982,8 +2087,9 @@ setTimeout(function() {
         for element_id in (
             "papers-tab",
             "stats-tab",
+            "briefing-tab",
+            "briefing-panel",
             "header-github-link",
-            "daily-briefing-notice",
             "daily-watch-countdown",
         ):
             self.assertEqual(html.count(f'id="{element_id}"'), 1)
@@ -1992,10 +2098,16 @@ setTimeout(function() {
         apply_end = html.index("function setTopLevelTab(tab, options) {", apply_start)
         apply_helper = html[apply_start:apply_end]
         self.assertIn("document.body.classList.toggle('stats-mode', isStats);", apply_helper)
+        self.assertIn("document.body.classList.toggle('briefing-mode', isBriefing);", apply_helper)
+        self.assertIn("papersPanel.hidden = isStats || isBriefing;", apply_helper)
+        self.assertIn("if (briefingPanel) briefingPanel.hidden = !isBriefing;", apply_helper)
+        self.assertNotIn("daily-briefing-notice", sidebar)
         self.assertIn("syncReadingDeskPanel();", apply_helper)
 
         self.assertRegex(style, r"grid-template-columns:\s*var\(--desk-rail\)\s+minmax\([^;]+\)\s+1px\s+minmax\([^;]+\);")
         self.assertIn(".reading-desk.stats-mode .layout", style)
+        self.assertIn(".reading-desk.briefing-mode .layout", style)
+        self.assertIn(".stats-mode .survey-nav, .briefing-mode .survey-nav, .blogs-mode .survey-nav { display: none; }", style)
         self.assertIn(".reading-desk .layout.table-view-active", style)
         self.assertIn("grid-template-columns: var(--desk-rail) minmax(0, 1fr);", style)
         self.assertIn(".reading-desk .catalog-toolbar-shell { position: sticky;", style)
@@ -2017,7 +2129,8 @@ setTimeout(function() {
         mobile_css = editorial_css[mobile_start:]
 
         self.assertIn(
-            "body > header,\n    body:not(.stats-mode) > header,\n    body.stats-mode > header {",
+            "body > header,\n    body:not(.stats-mode):not(.briefing-mode) > header,\n"
+            "    body.stats-mode > header,\n    body.briefing-mode > header {",
             desktop_css,
         )
         self.assertIn("padding: 0 24px;", desktop_css)
@@ -2056,6 +2169,7 @@ setTimeout(function() {
         hash_end = html.index("function applyTopLevelTab() {", hash_start)
         hash_helper = html[hash_start:hash_end]
         self.assertIn("hash === '#stats'", hash_helper)
+        self.assertIn("hash === '#briefing'", hash_helper)
         self.assertIn("hash === '#blogs'", hash_helper)
         self.assertIn("hash === '#section-blogs'", hash_helper)
 
@@ -2109,7 +2223,7 @@ setTimeout(function() {
     def test_top_level_hash_mapping_behavior(self):
         """Blogs has its own route while survey anchors stay on Papers."""
         result = self.run_top_level_tab_block("", """
-const hashes = ['#stats', '#papers', '#blogs', '#section-blogs', '', '#part-building', '#chapter-4', '#section-4-5'];
+const hashes = ['#stats', '#papers', '#briefing', '#blogs', '#section-blogs', '', '#part-building', '#chapter-4', '#section-4-5'];
 const result = hashes.map(function(hash) {
   return { hash: hash, tab: getTopLevelTabFromHash(hash) };
 });
@@ -2120,6 +2234,7 @@ process.stdout.write(JSON.stringify(result));
             [
                 {"hash": "#stats", "tab": "stats"},
                 {"hash": "#papers", "tab": "papers"},
+                {"hash": "#briefing", "tab": "briefing"},
                 {"hash": "#blogs", "tab": "blogs"},
                 {"hash": "#section-blogs", "tab": "blogs"},
                 {"hash": "", "tab": "papers"},
@@ -2136,7 +2251,7 @@ CATALOG_DATA_READY = true;
 ACTIVE_SECTION_FILTER = 'architecture/topology';
 searchInput.value = 'depth';
 window.location.search = '?q=depth';
-tabs[2].listeners.click[0]();
+blogsTab.listeners.click[0]();
 dispatchWindowEvent('hashchange');
 const entered = {
   active: ACTIVE_TOP_LEVEL_TAB,
@@ -2147,7 +2262,7 @@ const entered = {
   heading: catalogHeading.textContent,
   searchLabel: searchInput.attributes['aria-label'],
   placeholder: searchInput.placeholder,
-  panels: [papersPanel.hidden, statsPanel.hidden],
+  panels: [papersPanel.hidden, statsPanel.hidden, briefingPanel.hidden],
   searches: searchCalls.slice()
 };
 setBrowserHash('#section-blogs');
@@ -2161,13 +2276,13 @@ process.stdout.write(JSON.stringify({
         self.assertEqual(result["entered"], {
             "active": "blogs",
             "hash": "#blogs",
-            "selected": ["false", "false", "true"],
-            "tabStops": [-1, -1, 0],
+            "selected": ["false", "false", "false", "true"],
+            "tabStops": [-1, -1, -1, 0],
             "labelledBy": "blogs-tab",
             "heading": "Blogs",
             "searchLabel": "Search blogs",
             "placeholder": "Search blogs, authors, keywords…",
-            "panels": [False, True],
+            "panels": [False, True, True],
             "searches": ["depth"],
         })
         self.assertEqual(result["legacy"], {
@@ -2202,10 +2317,12 @@ const result = [
   runKey(0, 'ArrowRight'),
   runKey(1, 'ArrowRight'),
   runKey(2, 'ArrowRight'),
+  runKey(3, 'ArrowRight'),
   runKey(0, 'ArrowLeft'),
   runKey(1, 'ArrowLeft'),
   runKey(2, 'ArrowLeft'),
-  runKey(1, 'Home'),
+  runKey(3, 'ArrowLeft'),
+  runKey(2, 'Home'),
   runKey(0, 'End'),
   runKey(0, 'Enter'),
   runKey(0, ' ')
@@ -2214,11 +2331,13 @@ process.stdout.write(JSON.stringify(result));
 """)
         expected = []
         for key, source, target in (
-            ("ArrowRight", "papers-tab", "stats"),
+            ("ArrowRight", "papers-tab", "briefing"),
+            ("ArrowRight", "briefing-tab", "stats"),
             ("ArrowRight", "stats-tab", "blogs"),
             ("ArrowRight", "blogs-tab", "papers"),
             ("ArrowLeft", "papers-tab", "blogs"),
-            ("ArrowLeft", "stats-tab", "papers"),
+            ("ArrowLeft", "briefing-tab", "papers"),
+            ("ArrowLeft", "stats-tab", "briefing"),
             ("ArrowLeft", "blogs-tab", "stats"),
             ("Home", "stats-tab", "papers"),
             ("End", "papers-tab", "blogs"),
@@ -2259,15 +2378,20 @@ const result = {
   statsMode: bodyClasses['stats-mode'],
   papersHidden: papersPanel.hidden,
   statsHidden: statsPanel.hidden,
-  papersSelected: tabs[0].attributes['aria-selected'],
-  statsSelected: tabs[1].attributes['aria-selected'],
+  papersSelected: papersTab.attributes['aria-selected'],
+  statsSelected: statsTab.attributes['aria-selected'],
+  briefingHidden: briefingPanel.hidden,
+  briefingMode: bodyClasses['briefing-mode'],
+  briefingLoads: briefingLoads.length,
   renderCalls: renderStatsCalls,
   hashWrites: hashWrites,
   listeners: {
-    papersClick: (tabs[0].listeners.click || []).length,
-    papersKeydown: (tabs[0].listeners.keydown || []).length,
-    statsClick: (tabs[1].listeners.click || []).length,
-    statsKeydown: (tabs[1].listeners.keydown || []).length,
+    papersClick: (papersTab.listeners.click || []).length,
+    papersKeydown: (papersTab.listeners.keydown || []).length,
+    statsClick: (statsTab.listeners.click || []).length,
+    statsKeydown: (statsTab.listeners.keydown || []).length,
+    briefingClick: (briefingTab.listeners.click || []).length,
+    briefingKeydown: (briefingTab.listeners.keydown || []).length,
     hashchange: (windowListeners.hashchange || []).length
   }
 };
@@ -2279,6 +2403,9 @@ process.stdout.write(JSON.stringify(result));
         self.assertFalse(result["statsHidden"])
         self.assertEqual(result["papersSelected"], "false")
         self.assertEqual(result["statsSelected"], "true")
+        self.assertTrue(result["briefingHidden"])
+        self.assertFalse(result["briefingMode"])
+        self.assertEqual(result["briefingLoads"], 0)
         self.assertEqual(result["renderCalls"], [{"ready": False, "error": False}])
         self.assertEqual(result["hashWrites"], [])
         self.assertEqual(
@@ -2288,6 +2415,8 @@ process.stdout.write(JSON.stringify(result));
                 "papersKeydown": 1,
                 "statsClick": 1,
                 "statsKeydown": 1,
+                "briefingClick": 1,
+                "briefingKeydown": 1,
                 "hashchange": 1,
             },
         )
@@ -2295,9 +2424,9 @@ process.stdout.write(JSON.stringify(result));
     def test_top_level_click_history_reconcile_and_survey_anchor_restore_behavior(self):
         """History restores survey anchors in the list view without touching filters or the hash."""
         result = self.run_top_level_tab_block("", """
-tabs[1].listeners.click[0]();
+statsTab.listeners.click[0]();
 const firstClick = { active: ACTIVE_TOP_LEVEL_TAB, writes: hashWrites.slice() };
-tabs[1].listeners.click[0]();
+statsTab.listeners.click[0]();
 const repeatedClick = { active: ACTIVE_TOP_LEVEL_TAB, writes: hashWrites.slice() };
 
 hashWrites.length = 0;
@@ -2370,7 +2499,7 @@ process.stdout.write(JSON.stringify({
     def test_catalog_load_reconcile_preserves_empty_hash_user_choice_but_honors_hash(self):
         """Load completion preserves an unrepresented user choice unless a hash drives state."""
         result = self.run_top_level_tab_block("", """
-tabs[1].listeners.click[0]();
+statsTab.listeners.click[0]();
 setBrowserHash('');
 CATALOG_DATA_READY = true;
 restoreTopLevelTabAfterCatalogLoad();
@@ -3336,12 +3465,15 @@ process.stdout.write(JSON.stringify({{
         stats_end = html.index("  </style>", stats_start)
         stats_css = html[stats_start:stats_end]
 
-        self.assertIn("html:has(body.stats-mode),\n    body.stats-mode {", stats_css)
+        self.assertIn(
+            "html:has(body.stats-mode),\n    html:has(body.briefing-mode),\n    body.stats-mode,\n    body.briefing-mode {",
+            stats_css,
+        )
         self.assertIn("height: auto;\n      min-height: 100%;", stats_css)
-        self.assertIn("html:has(body.stats-mode) {\n      overflow-y: auto;", stats_css)
-        self.assertIn("body.stats-mode {\n      min-height: 100vh;\n      overflow: visible;", stats_css)
+        self.assertIn("html:has(body.stats-mode), html:has(body.briefing-mode) {\n      overflow-y: auto;", stats_css)
+        self.assertIn("body.stats-mode, body.briefing-mode {\n      min-height: 100vh;\n      overflow: visible;", stats_css)
         self.assertIn("min-height: calc(100vh - 61px);", stats_css)
-        self.assertIn("body.stats-mode main {\n      height: auto;", stats_css)
+        self.assertIn("body.stats-mode main, body.briefing-mode main {\n      height: auto;", stats_css)
         self.assertIn("overflow: visible;\n      overscroll-behavior: auto;", stats_css)
         self.assertNotIn("body.stats-mode main {\n        overflow: hidden;", stats_css)
         self.assertNotIn("scrollbar-gutter", stats_css)
@@ -3350,13 +3482,13 @@ process.stdout.write(JSON.stringify({{
         desktop_start = stats_css.index("@media (min-width: 1180px) and (min-height: 700px)")
         desktop_end = stats_css.index("@media (max-width: 1020px)", desktop_start)
         desktop_css = stats_css[desktop_start:desktop_end]
-        self.assertIn("body.stats-mode .layout {\n        padding-top: 14px;", desktop_css)
+        self.assertIn("body.stats-mode .layout, body.briefing-mode .layout {\n        padding-top: 14px;", desktop_css)
         self.assertNotIn(".stats-metric-note {\n        display: none;", stats_css)
 
         footer_media_start = stats_css.index("@media (min-width: 1180px) and (min-height: 860px)")
         footer_media_end = stats_css.index("@media (max-width: 1020px)", footer_media_start)
         footer_media_css = stats_css[footer_media_start:footer_media_end]
-        self.assertIn("body.stats-mode footer {\n        display: none;", footer_media_css)
+        self.assertIn("body.stats-mode footer, body.briefing-mode footer {\n        display: none;", footer_media_css)
         self.assertNotIn(".stats-scope {\n        display: none;", stats_css)
         self.assertNotIn("body.stats-mode footer", stats_css[:footer_media_start])
 
@@ -4605,8 +4737,6 @@ class DocumentationConsistencyTests(unittest.TestCase):
 
     def test_reader_facing_text_never_frames_the_taxonomy_as_a_survey_paper(self):
         """Only preserved data keys, identifiers, CSS classes and DOM ids may still say "survey"."""
-        import re
-
         preserved = re.compile(
             r"survey_(?:section|core|taxonomy)\w*"  # YAML/JSON keys and derived names
             r"|\bSURVEY\w*"  # Python/JS constants

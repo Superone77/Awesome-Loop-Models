@@ -138,6 +138,7 @@ function syncReadingDeskPanel() {
   if (!dialog) return;
   const layout = document.querySelector('.layout');
   const wideList = readingDeskWide.matches && !document.body.classList.contains('stats-mode')
+    && !document.body.classList.contains('briefing-mode')
     && !layout.classList.contains('table-view-active');
   const collapsed = wideList && readingDeskDetailCollapsed;
   const showColumn = wideList && !collapsed;

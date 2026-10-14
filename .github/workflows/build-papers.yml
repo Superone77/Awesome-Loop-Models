@@ -38,7 +38,7 @@ jobs:
           print(f"Validated {len(papers)} paper YAML files and {len(blogs)} blog YAML files")
           EOF
 
-      - name: Build papers.json, submission-meta.json, README.md, and TAGS.md
+      - name: Build papers.json, briefing-latest.json, submission-meta.json, README.md, and TAGS.md
         run: python3 scripts/build.py
 
       - name: Check static asset budgets
