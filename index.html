@@ -4257,8 +4257,8 @@
         <button type="button" class="top-level-tab" id="blogs-tab" role="tab" aria-controls="papers-panel" aria-selected="false" tabindex="-1">Blogs</button>
       </div>
 
-      <nav class="survey-nav" id="survey-nav" aria-label="Survey chapters" hidden>
-        <div class="survey-nav-title">Survey chapters</div>
+      <nav class="survey-nav" id="survey-nav" aria-label="Chapters" hidden>
+        <div class="survey-nav-title">Chapters</div>
         <ol class="survey-nav-list" id="survey-nav-list"></ol>
       </nav>
 
@@ -4352,16 +4352,16 @@
       <div class="filter-sidebar-header">
         <div>
           <div class="filter-sidebar-title">Filters</div>
-          <div class="filter-sidebar-subtitle">Survey section, design axes, publication date, and display options.</div>
+          <div class="filter-sidebar-subtitle">Section, design axes, publication date, and display options.</div>
         </div>
         <button type="button" class="filter-sidebar-close" id="filter-sidebar-close" aria-label="Close filters">✕</button>
       </div>
       <div class="filter-sidebar-body">
         <div class="controls-bar filter-sidebar-controls">
           <div class="section-filter-bar">
-            <label for="section-filter" class="sort-label">Survey section</label>
+            <label for="section-filter" class="sort-label">Section</label>
             <select id="section-filter" onchange="setSectionFilter(this.value)">
-              <option value="">All survey sections</option>
+              <option value="">All sections</option>
             </select>
             <p class="section-filter-note">Matches primary and secondary placements; the list still files each paper under its primary section.</p>
           </div>
@@ -4428,7 +4428,7 @@
                 <th scope="col"><div class="table-sort-header"><button type="button" class="sort-btn table-sort-btn" data-sort="date" onclick="setSort('date')">Date</button><button type="button" class="table-sort-direction-btn" data-sort="date" data-direction="desc" onclick="toggleSortDirection('date')" aria-label="Toggle Date sort direction" aria-pressed="false">↕</button></div></th>
                 <th scope="col">Venue</th>
                 <th scope="col">Links</th>
-                <th scope="col">Survey section</th>
+                <th scope="col">Section</th>
                 <th scope="col">Design axes</th>
                 <th scope="col"><div class="table-sort-header"><button type="button" class="sort-btn table-sort-btn" data-sort="citations" onclick="setSort('citations')">Citations</button><button type="button" class="table-sort-direction-btn" data-sort="citations" data-direction="desc" onclick="toggleSortDirection('citations')" aria-label="Toggle Citations sort direction" aria-pressed="false">↕</button></div></th>
                 <th scope="col"><div class="table-sort-header"><button type="button" class="sort-btn table-sort-btn" data-sort="stars" onclick="setSort('stars')">Stars</button><button type="button" class="table-sort-direction-btn" data-sort="stars" data-direction="desc" onclick="toggleSortDirection('stars')" aria-label="Toggle Stars sort direction" aria-pressed="false">↕</button></div></th>
@@ -4516,8 +4516,8 @@
       <div class="stats-dashboard-grid stats-dashboard-secondary stats-landscape-secondary">
         <article class="stats-dashboard-card stats-chapter-card" aria-labelledby="chapter-mix-heading">
           <header class="stats-card-header">
-            <div class="stats-section-index">Survey structure</div>
-            <h3 id="chapter-mix-heading">Survey chapters</h3>
+            <div class="stats-section-index">Topic map</div>
+            <h3 id="chapter-mix-heading">Chapters</h3>
             <p>Each paper counts once, under the chapter of its primary section.</p>
           </header>
           <div id="stats-chapter-distribution" aria-live="polite"></div>
@@ -4537,7 +4537,7 @@
             <div>
               <div class="stats-section-index">Recent 90-day window</div>
               <h3 id="active-directions-heading">Active directions</h3>
-              <p>Most frequent survey sections and claims among papers from the latest 90 days.</p>
+              <p>Most frequent sections and claims among papers from the latest 90 days.</p>
             </div>
             <div class="stats-direction-tabs" role="group" aria-label="Active direction grouping">
               <button type="button" data-stats-direction="section" aria-pressed="true">Sections</button>
@@ -5386,7 +5386,7 @@ function renderStatsSparkline(container, values) {
  * @param {HTMLElement|null} container Distribution container.
  * @param {{totalPapers: number, assignmentCount: number, rows: Array<Object>}} distribution Distribution data.
  * @param {{limit?: number, facetGroup?: string, anchorFor?: function(Object): string}=} options
- *   Optional row limit, filter link group, or survey-anchor builder for unfiltered list links.
+ *   Optional row limit, filter link group, or topic-map anchor builder for unfiltered list links.
  * @returns {void}
  */
 function renderStatsDistribution(container, distribution, options) {
@@ -5453,7 +5453,7 @@ function renderStatsDistribution(container, distribution, options) {
   container.appendChild(list);
 }
 
-/** Label survey sections by number and title; other groups keep their controlled values. */
+/** Label taxonomy sections by number and title; other groups keep their controlled values. */
 function getStatsDirectionLabels(group) {
   if (group !== 'section') return {};
   return SURVEY.sections.reduce(function(labels, section) {
@@ -5462,7 +5462,7 @@ function getStatsDirectionLabels(group) {
   }, {});
 }
 
-/** Render the current Top-6 recent survey-section or claim ranking. */
+/** Render the current Top-6 recent section or claim ranking. */
 function renderStatsActiveDirections() {
   var container = document.getElementById('stats-active-directions');
   if (!container || !CATALOG_DATA_READY) return;
@@ -5965,13 +5965,13 @@ const AXIS_CHIP_PREFIXES = {
   comparison: 'Compared'
 };
 
-/** Render one survey-section badge; it links to the section filter when papers carry it. */
+/** Render one section badge; it links to the section filter when papers carry it. */
 function renderSectionBadgeHtml(sectionId, isPrimary, numberOnly) {
   const section = SECTION_BY_ID[sectionId];
   if (!section) return '';
   const classes = ['paper-section-badge', isPrimary ? 'is-primary' : 'is-secondary'];
   if (ACTIVE_SECTION_FILTER === sectionId || ACTIVE_SECTION_FILTER === section.chapter) classes.push('is-active');
-  const title = (isPrimary ? 'Primary survey section: ' : 'Also discussed in: ') + formatSectionLabel(section);
+  const title = (isPrimary ? 'Primary section: ' : 'Also discussed in: ') + formatSectionLabel(section);
   const text = '<span class="paper-section-number">§' + escapeHtml(section.number) + '</span>'
     + (numberOnly ? '' : '<span class="paper-section-title">' + escapeHtml(section.title) + '</span>');
   return '<a href="' + escapeHtml(getFacetDrilldownHref('section', sectionId)) + '" class="' + classes.join(' ')
@@ -5979,7 +5979,7 @@ function renderSectionBadgeHtml(sectionId, isPrimary, numberOnly) {
     + (numberOnly ? ' aria-label="' + escapeHtml(title) + '"' : '') + '>' + text + '</a>';
 }
 
-/** Render every survey section of a record, primary first. */
+/** Render every taxonomy section of a record, primary first. */
 function renderSectionBadgesHtml(paper) {
   const sections = paper._sections || [];
   return sections.length
@@ -6001,10 +6001,10 @@ function renderAxisChipHtml(entry, omitPrefix) {
     + escapeHtml(entry.value) + '</a>';
 }
 
-/** Mark survey-core references with a quiet label. */
+/** Mark core references with a quiet label. */
 function renderSurveyCoreBadgeHtml(paper) {
   return paper.survey_core === true
-    ? '<span class="survey-core-badge" title="A core reference of the Looped Models Survey">Survey core</span>'
+    ? '<span class="survey-core-badge" title="A core reference for loop models">Core</span>'
     : '';
 }
 
@@ -6043,7 +6043,7 @@ function renderCard(paper, query) {
     + '</div></article>';
 }
 
-// ── State & Survey Taxonomy ──────────────────────────────────────────────────
+// ── State & Taxonomy ───────────────────────────────────────────────────────
 let CURRENT_SORT = 'date';
 let SORT_DIRECTIONS = {
   date: 'desc',
@@ -6378,7 +6378,7 @@ function normalizeTopLevelTab(tab) {
 }
 
 /**
- * Maps the current URL fragment to a top-level tab without consuming survey anchors.
+ * Maps the current URL fragment to a top-level tab without consuming topic-map anchors.
  * @param {string} hash URL fragment, including the leading hash marker.
  * @returns {'papers'|'stats'|'blogs'} The tab represented by the fragment.
  */
@@ -6387,12 +6387,12 @@ function getTopLevelTabFromHash(hash) {
   return hash === '#stats' ? 'stats' : 'papers';
 }
 
-/** Design-axis filter groups in survey order; the section filter is single-valued. */
+/** Design-axis filter groups in taxonomy order; the section filter is single-valued. */
 const FACET_GROUPS = ['loop_topology', 'sharing', 'depth_control', 'claims', 'comparison'];
 
 /** Return the reader-facing label for a filter group. */
 function getFacetGroupLabel(group) {
-  if (group === 'section') return 'Survey section';
+  if (group === 'section') return 'Section';
   const axis = SURVEY.axes && SURVEY.axes[group];
   return (axis && axis.label) || group;
 }
@@ -6621,18 +6621,18 @@ function handleTopLevelTabKeydown(event) {
   nextTab.focus();
 }
 
-/** Return the DOM id of a survey chapter heading in the list view. */
+/** Return the DOM id of a chapter heading in the list view. */
 function getChapterDomId(chapterNumber) {
   return 'chapter-' + chapterNumber;
 }
 
-/** Return the DOM id of a survey section heading in the list view. */
+/** Return the DOM id of a section heading in the list view. */
 function getSectionDomId(section) {
   return 'section-' + String(section.number).replace(/\./g, '-');
 }
 
 /**
- * Scroll the list view to a survey part, chapter or section anchor.
+ * Scroll the list view to a part, chapter or section anchor.
  * @param {string} hash URL fragment such as #chapter-4 or #section-4-5.
  * @returns {void}
  */
@@ -6649,8 +6649,8 @@ function restoreSurveyHashPosition(hash) {
 }
 
 /**
- * Reveal the Papers list and scroll to a survey anchor chosen from navigation.
- * @param {string} targetId Survey anchor element identifier.
+ * Reveal the Papers list and scroll to a topic-map anchor chosen from navigation.
+ * @param {string} targetId Topic-map anchor element identifier.
  * @returns {void}
  */
 function navigateToSurveyAnchor(targetId) {
@@ -6665,7 +6665,7 @@ function navigateToSurveyAnchor(targetId) {
   window.location.hash = nextHash;
 }
 
-/** Open the unfiltered list at a survey anchor, so Stats chapter counts match what is shown. */
+/** Open the unfiltered list at a topic-map anchor, so Stats chapter counts match what is shown. */
 function navigateToUnfilteredSurveyAnchor(targetId) {
   const nextUrl = new URL(window.location.href);
   nextUrl.search = '';
@@ -6713,7 +6713,7 @@ initTopLevelTabInteractions();
 setTopLevelTab(getTopLevelTabFromHash(window.location.hash), { updateHash: false });
 initResearchPrompt();
 
-/** Index the survey parts, chapters and sections published in papers.json. */
+/** Index the taxonomy parts, chapters and sections published in papers.json. */
 function setSurveyTaxonomy(taxonomy) {
   const source = taxonomy && typeof taxonomy === 'object' ? taxonomy : {};
   SURVEY = {
@@ -6797,7 +6797,7 @@ function preparePaperRecord(paper) {
     paper.desc || '',
     sections.map(function(sectionId) { return formatSectionLabel(SECTION_BY_ID[sectionId]); }).join(' '),
     paper._axisEntries.map(function(entry) { return entry.value; }).join(' '),
-    paper.survey_core === true ? 'survey core' : '',
+    paper.survey_core === true ? 'core reference' : '',
     paper.catalog_fit === 'adjacent' ? 'adjacent work ' + CATALOG_ADJACENT_NOTE : '',
     paper._addedDate
   ].join(' ').toLowerCase();
@@ -6981,7 +6981,7 @@ function matchHasCommentsOnly(paper) {
   return !HAS_COMMENTS_ONLY || paperHasCommunityComments(paper);
 }
 
-/** Populate chapter-grouped survey-section choices with catalog membership counts. */
+/** Populate chapter-grouped section choices with catalog membership counts. */
 function renderSectionFilter() {
   const select = document.getElementById('section-filter');
   if (!select) return;
@@ -6992,7 +6992,7 @@ function renderSectionFilter() {
     (paper._sections || []).forEach(function(sectionId) { sectionCounts[sectionId] = (sectionCounts[sectionId] || 0) + 1; });
     (paper._chapterSet || new Set()).forEach(function(chapter) { chapterCounts[chapter] = (chapterCounts[chapter] || 0) + 1; });
   });
-  select.innerHTML = '<option value="">All survey sections</option>' + SURVEY.chapters.map(function(chapter) {
+  select.innerHTML = '<option value="">All sections</option>' + SURVEY.chapters.map(function(chapter) {
     const sections = SURVEY.sections.filter(function(section) { return section.chapter === chapter.number; });
     return '<optgroup label="' + escapeHtml('§' + chapter.number + ' ' + chapter.title) + '">'
       + '<option value="' + escapeHtml(chapter.number) + '">All of §' + escapeHtml(chapter.number) + ' · ' + (chapterCounts[chapter.number] || 0) + '</option>'
@@ -7004,7 +7004,7 @@ function renderSectionFilter() {
   select.value = ACTIVE_SECTION_FILTER;
 }
 
-/** Change only the survey section; every other active filter keeps its value. */
+/** Change only the section; every other active filter keeps its value. */
 function setSectionFilter(value) {
   ACTIVE_SECTION_FILTER = isValidSectionFilter(value) ? value : '';
   const select = document.getElementById('section-filter');
@@ -7013,7 +7013,7 @@ function setSectionFilter(value) {
   rerenderCurrentResults();
 }
 
-/** Match any survey placement; a chapter number matches every section in that chapter. */
+/** Match any section placement; a chapter number matches every section in that chapter. */
 function matchSectionFilter(paper) {
   if (!ACTIVE_SECTION_FILTER) return true;
   if (Object.prototype.hasOwnProperty.call(CHAPTER_BY_NUMBER, ACTIVE_SECTION_FILTER)) {
@@ -7030,7 +7030,7 @@ function getSectionFilterLabel() {
   return formatSectionLabel(SECTION_BY_ID[ACTIVE_SECTION_FILTER]);
 }
 
-/** Blogs carry survey sections only, so design-axis and paper-status filters skip them. */
+/** Blogs carry taxonomy sections only, so design-axis and paper-status filters skip them. */
 function paperMatchesActiveFilters(paper, query, publicationDateFilter) {
   const isBlogs = ACTIVE_TOP_LEVEL_TAB === 'blogs';
   return (isBlogs || (paperMatchesFacetFilters(paper) && matchAcceptedOnly(paper) && matchHighInfluenceOnly(paper) && matchNewlyArrivedOnly(paper)))
@@ -7282,7 +7282,7 @@ function toggleSortDirection(sortKey) {
   renderAllGrids((document.getElementById('search').value || '').trim().toLowerCase());
 }
 
-/** Count filtered papers by primary chapter for the survey navigation. */
+/** Count filtered papers by primary chapter for the chapter navigation. */
 function buildPrimaryChapterCounts(papers) {
   const counts = {};
   papers.forEach(function(paper) {
@@ -7291,7 +7291,7 @@ function buildPrimaryChapterCounts(papers) {
   return counts;
 }
 
-/** Render one survey-section group of cards. */
+/** Render one section group of cards. */
 function renderSurveySectionHtml(section, papers, query) {
   return '<section class="survey-section" id="' + escapeHtml(getSectionDomId(section)) + '" data-section-id="' + escapeHtml(section.id) + '">'
     + '<header class="survey-section-header">'
@@ -7350,15 +7350,15 @@ function renderSurveyListHtml(papers, query) {
   }).join('');
 
   if (unplaced.length) {
-    html += '<section class="survey-part" id="part-unplaced"><header class="survey-part-header"><h3 class="survey-part-title">Not yet placed in the survey</h3></header>'
-      + '<section class="survey-section"><header class="survey-section-header"><h5 class="survey-section-title">Awaiting a survey section</h5>'
+    html += '<section class="survey-part" id="part-unplaced"><header class="survey-part-header"><h3 class="survey-part-title">Not yet placed in the topic map</h3></header>'
+      + '<section class="survey-section"><header class="survey-section-header"><h5 class="survey-section-title">Awaiting a section</h5>'
       + '<span class="survey-count">' + unplaced.length + '</span></header>'
       + '<div class="papers-grid">' + unplaced.map(function(paper) { return renderCard(paper, query); }).join('') + '</div></section></section>';
   }
   return html;
 }
 
-/** Update survey navigation counts and dim chapters the current filters leave empty. */
+/** Update chapter navigation counts and dim chapters the current filters leave empty. */
 function syncSurveyNavCounts(filteredPapers) {
   const counts = ACTIVE_TOP_LEVEL_TAB === 'blogs' ? {} : buildPrimaryChapterCounts(filteredPapers);
   document.querySelectorAll('.survey-nav-link[data-chapter]').forEach(function(link) {

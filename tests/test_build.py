@@ -558,7 +558,8 @@ class DailyBriefingBuildTests(unittest.TestCase):
         self.assertEqual(payload["meta"]["latest_briefing_date"], "2026-04-28")
         self.assertEqual(payload["meta"]["briefing_section_title"], "Daily Briefing")
         self.assertEqual(payload["meta"]["taxonomy_note"], build.TAXONOMY_NOTE)
-        self.assertIn("Looped Models Survey", payload["meta"]["taxonomy_note"])
+        self.assertIn("topic map", payload["meta"]["taxonomy_note"])
+        self.assertNotIn("survey", payload["meta"]["taxonomy_note"].lower())
         self.assertEqual(payload["survey_taxonomy"], build.render_survey_taxonomy())
         self.assertEqual(
             set(payload),
@@ -672,7 +673,7 @@ process.stdout.write(JSON.stringify(result));
         production_block = "\n".join((
             between("function escapeHtml(str) {", "function getPaperVenueLabel("),
             between("const CATALOG_ADJACENT_NOTE = ", "\n", include_end=True),
-            between("const AXIS_CHIP_PREFIXES = {", "/** Mark survey-core references"),
+            between("const AXIS_CHIP_PREFIXES = {", "/** Mark core references"),
             between("let CURRENT_SORT = 'date';", "let CURRENT_VIEW = 'list';", include_end=True),
             between("function normalizeTopLevelTab(tab) {", "initResearchPrompt();"),
             between("function setSurveyTaxonomy(taxonomy) {", "function setFacetFilterOpen(isOpen) {"),
@@ -1102,7 +1103,7 @@ process.stdout.write(JSON.stringify({
   axes: paper._axisEntries,
   visibleAxes: getVisibleAxisEntries(paper).map(function(entry) { return entry.group + '=' + entry.value; }),
   links: Object.keys(paper.links),
-  search: ['§4.1 loop topology', 'prelude-core-coda', 'survey core'].map(function(text) { return paper._searchText.includes(text); }),
+  search: ['§4.1 loop topology', 'prelude-core-coda', 'core reference'].map(function(text) { return paper._searchText.includes(text); }),
   blog: { type: blog.entry_type, axes: blog._axisEntries, primary: blog._primarySection },
   unplaced: { sections: unplaced._sections, primary: unplaced._primarySection, label: unplaced._sectionLabel }
 }));
@@ -1233,7 +1234,7 @@ process.stdout.write(JSON.stringify({
         self.assertIn('class="paper-section-badge is-primary is-active"', result["primary"])
         self.assertIn('href="?section=architecture%2Ftopology&amp;sharing=full#papers"', result["primary"])
         self.assertIn('<span class="paper-section-title">Loop topology</span>', result["primary"])
-        self.assertIn('title="Primary survey section: §4.1 Loop topology"', result["primary"])
+        self.assertIn('title="Primary section: §4.1 Loop topology"', result["primary"])
         self.assertIn('class="paper-section-badge is-secondary"', result["secondary"])
         self.assertIn('aria-label="Also discussed in: §6.2 Test-time scaling"', result["secondary"])
         self.assertNotIn("paper-section-title", result["secondary"])
@@ -1295,7 +1296,7 @@ renderSectionFilter();
 process.stdout.write(JSON.stringify({ papers: papers, blogs: sectionFilter.innerHTML }));
 """)
         html = result["papers"]["html"]
-        self.assertTrue(html.startswith('<option value="">All survey sections</option>'))
+        self.assertTrue(html.startswith('<option value="">All sections</option>'))
         self.assertEqual(html.count("<optgroup"), 9)
         self.assertIn('<optgroup label="§4 Architecture and Design"><option value="4">All of §4 · 2</option>', html)
         self.assertIn('<option value="architecture/topology">§4.1 Loop topology · 2</option>', html)
@@ -1333,13 +1334,13 @@ process.stdout.write(JSON.stringify({
         self.assertNotIn('data-facet-group="sharing"', paper)
         self.assertIn("§8.1", result["blog"])
         self.assertNotIn("desk-axis-list", result["blog"])
-        self.assertEqual(result["unplaced"], "<p>Not yet placed in a survey section.</p>")
+        self.assertEqual(result["unplaced"], "<p>Not yet placed in a section.</p>")
 
     def test_stats_distribution_rows_link_to_filters_or_survey_anchors(self):
         """Stats rows are safe DOM nodes; axis rows reset filters and chapter rows open anchors."""
         html = INDEX_HTML_PATH.read_text(encoding="utf-8")
         renderer_start = html.index("function renderStatsDistribution(")
-        renderer = html[renderer_start:html.index("/** Label survey sections by number", renderer_start)]
+        renderer = html[renderer_start:html.index("/** Label taxonomy sections by number", renderer_start)]
         self.assertNotIn("innerHTML", renderer)
         result = self.run_top_level_tab_block("#stats", """
 class FakeElement {
@@ -1564,7 +1565,7 @@ setTimeout(function() {
         html = INDEX_HTML_PATH.read_text(encoding="utf-8")
         desk = READING_DESK_JS_PATH.read_text(encoding="utf-8")
         render_start = html.index("function renderCard(paper, query) {")
-        render_end = html.index("// ── State & Survey Taxonomy", render_start)
+        render_end = html.index("// ── State & Taxonomy", render_start)
         card = html[render_start:render_end]
         self.assertIn("function getPrimaryPaperUrl(paper)", html)
         self.assertIn("paper.links.blog", html)
@@ -1583,7 +1584,9 @@ setTimeout(function() {
         html = INDEX_HTML_PATH.read_text(encoding="utf-8")
         self.assertIn("survey-core-badge", html)
         self.assertIn("paper.survey_core === true", html)
-        self.assertIn("A core reference of the Looped Models Survey", html)
+        self.assertIn('title="A core reference for loop models">Core</span>', html)
+        self.assertNotIn("Looped Models Survey", html)
+        self.assertNotIn("Survey core", html)
         self.assertNotIn("foundation", html)
         self.assertNotIn("category-disclaimer", html)
         self.assertNotIn("desk-scope", html)
@@ -1602,7 +1605,7 @@ setTimeout(function() {
         html = INDEX_HTML_PATH.read_text(encoding="utf-8")
         desk = READING_DESK_JS_PATH.read_text(encoding="utf-8")
         render_start = html.index("function renderCard(paper, query) {")
-        render_end = html.index("// ── State & Survey Taxonomy", render_start)
+        render_end = html.index("// ── State & Taxonomy", render_start)
         marker = '(paper.must_read ? \'<span class="desk-must-read">Must read</span>\' : \'\')'
         self.assertIn(marker, html[render_start:render_end])
         self.assertIn(marker, desk)
@@ -1879,7 +1882,7 @@ setTimeout(function() {
             'class="sort-btn table-sort-btn" data-sort="date" onclick="setSort(\'date\')">Date</button>',
             '<th scope="col">Venue</th>',
             '<th scope="col">Links</th>',
-            '<th scope="col">Survey section</th>',
+            '<th scope="col">Section</th>',
             '<th scope="col">Design axes</th>',
             'class="sort-btn table-sort-btn" data-sort="citations" onclick="setSort(\'citations\')">Citations</button>',
             'class="sort-btn table-sort-btn" data-sort="stars" onclick="setSort(\'stars\')">Stars</button>',
@@ -2900,7 +2903,8 @@ process.stdout.write(JSON.stringify([niceStatsAxis(17, 4), niceStatsAxis(45, 4),
             'data-stats-range="all"',
             'aria-pressed="true">1Y</button>',
             "Release trend",
-            "Survey chapters",
+            "Topic map",
+            "Chapters",
             "Loop topology",
             "Active directions",
         ):
@@ -3518,7 +3522,7 @@ process.stdout.write(JSON.stringify({{
         html = INDEX_HTML_PATH.read_text(encoding="utf-8")
         desk = READING_DESK_JS_PATH.read_text(encoding="utf-8")
         render_start = html.index("function renderCard(paper, query) {")
-        render_end = html.index("// ── State & Survey Taxonomy", render_start)
+        render_end = html.index("// ── State & Taxonomy", render_start)
         render_snippet = html[render_start:render_end]
 
         self.assertIn('class="desk-card-date"', render_snippet)
@@ -3546,7 +3550,7 @@ process.stdout.write(JSON.stringify({{
         self.assertNotIn("showComfortablePaperDensity", html)
 
         render_start = html.index("function renderCard(paper, query) {")
-        render_end = html.index("// ── State & Survey Taxonomy", render_start)
+        render_end = html.index("// ── State & Taxonomy", render_start)
         render_snippet = html[render_start:render_end]
         self.assertIn('<article class="paper-card"', render_snippet)
         self.assertIn('class="desk-paper-select"', render_snippet)
@@ -3571,7 +3575,7 @@ process.stdout.write(JSON.stringify({{
         detail_start = desk.index("function renderReadingDeskDetail(paper) {")
         detail_end = desk.index("function syncReadingDeskSelection(papers) {", detail_start)
         detail = desk[detail_start:detail_end]
-        self.assertIn("<h3>Survey placement</h3>' + renderReadingDeskSurveyHtml(paper)", detail)
+        self.assertIn("<h3>Topic-map placement</h3>' + renderReadingDeskSurveyHtml(paper)", detail)
         self.assertIn("renderSurveyCoreBadgeHtml(paper)", detail)
         self.assertIn('<h3 id="desk-sources-title">Sources</h3>', detail)
         self.assertIn("renderPaperLinksHtml(paper, false)", detail)
@@ -3930,7 +3934,7 @@ class ReadmeRenderingTests(unittest.TestCase):
         readme = self._render_front_page(papers)
 
         self.assertIn(
-            f"<b>3 papers</b> · {len(build.SURVEY_SECTIONS)} survey sections · "
+            f"<b>3 papers</b> · {len(build.SURVEY_SECTIONS)} sections · "
             '<a href="https://example.test/repo/index.html">browse all →</a>',
             readme,
         )
@@ -3972,10 +3976,10 @@ class ReadmeRenderingTests(unittest.TestCase):
             }
         ]
         readme = self._render_front_page(papers, blogs)
-        survey_map = readme[readme.index("## 🗺️ Survey map"):readme.index("## 🌟 Start here") if "## 🌟 Start here" in readme else readme.index("## 🆕 Latest additions")]
+        survey_map = readme[readme.index("## 🗺️ Topic map"):readme.index("## 🌟 Start here") if "## 🌟 Start here" in readme else readme.index("## 🆕 Latest additions")]
 
-        self.assertLess(readme.index("## At a glance"), readme.index("## 🗺️ Survey map"))
-        self.assertIn("<summary>Papers per survey section</summary>", survey_map)
+        self.assertLess(readme.index("## At a glance"), readme.index("## 🗺️ Topic map"))
+        self.assertIn("<summary>Papers per section</summary>", survey_map)
         self.assertIn("| § | Section | Primary | Any |", survey_map)
         self.assertIn("| §4.1 | Architecture and Design › Loop topology | 2 | 2 |", survey_map)
         self.assertIn("| §6.2 | Scaling Laws › Test-time scaling | 1 | 2 |", survey_map)
@@ -4059,7 +4063,7 @@ class ReadmeRenderingTests(unittest.TestCase):
         self.assertGreater(markdown.index("Introduces a compact loop-model benchmark entry."), summary_end)
         self.assertIn("<div><strong>Authors:</strong> Alice Example, Bob Example · ICLR 2026</div>", markdown)
         self.assertIn(
-            "<div><strong>Survey sections:</strong> §4.1 Loop topology · §6.2 Test-time scaling</div>",
+            "<div><strong>Sections:</strong> §4.1 Loop topology · §6.2 Test-time scaling</div>",
             markdown,
         )
         self.assertIn(
@@ -4124,7 +4128,7 @@ class ReadmeRenderingTests(unittest.TestCase):
         self.assertIn("<summary><strong>Loop Blog</strong>", markdown)
         self.assertNotIn("§", summary_html)
         self.assertIn(
-            "<div><strong>Survey sections:</strong> §5.1 Supervision, credit assignment, and loop-specific optimization"
+            "<div><strong>Sections:</strong> §5.1 Supervision, credit assignment, and loop-specific optimization"
             " · §7.2 KV cache and memory</div>",
             markdown,
         )
@@ -4364,7 +4368,7 @@ class TagsReferenceRegressionTests(unittest.TestCase):
 
         self.assertTrue(text.startswith("# Taxonomy vocabulary\n"))
         self.assertIn("There are no free-form tags", text)
-        self.assertIn("## Survey sections (`survey_section`)", text)
+        self.assertIn("## Taxonomy sections (`survey_section`)", text)
         self.assertIn("Counts are primary / any.", text)
         self.assertIn("- `architecture/topology` — §4.1 Loop topology (2 / 2)", text)
         self.assertIn("- `scaling/test-time` — §6.2 Test-time scaling (1 / 2)", text)
@@ -4598,6 +4602,30 @@ class DocumentationConsistencyTests(unittest.TestCase):
             ISSUE_TEMPLATE_CONFIG_PATH.read_text(encoding="utf-8"),
         ):
             self.assertIn("TAGS.md", text)
+
+    def test_reader_facing_text_never_frames_the_taxonomy_as_a_survey_paper(self):
+        """Only preserved data keys, identifiers, CSS classes and DOM ids may still say "survey"."""
+        import re
+
+        preserved = re.compile(
+            r"survey_(?:section|core|taxonomy)\w*"  # YAML/JSON keys and derived names
+            r"|\bSURVEY\w*"  # Python/JS constants
+            r"|\b[a-z]\w*Survey\w*|\bsurvey[A-Z]\w*"  # camelCase JS identifiers
+            r"|\bdata-survey-anchor|surveyAnchor"  # DOM data attribute
+            r"|\.?survey-[a-z][a-z-]*"  # CSS classes and DOM ids
+            r"|invalid-survey-value"  # audit finding code
+        )
+        paths = (
+            REPO_ROOT / "README.md", TAGS_PATH, TAXONOMY_PATH, CONTRIBUTING_PATH, INDEX_HTML_PATH, SUBMIT_PAGE_PATH,
+            READING_DESK_JS_PATH, README_HEADER_PATH, README_FOOTER_PATH, PR_TEMPLATE_PATH, FIX_ERROR_TEMPLATE_PATH,
+            ISSUE_TEMPLATE_CONFIG_PATH, ISSUE_TEMPLATE_CONFIG_TEMPLATE_PATH, PAPER_TEMPLATE_PATH, BLOG_TEMPLATE_PATH,
+        )
+        for path in paths:
+            for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+                remainder = preserved.sub("", line)
+                self.assertNotIn("survey", remainder.lower(), f"{path.name}:{number}: {line.strip()[:160]}")
+        for text in (build.TAXONOMY_NOTE, build.BLOG_SECTION_DESC):
+            self.assertNotIn("survey", text.lower())
 
     def test_contributor_docs_require_published_date_and_explain_added_date(self):
         for text in (
@@ -4902,7 +4930,7 @@ process.stdout.write(JSON.stringify(result));
             "slugifyFilenamePart",
             "extractArxivId",
             "targetFileExists",
-            "Survey placement",
+            "Topic-map placement",
             "Design axes",
             "PR message",
             "Open the vocabulary (TAGS.md)",
@@ -4921,7 +4949,7 @@ process.stdout.write(JSON.stringify(result));
             self.assertNotIn(retired, html)
         self.assertNotIn("new category", html.lower())
         self.assertNotIn("new tags", html.lower())
-        self.assertLess(html.index("Generate YAML and prepare your fork / PR"), html.index("Survey placement"))
+        self.assertLess(html.index("Generate YAML and prepare your fork / PR"), html.index("Topic-map placement"))
         self.assertLess(html.index("resource-title-input"), html.index('id="primary-section-select"'))
         self.assertLess(html.index('id="primary-section-select"'), html.index('id="loop_topology-picker"'))
         self.assertLess(html.index('id="comparison-picker"'), html.index("Generated target path"))
@@ -5026,7 +5054,7 @@ STATE.lists.claims = new Set(['stability', 'test-time-scaling']);
   snippet: buildSnippet()
 }})
 """)
-        self.assertEqual(result["missingSection"], "Please choose the primary survey section.")
+        self.assertEqual(result["missingSection"], "Please choose the primary section.")
         self.assertEqual(
             result["missingAxis"],
             "Please choose a loop topology value (use unspecified if the paper does not say).",

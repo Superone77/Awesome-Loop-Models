@@ -11,4 +11,4 @@
 - Generated YAML path:
 - Submission kind: paper / blog
 - Any context, caveats, or duplicate-check notes:
-- If this PR needs a controlled taxonomy-vocabulary change (a new survey section or axis value), list the proposal here and briefly explain why it should be added:
+- If this PR needs a controlled taxonomy-vocabulary change (a new taxonomy section or axis value), list the proposal here and briefly explain why it should be added:

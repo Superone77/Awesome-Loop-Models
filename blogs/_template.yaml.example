@@ -1,6 +1,6 @@
 # Save as: blogs/YYYY-MM-DD-shortname.yaml
 # Use this for substantive long-form technical posts about loop models.
-# Blogs live in one flat Blogs section. They list the survey sections they discuss
+# Blogs live in one flat Blogs section. They list the taxonomy sections they discuss
 # (see TAXONOMY.md) and use no other taxonomy fields.
 #
 # `published_date` is required: the post's release date as a quoted

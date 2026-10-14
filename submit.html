@@ -795,7 +795,7 @@
       <div class="hero-kicker">Catalog contribution</div>
       <h1>Submit to Awesome Loop Models</h1>
       <p class="hero-sub">
-        Fill the metadata once, place the entry in the Looped Models Survey and describe its loop with the controlled design axes, review the generated YAML, then copy the path and YAML into your own fork / branch for the final pull request step.
+        Fill the metadata once, place the entry in the topic map and describe its loop with the controlled design axes, review the generated YAML, then copy the path and YAML into your own fork / branch for the final pull request step.
       </p>
       <div class="hero-links">
         <a class="hero-link" href="index.html">← Back to the browser</a>
@@ -818,7 +818,7 @@
         <article class="wizard-step">
           <div class="wizard-step-kicker">Step 2</div>
           <h3>Fill metadata once</h3>
-          <p>Pick the survey sections (primary first) and, for papers, the loop topology, sharing, depth control, claims and comparison. Every value comes from a closed list; then review the generated path and YAML.</p>
+          <p>Pick the taxonomy sections (primary first) and, for papers, the loop topology, sharing, depth control, claims and comparison. Every value comes from a closed list; then review the generated path and YAML.</p>
         </article>
         <article class="wizard-step">
           <div class="wizard-step-kicker">Step 3</div>
@@ -826,7 +826,7 @@
           <p>Copy the generated path and YAML, fork the repository on GitHub, create a branch in your fork, add the file at that path, then open a pull request back to this repo.</p>
         </article>
       </div>
-      <div class="status" id="status-box">Loading the survey taxonomy and existing filenames from submission metadata…</div>
+      <div class="status" id="status-box">Loading the taxonomy and existing filenames from submission metadata…</div>
     </section>
 
     <section class="grid">
@@ -842,7 +842,7 @@
         </div>
 
         <p class="helper-note" id="kind-helper">
-          Paper submissions need survey sections and design axes. Blog submissions stay in the flat Blogs section, list survey sections only, and use filenames of the form <code>blogs/YYYY-MM-DD-shortname.yaml</code>.
+          Paper submissions need taxonomy sections and design axes. Blog submissions stay in the flat Blogs section, list taxonomy sections only, and use filenames of the form <code>blogs/YYYY-MM-DD-shortname.yaml</code>.
         </p>
 
         <form id="submission-form" class="submission-form" novalidate>
@@ -918,15 +918,15 @@
           </div>
         </form>
 
-        <h3>Survey placement</h3>
+        <h3>Topic-map placement</h3>
         <p>
-          Every entry lists the survey sections it belongs to, primary first. The browser files the entry under its primary section; the other sections make it findable from their filters. GitHub pull requests do not support structured form fields, so these pickers stay local before handing you off to the manual fork / branch / PR flow.
+          Every entry lists the taxonomy sections it belongs to, primary first. The browser files the entry under its primary section; the other sections make it findable from their filters. GitHub pull requests do not support structured form fields, so these pickers stay local before handing you off to the manual fork / branch / PR flow.
         </p>
 
         <div class="survey-pickers">
           <div class="picker" id="primary-section-picker">
             <div class="picker-head">
-              <label class="picker-title" for="primary-section-select">Primary survey section</label>
+              <label class="picker-title" for="primary-section-select">Primary section</label>
               <div class="picker-note">Required</div>
             </div>
             <select class="field-select" id="primary-section-select"></select>
@@ -934,7 +934,7 @@
           </div>
           <div class="picker" id="extra-sections-picker">
             <div class="picker-head">
-              <div class="picker-title" id="extra-sections-title">Other survey sections</div>
+              <div class="picker-title" id="extra-sections-title">Other sections</div>
               <div class="picker-note" id="extra-sections-count">0 selected</div>
             </div>
             <div class="option-list" id="extra-sections-list" role="group" aria-labelledby="extra-sections-title"></div>
@@ -954,7 +954,7 @@
             <div class="picker" id="claims-picker"></div>
             <div class="picker" id="comparison-picker"></div>
           </div>
-          <p class="helper-note"><code>survey_core</code> is generated as <code>false</code>; maintainers set it for core survey references. <code>must_read</code> and <code>catalog_fit</code> are maintainer-only and omitted.</p>
+          <p class="helper-note"><code>survey_core</code> is generated as <code>false</code>; maintainers set it for core loop-model references. <code>must_read</code> and <code>catalog_fit</code> are maintainer-only and omitted.</p>
         </div>
 
         <div class="action-row picker-actions">
@@ -962,7 +962,7 @@
           <button class="btn" id="clear-taxonomy-btn" type="button">Clear taxonomy selections</button>
         </div>
 
-        <p class="helper-note">Survey sections and design axes are closed vocabularies. If this submission needs a new value, describe the proposal in the PR message instead of inventing YAML values here.</p>
+        <p class="helper-note">Taxonomy sections and design axes are closed vocabularies. If this submission needs a new value, describe the proposal in the PR message instead of inventing YAML values here.</p>
 
         <div class="preview-box">
           <div class="preview-title">Generated target path</div>
@@ -1036,7 +1036,7 @@
       if (contributingLink) contributingLink.href = GITHUB_CONTRIBUTING_URL;
     }
 
-    // Design axes in survey order. Scalar axes take exactly one value; list axes may be empty.
+    // Design axes in taxonomy order. Scalar axes take exactly one value; list axes may be empty.
     const SCALAR_AXES = ['loop_topology', 'sharing', 'depth_control'];
     const LIST_AXES = ['claims', 'comparison'];
     const AXIS_NOTES = {
@@ -1090,7 +1090,7 @@
       });
     }
 
-    /** Return whether a survey taxonomy carries every list and axis the pickers need. */
+    /** Return whether a taxonomy payload carries every list and axis the pickers need. */
     function isValidSurveyTaxonomy(taxonomy) {
       if (!taxonomy || typeof taxonomy !== 'object') return false;
       const listsOk = ['parts', 'chapters', 'sections'].every(function(key) {
@@ -1245,7 +1245,7 @@
       renderYamlStringList(lines, key, items);
     }
 
-    /** Return the survey taxonomy fields of the current entry as YAML lines. */
+    /** Return the taxonomy fields of the current entry as YAML lines. */
     function buildTaxonomyLines(kind) {
       const lines = [];
       renderYamlStringList(lines, 'survey_section', getSurveySections());
@@ -1262,7 +1262,7 @@
 
     function buildSnippet() {
       const lines = buildTaxonomyLines(STATE.formKind);
-      return lines.length ? lines.join('\n') : '# No survey section selected yet.';
+      return lines.length ? lines.join('\n') : '# No section selected yet.';
     }
 
     function syncRequiredFieldStates() {
@@ -1299,12 +1299,12 @@
       const select = document.getElementById('primary-section-select');
       if (!select) return;
       if (!STATE.taxonomy) {
-        select.innerHTML = '<option value="">Survey taxonomy unavailable</option>';
+        select.innerHTML = '<option value="">Taxonomy unavailable</option>';
         select.disabled = true;
         return;
       }
       select.disabled = false;
-      select.innerHTML = '<option value="">Choose the primary survey section…</option>'
+      select.innerHTML = '<option value="">Choose the primary section…</option>'
         + STATE.taxonomy.chapters.map(function(chapter) {
           const sections = STATE.taxonomy.sections.filter(function(section) { return section.chapter === chapter.number; });
           return '<optgroup label="' + escapeHtml('§' + chapter.number + ' ' + chapter.title) + '">'
@@ -1317,7 +1317,7 @@
       select.value = STATE.primarySection;
     }
 
-    /** Render the chapter-grouped checklist of additional survey sections. */
+    /** Render the chapter-grouped checklist of additional sections. */
     function renderExtraSectionList() {
       const list = document.getElementById('extra-sections-list');
       const countEl = document.getElementById('extra-sections-count');
@@ -1325,7 +1325,7 @@
       const extras = getSurveySections().slice(1);
       if (countEl) countEl.textContent = extras.length + ' selected';
       if (!STATE.taxonomy) {
-        list.innerHTML = '<div class="empty-note">Survey taxonomy unavailable.</div>';
+        list.innerHTML = '<div class="empty-note">Taxonomy unavailable.</div>';
         return;
       }
       list.innerHTML = STATE.taxonomy.chapters.map(function(chapter) {
@@ -1355,7 +1355,7 @@
       const inputId = axis + '-select';
       let body;
       if (!axisMeta) {
-        body = '<div class="empty-note">Survey taxonomy unavailable.</div>';
+        body = '<div class="empty-note">Taxonomy unavailable.</div>';
       } else if (isScalar) {
         body = '<select class="field-select" id="' + inputId + '" data-scalar-axis="' + axis + '">'
           + '<option value="">Choose…</option>'
@@ -1464,8 +1464,8 @@
       document.getElementById('blog-twitter-field').hidden = isPaper;
 
       document.getElementById('kind-helper').innerHTML = isPaper
-        ? 'Paper submissions use <code>papers/&lt;arxiv_id&gt;.yaml</code> when possible, otherwise <code>papers/&lt;shortname&gt;.yaml</code>, and need survey sections plus every design axis.'
-        : 'Blog submissions stay in the flat Blogs section, list survey sections only, and use filenames of the form <code>blogs/YYYY-MM-DD-shortname.yaml</code>.';
+        ? 'Paper submissions use <code>papers/&lt;arxiv_id&gt;.yaml</code> when possible, otherwise <code>papers/&lt;shortname&gt;.yaml</code>, and need taxonomy sections plus every design axis.'
+        : 'Blog submissions stay in the flat Blogs section, list taxonomy sections only, and use filenames of the form <code>blogs/YYYY-MM-DD-shortname.yaml</code>.';
 
       document.getElementById('resource-title-label').textContent = isPaper ? 'Paper Title' : 'Blog Title';
       document.getElementById('resource-title-note').textContent = isPaper
@@ -1592,10 +1592,10 @@
       if (!computeShortname(values)) return 'Could not derive a valid shortname from the current inputs.';
       if (!STATE.taxonomy) {
         return STATE.metadataLoading
-          ? 'Loading the survey taxonomy…'
-          : 'The survey taxonomy could not be loaded, so survey fields cannot be generated.';
+          ? 'Loading the taxonomy…'
+          : 'The taxonomy could not be loaded, so taxonomy fields cannot be generated.';
       }
-      if (!STATE.primarySection) return 'Please choose the primary survey section.';
+      if (!STATE.primarySection) return 'Please choose the primary section.';
       if (values.kind === 'paper') {
         const missingAxis = SCALAR_AXES.find(function(axis) { return !STATE.scalar[axis]; });
         if (missingAxis) {
@@ -1715,14 +1715,14 @@
       document.getElementById('path-status-output').value = '# Waiting for required fields';
       document.getElementById('github-repo-url-output').value = GITHUB_REPO_BASE;
       setActionDisabled(true);
-      setStatus('Reset the form and cleared every survey selection.', 'warning');
+      setStatus('Reset the form and cleared every section selection.', 'warning');
     }
 
     function wireForm() {
       document.getElementById('copy-taxonomy-block-btn').addEventListener('click', copyTaxonomyBlock);
       document.getElementById('clear-taxonomy-btn').addEventListener('click', function() {
         clearTaxonomySelections();
-        setStatus('Cleared the survey sections and design axes.', 'warning');
+        setStatus('Cleared the taxonomy sections and design axes.', 'warning');
       });
       document.getElementById('copy-target-path-btn').addEventListener('click', copyTargetPath);
       document.getElementById('copy-yaml-btn').addEventListener('click', copyYamlPreview);
@@ -1747,7 +1747,7 @@
       return response.json();
     }
 
-    /** Load the survey taxonomy, value counts and existing paths; fall back to papers.json's taxonomy. */
+    /** Load the taxonomy, value counts and existing paths; fall back to papers.json's taxonomy. */
     async function loadSubmissionMetadata() {
       try {
         STATE.metadataLoading = true;
@@ -1765,12 +1765,12 @@
         STATE.metadataLoading = false;
         renderAllPickers();
         updateGeneratedOutputs();
-        setStatus('Loaded the survey taxonomy and existing filenames from submission metadata. Fill the form to generate a YAML draft, then copy the path and YAML into your fork for the PR flow.', 'success');
+        setStatus('Loaded the taxonomy and existing filenames from submission metadata. Fill the form to generate a YAML draft, then copy the path and YAML into your fork for the PR flow.', 'success');
       } catch (error) {
         const reason = error instanceof Error ? error.message : 'unknown error';
         try {
           const catalog = await fetchJson('papers.json');
-          if (!isValidSurveyTaxonomy(catalog.survey_taxonomy)) throw new Error('papers.json has no survey taxonomy');
+          if (!isValidSurveyTaxonomy(catalog.survey_taxonomy)) throw new Error('papers.json has no taxonomy');
           STATE.taxonomy = catalog.survey_taxonomy;
         } catch (fallbackError) {
           STATE.taxonomy = null;
@@ -1780,8 +1780,8 @@
         renderAllPickers();
         updateGeneratedOutputs();
         setStatus(STATE.taxonomy
-          ? 'Could not load submission metadata (' + reason + '). The survey pickers use the catalog taxonomy without usage counts, and duplicate filename checks are unavailable.'
-          : 'Could not load the survey taxonomy (' + reason + '). Prepare the survey fields by hand using TAGS.md and TAXONOMY.md.', 'warning');
+          ? 'Could not load submission metadata (' + reason + '). The section pickers use the catalog taxonomy without usage counts, and duplicate filename checks are unavailable.'
+          : 'Could not load the taxonomy (' + reason + '). Prepare the taxonomy fields by hand using TAGS.md and TAXONOMY.md.', 'warning');
       }
     }
 

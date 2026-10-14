@@ -25,7 +25,7 @@ body:
         - Wrong venue or year
         - Incorrect authors
         - Inaccurate description
-        - Wrong survey section or design axis
+        - Wrong taxonomy section or design axis
         - Duplicate entry
         - Other
     validations:

@@ -1,8 +1,8 @@
 """Controlled vocabulary for the Awesome Loop Models catalog.
 
-The catalog is organized by the chapters of the Looped Models Survey. Every
-paper lists the survey sections it belongs to in ``survey_section`` (primary
-first) and describes its loop with three single-valued design axes plus the
+The catalog is organized as a topic map of parts, chapters and sections. Every
+paper lists the sections it belongs to in ``survey_section`` (a historical field
+name; primary first) and describes its loop with three single-valued design axes plus the
 claims it makes. There are no free-form tags: every value below is closed and
 adding one is a taxonomy change, not a per-paper decision.
 
@@ -34,7 +34,7 @@ SURVEY_CHAPTERS = (
     ("10", "open-problems", "Open Problems"),
 )
 
-# (section id, survey number, section title). Order follows the survey.
+# (section id, section number, section title). Order follows the topic map.
 SURVEY_SECTIONS = (
     ("foundations/recurrence", "2.1", "Recurrent networks and weight sharing across computation"),
     ("foundations/depth-sharing", "2.2", "Weight sharing across network depth"),
@@ -75,11 +75,11 @@ SURVEY_SECTION_TITLES = {section_id: title for section_id, _, title in SURVEY_SE
 
 
 def chapter_of(section_id: str) -> str:
-    """Return the survey chapter number ("2".."10") of a section id."""
+    """Return the chapter number ("2".."10") of a section id."""
     return SURVEY_SECTION_NUMBERS[section_id].split(".")[0]
 
 
-# Design axes (survey chapter 4) and claims (chapter 3).
+# Design axes (chapter 4) and claims (chapter 3).
 VALID_LOOP_TOPOLOGIES = (
     "whole-stack",
     "prelude-core-coda",
@@ -141,7 +141,7 @@ REQUIRED_PAPER_SURVEY_FIELDS = (
     "comparison",
 )
 
-# Fields removed by the 2026-10 survey taxonomy. Their presence is an error.
+# Fields removed by the 2026-10 taxonomy. Their presence is an error.
 RETIRED_FIELDS = (
     "category",
     "category_path",

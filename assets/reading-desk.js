@@ -57,14 +57,14 @@ function getReadingDeskThumbnailUrl(paper) {
   return match ? 'https://thumbnails.assets.alphaxiv.org/' + match[1] + (match[2] || 'v1') + '.png' : '';
 }
 
-/** Describe every survey placement and design axis, including unspecified values. */
+/** Describe every section placement and design axis, including unspecified values. */
 function renderReadingDeskSurveyHtml(paper) {
   const sections = paper._sections || [];
   const sectionsHtml = sections.length
     ? '<div class="desk-survey-sections">' + sections.map(function(sectionId, index) {
       return renderSectionBadgeHtml(sectionId, index === 0, false);
     }).join('') + '</div>'
-    : '<p>Not yet placed in a survey section.</p>';
+    : '<p>Not yet placed in a section.</p>';
   if (paper.entry_type === 'blog') return sectionsHtml;
   const axesHtml = FACET_GROUPS.map(function(group) {
     const entries = (paper._axisEntries || []).filter(function(entry) { return entry.group === group; });
@@ -77,7 +77,7 @@ function renderReadingDeskSurveyHtml(paper) {
   return sectionsHtml + '<dl class="desk-axis-list">' + axesHtml + '</dl>';
 }
 
-/** Reuse catalog renderers so survey placements, scope notes and every source stay available. */
+/** Reuse catalog renderers so section placements, scope notes and every source stay available. */
 function renderReadingDeskDetail(paper) {
   const content = document.getElementById('paper-detail-content');
   if (!paper) {
@@ -103,7 +103,7 @@ function renderReadingDeskDetail(paper) {
     + '</div></header>'
     + '<div class="desk-detail-body" tabindex="0" role="region" aria-label="Resource details">'
     + '<section class="desk-detail-section"><h3>Summary</h3><p>' + escapeHtml(paper.desc || 'No summary is available yet. Follow the source for the full text.') + '</p>' + renderCatalogFitNoteHtml(paper) + '</section>'
-    + '<section class="desk-detail-section"><h3>Survey placement</h3>' + renderReadingDeskSurveyHtml(paper) + '</section>'
+    + '<section class="desk-detail-section"><h3>Topic-map placement</h3>' + renderReadingDeskSurveyHtml(paper) + '</section>'
     + '<section class="desk-detail-section" aria-labelledby="desk-sources-title"><h3 id="desk-sources-title">Sources</h3><div class="paper-links">' + renderPaperLinksHtml(paper, false) + '</div>'
     + (paper._addedDate ? '<p class="desk-added-date">Added to the collection ' + escapeHtml(paper._addedDate) + '</p>' : '') + '</section>'
     + '<section class="desk-detail-section desk-discussion" aria-labelledby="desk-discussion-title"><h3 id="desk-discussion-title">Discussion</h3>' + renderCommunityCommentsHtml(paper, true) + '</section></div>';
@@ -111,7 +111,7 @@ function renderReadingDeskDetail(paper) {
 
 /** Update selection from real visible records, never from presentation text. */
 function syncReadingDeskSelection(papers) {
-  // Survey-section order is the displayed order, which can differ from a global date sort.
+  // Section order is the displayed order, which can differ from a global date sort.
   const firstCard = document.querySelector('.paper-card[data-id]');
   const firstId = firstCard ? firstCard.dataset.id : '';
   const retained = papers.some(function(paper) { return paper.id === readingDeskSelectedId; });

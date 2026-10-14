@@ -149,7 +149,7 @@ body.reading-desk .search-wrap { margin: 0; width: 100%; max-width: none; }
 .reading-desk #papers-panel .resource-group-count { padding: 0; font-size: 11px; }
 .reading-desk #papers-panel .resource-group-desc { display: none; }
 .reading-desk #papers-panel .resource-group-body { gap: 0; }
-/* Survey Part → Chapter → Section grouping of the paper list. */
+/* Part → Chapter → Section grouping of the paper list. */
 .survey-part + .survey-part { border-top: 1px solid var(--border); }
 .survey-part-header { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; padding: 30px 36px 4px; }
 .survey-part-label { font-size: 11px; line-height: 1.4; letter-spacing: .09em; text-transform: uppercase; color: var(--text-dim); }

@@ -13,7 +13,7 @@
 
 ### 🌐 [**Interactive Browser**]({{PUBLIC_INDEX_URL}}) · 🧾 [**PR Submission Guide**]({{PUBLIC_SUBMIT_URL}})
 
-<sub>The full catalog lives in the browser: search, browse by survey chapter, filter by section and loop design, and read TL;DRs, venues, code links, and daily briefings.</sub>
+<sub>The full catalog lives in the browser: search, browse by chapter, filter by section and loop design, and read TL;DRs, venues, code links, and daily briefings.</sub>
 
 </div>
 
@@ -40,7 +40,7 @@ Only the rightmost end of this scale is in scope. Omitting `catalog_fit` means s
 <summary>How the catalog is organized</summary>
 <br>
 
-The catalog follows the chapters of the **Looped Models Survey**. Each paper lists every survey section it belongs to, primary first, and the browser files it under that primary section.
+The catalog is organized as a **topic map** of chapters and sections. Each paper lists every section it belongs to, primary first, and the browser files it under that primary section.
 
 | Part | Chapters |
 |:--|:--|
@@ -50,5 +50,5 @@ The catalog follows the chapters of the **Looped Models Survey**. Each paper lis
 | IV. Understanding and applications | §8 Why looped models work · §9 Applications |
 | V. Open problems | §10 Diffusion · folding depth into time · monitorability and safety |
 
-Every paper also records its design axes (`loop_topology`, `sharing`, `depth_control`) and what it claims looping buys (`claims`, `comparison`). All values are controlled; there are no free-form tags. Blogs sit in one flat section and list only the survey sections they discuss. [TAXONOMY.md](TAXONOMY.md) explains each value and [TAGS.md](TAGS.md) shows current counts.
+Every paper also records its design axes (`loop_topology`, `sharing`, `depth_control`) and what it claims looping buys (`claims`, `comparison`). All values are controlled; there are no free-form tags. Blogs sit in one flat section and list only the sections they discuss. [TAXONOMY.md](TAXONOMY.md) explains each value and [TAGS.md](TAGS.md) shows current counts.
 </details>

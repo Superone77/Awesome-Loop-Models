@@ -17,7 +17,7 @@ Please start from the submission guide page:
 The guide is the intended staging page before opening a pull request:
 - it lets you choose Paper vs Blog explicitly
 - it lets you fill the main submission fields once on the guide page
-- it offers controlled pickers for survey sections and design axes before you leave for GitHub
+- it offers controlled pickers for taxonomy sections and design axes before you leave for GitHub
 - it generates the target YAML path and the generated YAML content
 - it tells you exactly what path and YAML to copy into your own fork
 
@@ -44,7 +44,7 @@ python3 -m unittest tests.test_audit_catalog
 Errors are blocking structural, identity, URL, or controlled-vocabulary problems;
 warnings require human review but do not make the command fail. The auditor
 never edits YAML and does not replace primary-source review of paper scope,
-descriptions, or survey-section and design-axis accuracy. See
+descriptions, or taxonomy-section and design-axis accuracy. See
 [`audits/README.md`](audits/README.md) for the full contract.
 
 ---
@@ -94,7 +94,7 @@ Usually out of scope:
 - generic news reposts
 - project pages that do not contain meaningful technical writing
 
-Blogs list the survey sections they discuss but do not use the paper design axes. They live in one flat `Blogs` section.
+Blogs list the taxonomy sections they discuss but do not use the paper design axes. They live in one flat `Blogs` section.
 
 If a paper or blog is borderline, explain the fit clearly in the pull request description. Contributors should not set `catalog_fit: adjacent` without maintainer agreement.
 
@@ -102,14 +102,14 @@ See [TAXONOMY.md](TAXONOMY.md) for the full paper taxonomy and the blog-section 
 
 ---
 
-## Taxonomy: the Looped Models Survey
+## Taxonomy: the topic map
 
-Papers are classified by the chapters of the Looped Models Survey. See [TAXONOMY.md](TAXONOMY.md) for the full vocabulary and how to choose values, and [TAGS.md](TAGS.md) for current usage counts.
+Papers are classified by the chapters and sections of the repo's topic map. See [TAXONOMY.md](TAXONOMY.md) for the full vocabulary and how to choose values, and [TAGS.md](TAGS.md) for current usage counts.
 
-- `survey_section` lists every survey section the paper contributes to, **primary first**. The browser files the paper under its primary section.
-- `loop_topology`, `sharing` and `depth_control` describe the loop (survey §4), one value each.
+- `survey_section` (historical field name): the taxonomy sections the paper belongs to, **primary first**. The browser files the paper under its primary section.
+- `loop_topology`, `sharing` and `depth_control` describe the loop (§4), one value each.
 - `claims` lists what the paper argues looping buys or costs; `comparison` records the control in any looped-vs-untied comparison (`[]` if none).
-- `survey_core: true` marks the survey's core anchor papers.
+- `survey_core: true` (historical field name) marks core reference papers for loop models; maintainers set it.
 
 All values are controlled and the build validates them; adding a value is a taxonomy change. **There are no free-form tags.** Model, method and dataset names go in the title and `desc`. The build rejects the retired fields `category`, `category_path`, `subcategory`, `foundation`, `mechanism_tags`, `focus_tags`, `domain_tags` and `tags`. If no section fits, stop and propose a controlled taxonomy-vocabulary change to the maintainer instead of forcing a match.
 
@@ -208,7 +208,7 @@ Use the generated path from `submit.html` instead of inventing a new filename by
 
 ### Browser filters
 
-The interactive browser groups papers by survey Part → Chapter → Section (primary section) and filters by survey section and the design axes (`loop_topology`, `sharing`, `depth_control`, `claims`, `comparison`). Search covers titles, authors and descriptions.
+The interactive browser groups papers by Part → Chapter → Section (primary section) and filters by section and the design axes (`loop_topology`, `sharing`, `depth_control`, `claims`, `comparison`). Search covers titles, authors and descriptions.
 
 ---
 

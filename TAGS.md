@@ -1,10 +1,10 @@
 # Taxonomy vocabulary
 
-Every paper and blog is classified with the controlled vocabulary below, which follows the chapters of the Looped Models Survey. There are no free-form tags; a value that is not listed here is a taxonomy change and needs the maintainer. See [TAXONOMY.md](TAXONOMY.md) for how to choose values.
+Every paper and blog is classified with the controlled vocabulary below, which follows the chapters of the repo's topic map. There are no free-form tags; a value that is not listed here is a taxonomy change and needs the maintainer. See [TAXONOMY.md](TAXONOMY.md) for how to choose values.
 
 This file is auto-generated from `papers/*.yaml` and `blogs/*.yaml` by `scripts/build.py`.
 
-## Survey sections (`survey_section`)
+## Taxonomy sections (`survey_section`)
 
 List every section the entry belongs to; the first entry is its primary section. Counts are primary / any.
 

@@ -151,7 +151,7 @@ assert.equal(splitUpdates, 2);
 rail.context.window.innerWidth = 390;
 rail.context.setReadingDeskSidebarWidth(200);
 assert.equal(railStyles['--desk-rail'], '409px');
-const card = html.slice(html.indexOf('// ── Render a single paper card'), html.indexOf('// ── State & Survey Taxonomy'));
+const card = html.slice(html.indexOf('// ── Render a single paper card'), html.indexOf('// ── State & Taxonomy'));
 assert.match(card, /class="desk-card-summary"/);
 assert.match(card, /highlightQuery\(escapeHtml\(paper\.desc\), query\)/);
 assert.match(card, /renderMetricsHtml\(paper\)/);
@@ -231,7 +231,7 @@ vm.runInContext(html.slice(html.indexOf('function parseIsoDate(value) {'), html.
 vm.runInContext(html.slice(html.indexOf('function escapeHtml(str) {'), html.indexOf('function formatMetricCount(')), rendering);
 vm.runInContext(html.slice(html.indexOf('function formatMetricCount('), html.indexOf('function getCurrentDailyWatchDateString(')), rendering);
 vm.runInContext(card, rendering);
-vm.runInContext(source.slice(source.indexOf('/** Describe every survey placement'), source.indexOf('function syncReadingDeskSelection(')), rendering);
+vm.runInContext(source.slice(source.indexOf('/** Describe every section placement'), source.indexOf('function syncReadingDeskSelection(')), rendering);
 assert.match(rendering.renderMetricsHtml({ published_date: '2026-01-01', citations: 1000 }), /High influence/);
 const influence = rendering.renderInfluenceBadgeHtml;
 const influenceNow = new Date('2026-09-17T23:59:59Z');
@@ -306,7 +306,7 @@ assert.ok(cardSections.indexOf('§4.5') < cardSections.indexOf('§6.2'), 'Primar
 assert.match(openCard, /data-facet-group="loop_topology" data-facet-value="whole-stack"/);
 assert.match(openCard, /data-facet-group="claims" data-facet-value="test-time-scaling"/);
 assert.doesNotMatch(openCard, /data-facet-value="unspecified"/, 'Cards omit unspecified axes');
-assert.match(openCard, /class="survey-core-badge"[^>]*>Survey core</);
+assert.match(openCard, /class="survey-core-badge" title="A core reference for loop models">Core</);
 assert.doesNotMatch(rendering.renderCard({ ...example, survey_core: false }, ''), /survey-core-badge/);
 const exampleRow = rendering.renderTableRow(example, '');
 assert.match(exampleRow, /§4\.5 Controlling recurrence depth/);
@@ -375,13 +375,14 @@ assert.match(fixedHeader, /Author One, Author Two/);
 assert.match(fixedHeader, /Open paper/);
 assert.doesNotMatch(fixedHeader, /<h3>Summary/);
 assert.match(scrollableBody, /^<div class="desk-detail-body" tabindex="0" role="region" aria-label="Resource details"><section class="desk-detail-section"><h3>Summary/);
-for (const title of ['Survey placement', 'Sources', 'Discussion']) assert.ok(scrollableBody.includes(title));
-const placement = scrollableBody.split('<h3>Survey placement</h3>')[1].split('</section>')[0];
+for (const title of ['Topic-map placement', 'Sources', 'Discussion']) assert.ok(scrollableBody.includes(title));
+const placement = scrollableBody.split('<h3>Topic-map placement</h3>')[1].split('</section>')[0];
 assert.match(placement, /paper-section-badge is-primary/);
 for (const label of ['Loop topology', 'Sharing', 'Depth control', 'Claims', 'Looped-vs-untied comparison']) assert.ok(placement.includes('<dt>' + label + '</dt>'), label);
 assert.match(placement, /<dt>Depth control<\/dt><dd><span class="desk-axis-unspecified">unspecified/);
 assert.match(placement, /<dt>Looped-vs-untied comparison<\/dt><dd><span class="desk-axis-unspecified">none recorded/);
-assert.match(fixedHeader, /Survey core/);
+assert.match(fixedHeader, />Core</);
+assert.doesNotMatch(fixedHeader, /Survey/);
 const primaryActions = detailContent.innerHTML.split('<div class="desk-primary-actions">')[1].split('</div>')[0];
 assert.match(primaryActions, /Open paper/);
 assert.doesNotMatch(primaryActions, /github|Code/);
@@ -469,12 +470,12 @@ const sections = vm.createContext({
   CATALOG_ADJACENT_NOTE: '',
 });
 vm.runInContext(html.slice(html.indexOf('function escapeHtml(str) {'), html.indexOf('function highlightQuery(')), sections);
-vm.runInContext(html.slice(html.indexOf('/** Index the survey parts, chapters and sections'), html.indexOf('/** Return a record\'s controlled values')), sections);
+vm.runInContext(html.slice(html.indexOf('/** Index the taxonomy parts, chapters and sections'), html.indexOf('/** Return a record\'s controlled values')), sections);
 vm.runInContext(html.slice(html.indexOf('/** Return whether a section-filter value names'), html.indexOf('/** Return whether a design-axis value is currently selected.')), sections);
-vm.runInContext(html.slice(html.indexOf('/** Return the DOM id of a survey chapter heading'), html.indexOf('/**\n * Scroll the list view')), sections);
+vm.runInContext(html.slice(html.indexOf('/** Return the DOM id of a chapter heading'), html.indexOf('/**\n * Scroll the list view')), sections);
 vm.runInContext(html.slice(html.indexOf('function getPaperAxisValues(paper, group) {'), html.indexOf('/** Return design-axis entries worth')), sections);
 vm.runInContext(html.slice(html.indexOf('function preparePaperRecord(paper) {'), html.indexOf('/** Count each design-axis value')), sections);
-vm.runInContext(html.slice(html.indexOf('/** Populate chapter-grouped survey-section choices'), html.indexOf('/** Blogs carry survey sections only')), sections);
+vm.runInContext(html.slice(html.indexOf('/** Populate chapter-grouped section choices'), html.indexOf('/** Blogs carry taxonomy sections only')), sections);
 sections.setSurveyTaxonomy(surveyTaxonomy);
 sections.restoreDerivedLinks = links => links;
 const deqPaper = sections.preparePaperRecord({ id: 'deq', title: 'DEQ', survey_section: ['foundations/implicit', 'architecture/depth-control', 'retired/value'] });
@@ -487,7 +488,7 @@ const topoPaper = sections.preparePaperRecord({ id: 'topo', survey_section: ['ar
 sections.ALL_PAPERS = [deqPaper, topoPaper];
 sections.ALL_BLOGS = [];
 sections.renderSectionFilter();
-assert.match(sectionSelect.innerHTML, /All survey sections/);
+assert.match(sectionSelect.innerHTML, /<option value="">All sections<\/option>/);
 assert.match(sectionSelect.innerHTML, /<optgroup label="§4 Architecture &amp; Design"><option value="4">All of §4 · 2<\/option>/);
 assert.match(sectionSelect.innerHTML, /§4\.5 Controlling recurrence depth · 1/);
 sections.setSectionFilter('architecture/depth-control');
@@ -526,9 +527,9 @@ Object.assign(categories, {
   paperMatchesQuery: (record, query) => !query || record.id === query,
   getPublicationDateFilter: () => ({ active: false }),
 });
-vm.runInContext(html.slice(html.indexOf('function matchAcceptedOnly(paper) {'), html.indexOf('/** Populate chapter-grouped survey-section choices')), categories);
-vm.runInContext(html.slice(html.indexOf('/** Blogs carry survey sections only'), html.indexOf('function setFilterSidebarOpen(')), categories);
-vm.runInContext(html.slice(html.indexOf('function normalizeTopLevelTab(tab) {'), html.indexOf('/** Design-axis filter groups in survey order')), categories);
+vm.runInContext(html.slice(html.indexOf('function matchAcceptedOnly(paper) {'), html.indexOf('/** Populate chapter-grouped section choices')), categories);
+vm.runInContext(html.slice(html.indexOf('/** Blogs carry taxonomy sections only'), html.indexOf('function setFilterSidebarOpen(')), categories);
+vm.runInContext(html.slice(html.indexOf('function normalizeTopLevelTab(tab) {'), html.indexOf('/** Design-axis filter groups in taxonomy order')), categories);
 assert.match(filterPanel, /id="accepted-only-toggle"[^>]*>Peer-reviewed<\/button>/);
 assert.match(filterPanel, /id="high-influence-only-toggle"[^>]*aria-pressed="false"[^>]*onclick="toggleHighInfluenceOnly\(\)"[^>]*>High influence<\/button>/);
 assert.match(css, /\.blogs-mode #high-influence-only-toggle/);
@@ -609,7 +610,7 @@ assert.equal(categories.normalizeTopLevelTab('blogs'), 'blogs');
 assert.match(html, /id="blogs-tab" role="tab" aria-controls="papers-panel"/);
 assert.doesNotMatch(html, /class="desk-blogs-link"/);
 assert.match(html, /id="view-list-toggle"[^>]*>List view<\/button>/);
-assert.match(html, /<nav class="survey-nav" id="survey-nav" aria-label="Survey chapters"/);
+assert.match(html, /<nav class="survey-nav" id="survey-nav" aria-label="Chapters"/);
 const grids = html.slice(html.indexOf('/** Count filtered papers by primary chapter'), html.indexOf('function updateDailyBriefingNotice('));
 
 // The list groups by Part → Chapter → primary Section and keeps the sort inside each section; the table is one global order.
@@ -647,7 +648,7 @@ for (const [sort, order, grouped] of [
   categories.CURRENT_SORT = sort;
   categories.CURRENT_VIEW = 'list';
   categories.renderAllGrids('');
-  assert.equal(listOrder(), grouped, sort + ': list follows survey order, then the sort inside each section');
+  assert.equal(listOrder(), grouped, sort + ': list follows topic-map order, then the sort inside each section');
   categories.CURRENT_VIEW = 'table';
   categories.renderAllGrids('');
   assert.equal(tableOrder, order, sort + ': table sorts globally');
@@ -658,7 +659,7 @@ const listHtml = listElements['papers-grid'].innerHTML;
 for (const fragment of ['id="part-foundations"', 'Part I</span>', 'id="chapter-4"', '§4</span>', 'id="section-4-5"', 'Controlling recurrence depth']) {
   assert.ok(listHtml.includes(fragment), fragment);
 }
-assert.ok(listHtml.indexOf('id="section-4-1"') < listHtml.indexOf('id="section-4-5"'), 'Sections follow survey order');
+assert.ok(listHtml.indexOf('id="section-4-1"') < listHtml.indexOf('id="section-4-5"'), 'Sections follow topic-map order');
 assert.match(listHtml, /id="chapter-4"[\s\S]*?<span class="survey-count"[^>]*>3<\/span>/, 'Chapter count is filtered primary count');
 assert.doesNotMatch(listHtml, /id="section-2-3"[\s\S]*id="part-foundations"/);
 categories.ACTIVE_SECTION_FILTER = 'architecture/depth-control';
@@ -675,4 +676,4 @@ categories.renderAllGrids('missing');
 assert.equal(listElements['papers-grid'].innerHTML, '');
 assert.equal(listElements['blogs-grid'].innerHTML, '');
 assert.equal(listElements['no-results'].style.display, 'block');
-console.log('Reading desk: theme, selection, resizing, thumbnails, survey sections, design axes, isolated Blogs, peer-review and influence checks passed.');
+console.log('Reading desk: theme, selection, resizing, thumbnails, taxonomy sections, design axes, isolated Blogs, peer-review and influence checks passed.');

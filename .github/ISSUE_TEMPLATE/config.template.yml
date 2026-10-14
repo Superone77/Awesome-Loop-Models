@@ -5,4 +5,4 @@ contact_links:
     about: Choose Paper vs Blog, generate the YAML path/content, then copy it into your fork and open a pull request.
   - name: Taxonomy vocabulary (TAGS.md)
     url: {{PUBLIC_TAGS_URL}}
-    about: The controlled survey sections and design-axis values every entry must use.
+    about: The controlled taxonomy sections and design-axis values every entry must use.

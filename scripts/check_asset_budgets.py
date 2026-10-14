@@ -113,7 +113,7 @@ SUBMISSION_INVENTORIES = ("survey_section",) + SURVEY_AXES
 
 
 def validate_survey_taxonomy(taxonomy: object, label: str, violations: list[str]) -> None:
-    """Validate the survey parts, chapters, sections and design axes the browser pickers read."""
+    """Validate the taxonomy parts, chapters, sections and design axes the browser pickers read."""
     if not isinstance(taxonomy, dict):
         violations.append(f"{label} must be an object")
         return
@@ -192,7 +192,7 @@ def validate_papers_schema(payload: dict, violations: list[str]) -> tuple[int | 
 
 
 def validate_submission_schema(payload: dict, violations: list[str]) -> None:
-    """Validate the paths, survey taxonomy and value inventories used by the submission page."""
+    """Validate the paths, taxonomy and value inventories used by the submission page."""
     existing_paths = payload.get("existing_paths")
     if not isinstance(existing_paths, list):
         violations.append("submission-meta.json.existing_paths must be an array")
