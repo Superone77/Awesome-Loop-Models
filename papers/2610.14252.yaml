@@ -1,0 +1,26 @@
+title: 'Adaptive-Depth Is a Finishing Stage'
+authors:
+- 'Andrei Piterbarg'
+- 'Sean McLeish'
+- 'Dhruv Pai'
+- 'Benjamin Keigwin'
+year: 2026
+published_date: '2026-10-09'
+added_date: '2026-10-14'
+venue: arXiv
+survey_section:
+- architecture/depth-control
+- capabilities/efficiency
+loop_topology: prelude-core-coda
+sharing: full
+depth_control: sampled-train
+claims:
+- compute-efficiency
+comparison: []
+desc: Introduces fixed-first training for prelude-core-coda looped transformers, holding loop
+  depth fixed for most of training and sampling depths uniformly only in a short final
+  phase, cutting modeled training compute by 31-45 percent at 200M parameters while
+  keeping mean NLL across inference depths within 0.5 percent.
+links:
+  arxiv: https://arxiv.org/abs/2610.14252
+citations: 0

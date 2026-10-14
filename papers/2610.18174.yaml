@@ -1,0 +1,27 @@
+title: 'Looped Reasoning Finishes Earlier Than You Think'
+authors:
+- 'Sumin Park'
+- 'T. Konstantin Rusch'
+year: 2026
+published_date: '2026-10-13'
+added_date: '2026-10-14'
+venue: arXiv
+survey_section:
+- architecture/depth-control
+- understanding/why
+- architecture/state-memory
+loop_topology: whole-stack
+sharing: full
+depth_control: convergence
+claims:
+- compute-efficiency
+- stability
+comparison: []
+desc: Shows that slowly decaying oscillatory modes rate-limit convergence of recurrent
+  reasoners and introduces QRR, a gauge-equivariant looped block that halts on a quotient-
+  space fixed-point residual, reaching 97.9 percent on Sudoku-Extreme with a median halt
+  step of 27 versus 122 for FPRM.
+links:
+  arxiv: https://arxiv.org/abs/2610.18174
+  github: https://github.com/camail-official/Quotient_Recurrent_Reasoner_QRR
+citations: 0

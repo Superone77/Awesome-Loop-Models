@@ -1,0 +1,27 @@
+title: 'Running Fewer Loops Removes Refusal Behaviour in Recurrent-Depth Language Models'
+authors:
+- 'Seyedarmin Azizi'
+- 'Erfan Baghaei Potraghloo'
+- 'Arya Fayyazi'
+- 'Saeid Shokoufa'
+- 'Massoud Pedram'
+year: 2026
+published_date: '2026-10-10'
+added_date: '2026-10-14'
+venue: arXiv
+survey_section:
+- open-problems/monitorability-safety
+- understanding/interpretability
+- understanding/failure-modes
+loop_topology: unspecified
+sharing: full
+depth_control: sampled-train
+claims:
+- failure-mode
+comparison: []
+desc: Shows that running Ouro and Huginn recurrent-depth language models at fewer loops
+  removes refusal far faster than task ability, traces this to an unsettled refusal
+  direction, and restores shallow-depth safety with a random-loop LoRA safety objective.
+links:
+  arxiv: https://arxiv.org/abs/2610.15218
+citations: 0

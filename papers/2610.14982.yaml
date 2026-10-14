@@ -1,0 +1,26 @@
+title: 'Fitting Every Hint Is Not Enough: Premature Floods in Recurrent Algorithmic Reasoners'
+authors:
+- 'Amin Najafgholizadeh'
+- 'Mohsen Afsharchi'
+year: 2026
+published_date: '2026-10-10'
+added_date: '2026-10-14'
+venue: arXiv
+survey_section:
+- understanding/failure-modes
+- capabilities/generalization
+- training/supervision-optimization
+loop_topology: whole-stack
+sharing: full
+depth_control: fixed
+claims:
+- failure-mode
+- length-generalization
+comparison: []
+desc: Shows that recurrent algorithmic reasoners that fit every BFS hint can prematurely flood
+  deep graphs through hidden-state drift on tail-distribution inputs; detaching state
+  between steps removes the flood (0 of 23 seeds versus 6 of 23 under BPTT) but not for
+  sum-aggregation or residual processors.
+links:
+  arxiv: https://arxiv.org/abs/2610.14982
+citations: 0

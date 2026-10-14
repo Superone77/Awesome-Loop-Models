@@ -1,0 +1,36 @@
+title: 'Input-Conditioned Search for Efficient Test-Time Scaling of Recursive Reasoners'
+authors:
+- 'Haochen Shi'
+- 'Tianwen Fu'
+- 'Qianggang Ding'
+- 'Yinhan Lu'
+- 'Yizhan Li'
+- 'Huan Zhang'
+- 'Yajie Zhao'
+- 'Xingdi Yuan'
+- 'Hengyang Lu'
+- 'Bang Liu'
+year: 2026
+published_date: '2026-10-13'
+added_date: '2026-10-14'
+venue: arXiv
+survey_section:
+- scaling/test-time
+- understanding/why
+loop_topology: hierarchical
+sharing: full
+depth_control: unspecified
+claims:
+- test-time-scaling
+- compute-efficiency
+comparison: []
+desc: Introduces Input-Conditioned Search, which scales frozen Tiny Recursive Models at test
+  time by rerunning them under hypothesis-injected or restated inputs, shows that input
+  changes can remove incorrect attracting fixed points, and raises Sudoku-Extreme accuracy
+  from 87.85 to 99.81 percent.
+links:
+  arxiv: https://arxiv.org/abs/2610.18547
+  github: https://github.com/icsearch/ICS
+  project: https://icsearch.github.io/
+  hf: https://huggingface.co/hcshi/ICS
+citations: 0

@@ -310,6 +310,20 @@
     "papers/2610.13041.yaml",
     "papers/2610.13106.yaml",
     "papers/2610.13660.yaml",
+    "papers/2610.14252.yaml",
+    "papers/2610.14456.yaml",
+    "papers/2610.14594.yaml",
+    "papers/2610.14982.yaml",
+    "papers/2610.14998.yaml",
+    "papers/2610.15106.yaml",
+    "papers/2610.15218.yaml",
+    "papers/2610.16368.yaml",
+    "papers/2610.16427.yaml",
+    "papers/2610.17877.yaml",
+    "papers/2610.18127.yaml",
+    "papers/2610.18174.yaml",
+    "papers/2610.18547.yaml",
+    "papers/2610.18649.yaml",
     "papers/edge-recvit-efficient-vision-transformer-via-semantic-refined-dynamic-recursion.yaml",
     "papers/implicitly-defined-neural-networks-for-sequence-labeling.yaml",
     "papers/openreview-chaingpt.yaml",
@@ -643,50 +657,54 @@
     "survey_section": [
       {
         "label": "training/supervision-optimization",
-        "count": 66
+        "count": 68
       },
       {
         "label": "architecture/depth-control",
-        "count": 55
+        "count": 58
       },
       {
         "label": "scaling/test-time",
-        "count": 38
+        "count": 44
       },
       {
         "label": "capabilities/efficiency",
-        "count": 35
+        "count": 37
+      },
+      {
+        "label": "understanding/failure-modes",
+        "count": 36
       },
       {
         "label": "architecture/residual-init",
         "count": 34
       },
       {
-        "label": "understanding/failure-modes",
+        "label": "applications/language-speech-multimodal",
         "count": 31
       },
       {
-        "label": "applications/language-speech-multimodal",
+        "label": "understanding/interpretability",
         "count": 30
       },
       {
-        "label": "understanding/interpretability",
-        "count": 28
-      },
-      {
         "label": "applications/vision",
-        "count": 27
+        "count": 28
       },
       {
         "label": "architecture/topology",
         "count": 27
       },
       {
-        "label": "applications/embodied-other",
-        "count": 23
+        "label": "applications/graphs-science",
+        "count": 26
       },
       {
-        "label": "applications/graphs-science",
+        "label": "architecture/sharing",
+        "count": 24
+      },
+      {
+        "label": "applications/embodied-other",
         "count": 23
       },
       {
@@ -694,7 +712,7 @@
         "count": 23
       },
       {
-        "label": "architecture/sharing",
+        "label": "capabilities/generalization",
         "count": 23
       },
       {
@@ -702,16 +720,12 @@
         "count": 21
       },
       {
-        "label": "capabilities/generalization",
-        "count": 19
+        "label": "architecture/state-memory",
+        "count": 18
       },
       {
         "label": "systems/kv-memory",
         "count": 18
-      },
-      {
-        "label": "architecture/state-memory",
-        "count": 17
       },
       {
         "label": "scaling/compute-optimal",
@@ -723,23 +737,23 @@
       },
       {
         "label": "systems/quantization-edge",
-        "count": 13
+        "count": 14
       },
       {
         "label": "training/post-training",
         "count": 13
       },
       {
+        "label": "understanding/why",
+        "count": 12
+      },
+      {
         "label": "foundations/implicit",
         "count": 11
       },
       {
-        "label": "understanding/why",
-        "count": 10
-      },
-      {
         "label": "open-problems/diffusion",
-        "count": 9
+        "count": 10
       },
       {
         "label": "foundations/algorithmic",
@@ -767,16 +781,20 @@
       },
       {
         "label": "open-problems/monitorability-safety",
-        "count": 2
+        "count": 4
       }
     ],
     "loop_topology": [
       {
         "label": "whole-stack",
-        "count": 132
+        "count": 135
       },
       {
         "label": "unspecified",
+        "count": 40
+      },
+      {
+        "label": "prelude-core-coda",
         "count": 37
       },
       {
@@ -784,16 +802,12 @@
         "count": 36
       },
       {
+        "label": "hierarchical",
+        "count": 34
+      },
+      {
         "label": "partial",
         "count": 33
-      },
-      {
-        "label": "prelude-core-coda",
-        "count": 33
-      },
-      {
-        "label": "hierarchical",
-        "count": 30
       },
       {
         "label": "shifted-parallel",
@@ -803,11 +817,11 @@
     "sharing": [
       {
         "label": "full",
-        "count": 271
+        "count": 284
       },
       {
         "label": "partial-adapter",
-        "count": 17
+        "count": 18
       },
       {
         "label": "expert-routed",
@@ -821,53 +835,53 @@
     "depth_control": [
       {
         "label": "fixed",
-        "count": 140
+        "count": 145
       },
       {
         "label": "adaptive-halting",
-        "count": 59
+        "count": 62
       },
       {
         "label": "unspecified",
-        "count": 51
+        "count": 53
       },
       {
         "label": "convergence",
-        "count": 42
+        "count": 43
       },
       {
         "label": "sampled-train",
-        "count": 17
+        "count": 20
       }
     ],
     "claims": [
       {
         "label": "compute-efficiency",
-        "count": 103
+        "count": 108
       },
       {
         "label": "param-efficiency",
-        "count": 90
+        "count": 93
       },
       {
         "label": "test-time-scaling",
-        "count": 58
+        "count": 64
       },
       {
         "label": "failure-mode",
-        "count": 44
+        "count": 50
       },
       {
         "label": "memory-efficiency",
-        "count": 43
+        "count": 44
       },
       {
         "label": "stability",
-        "count": 38
+        "count": 39
       },
       {
         "label": "length-generalization",
-        "count": 29
+        "count": 33
       },
       {
         "label": "expressivity",
@@ -885,15 +899,15 @@
       },
       {
         "label": "iso-param",
-        "count": 34
+        "count": 36
       },
       {
         "label": "iso-flop",
-        "count": 24
+        "count": 25
       },
       {
         "label": "iso-depth",
-        "count": 18
+        "count": 20
       }
     ]
   }
