@@ -17,6 +17,11 @@
 
 </div>
 
+## News
+
+- **2026-07-17** — The browser gained a **Release Intelligence** view: publication pulse, long-term trends, and dossiers for the latest releases. [Explore stats]({{PUBLIC_INDEX_URL}}#stats)
+- **2026-04-24** — Awesome Loop Models is released. [Announcement](https://x.com/huskydogewoof/status/2047655947942744285)
+
 ## What is a loop model?
 
 > Within a single forward pass, a shared learned layer, block, module, or operator is reused.
